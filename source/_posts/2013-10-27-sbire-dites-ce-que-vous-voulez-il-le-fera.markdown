@@ -11,7 +11,7 @@ Sbire est un outil permettant d'exécuter des commandes grâce à la voix. Le pr
 <!--more-->
 Sbire en action
 ---------------
-{% youtube QWq0bSvc31A %}
+{% youtube Fvu9tS0lsYE %}
 
 Comment ça marche?
 ------------------
