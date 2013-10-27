@@ -7,7 +7,7 @@ categories:
   - Ruby
 ---
 
-Sbire est un outil permettant d'exécuter des commandes grâce à la voix. Le principe est simple. Vous taper une commande pour l'engersitrement d'une phrase avec un micro et vous taper une seconde commande pour terminer l'enregistrement. Suite à cela, Sbire avec reconnaitre votre voix et exécuter la commande associée.
+Sbire est un outil permettant d'exécuter des commandes grâce à la voix. Le principe est simple. Vous taper une commande pour l'enregistrement d'une phrase avec un micro et vous taper une seconde commande pour terminer l'enregistrement. Suite à cela, Sbire reconnait votre voix et exécute la commande associée.
 <!--more-->
 Sbire en action
 ---------------
