@@ -21,6 +21,11 @@ Contibuer
 ---------
 Évidemment, je suis ouvert à toute remarque et suggestion. Les contributions sont également les bienvenues. Vous pouvez les soumettes sur [Github](https://github.com/GCorbel/sbire).
 
-Plus d'information
+Plus d'informations
 ------------------
 Pour des informations sur l'installation, l'utilisation et la configuration, rendez-vous sur la [page Github du projet](https://github.com/GCorbel/sbire).
+
+Encore plus d'informations
+--------------------------
+
+Si vous avez d'autres questions, contactez moi par email, à guirec.corbel@gmail.com, ou sur [twitter](https://twitter.com/GuirecCorbel).
