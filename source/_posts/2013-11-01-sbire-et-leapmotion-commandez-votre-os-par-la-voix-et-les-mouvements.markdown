@@ -73,7 +73,7 @@ J'ai donc fait un fork du projet pour ajouter la possibilité d'exécuter des co
 
 À chaque changement détecté par LeapMotion, le programme recherche dans une liste d'objets avec des classes comme celle-ci :
 
-``` Python
+``` python
 class KeytapCommand():
     def __init__(self):
         self.name = "keytap"

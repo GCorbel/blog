@@ -15,7 +15,7 @@ Sbire en action
 
 Comment ça marche?
 ------------------
-Il s'agit d'un programme écrit en Ruby. Celui-ci fait appel à sox pour faire un enregistrement audio. Il fait ensuite appel à Google voice en y joignant le fichier et y récupère le résultat en format JSon. Ce résultat est ensuite traité et la comme trouvée est exécutée.
+Il s'agit d'un programme écrit en Ruby. Celui-ci fait appel à sox pour faire un enregistrement audio. Il fait ensuite appel à Google voice en y joignant le fichier et y récupère le résultat en format JSon. Ce résultat est ensuite traité et la commande trouvée est exécutée.
 
 Contibuer
 ---------
@@ -27,5 +27,4 @@ Pour des informations sur l'installation, l'utilisation et la configuration, ren
 
 Encore plus d'informations
 --------------------------
-
 Si vous avez d'autres questions, contactez moi par email, à guirec.corbel@gmail.com, ou sur [twitter](https://twitter.com/GuirecCorbel).
