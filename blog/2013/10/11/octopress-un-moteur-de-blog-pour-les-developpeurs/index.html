@@ -1,0 +1,354 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Octopress : Un moteur de blog pour les développeurs - Guirec Corbel</title>
+  <meta name="author" content="Guirec Corbel">
+
+  
+  <meta name="description" content="Comme beaucoup de développeurs, je souhaite partager ma connaissance sur certains sujets. Pour ce
+faire, j&#8217;ai voulu créer un blog. Cet article &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://GCorbel.github.io/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs">
+  <link href="/blog/favicon.png" rel="icon">
+  <link href="/blog/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/blog/atom.xml" rel="alternate" title="Guirec Corbel" type="application/atom+xml">
+  <script src="/blog/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/blog/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="/blog/stylesheets/rve-styles.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-42784059-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <a href="https://github.com/gcorbel/blog">
+    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png" alt="Suivez moi sur GitHub">
+  </a>
+  <h1><a href="/blog/">Guirec Corbel</a></h1>
+  
+    <h2>Mon blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/blog/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:GCorbel.github.io/blog" />
+    <input class="search" type="text" name="q" results="0" placeholder="Rechercher"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/blog/">Blog</a></li>
+  <li><a href="/blog/blog/archives">Archives</a></li>
+  <li><a href="/blog-en">English version</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Octopress : un moteur de blog pour les développeurs</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-11T22:23:00-04:00" pubdate data-updated="true">11 octobre 2013</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://GCorbel.github.io/blog">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Comme beaucoup de développeurs, je souhaite partager ma connaissance sur certains sujets. Pour ce
+faire, j&#8217;ai voulu créer un blog. Cet article décrit la démarche que j&#8217;ai effectuée afin de créer
+le blog.</p>
+
+<!--more-->
+
+
+<p>Afin de choisir un moteur de blog, j&#8217;ai fait le tour des sites de développeurs. Plusieurs solutions
+sont couramment utilisées.</p>
+
+<p>Premièrement, beaucoup de développeurs créent, eux-mêmes, leur site. Ne voulant pas réinventer la
+roue, j&#8217;ai choisi d&#8217;utiliser un outil déjà existant. Créer un blog est assez répandu et il y a une kyrielle de bons outils créés pour répondre à ce besoin.</p>
+
+<p>Il existe également beaucoup de personnes utilisant Wordpress. Wordpress ne correspond pas à ma
+philosophie. Tout d&#8217;abord, c&#8217;est écrit en PHP et j&#8217;aime Ruby. Ensuite, je trouve que Wordpress est
+une &ldquo;usine à gaz&rdquo;. C&#8217;est un peu comme utiliser Joomla pour faire des sites internet. C&#8217;est
+probablement très bien pour les webmestres néophytes, mais je suis développeur et je souhaite
+avoir plus de contrôle sur mon site, kit à mettre les mains dans le cambouis.</p>
+
+<h2>Jekyll</h2>
+
+<p>En continuant mes recherches, j&#8217;ai trouvé Jekyll que je connaissais seulement de nom. Jekyll est un
+générateur de site statique. Celui-ci est extrêment puissant pour faire ce qu&#8217;il sait faire. Il
+permet de générer des pages HTML à partir de fichiers textes créés en Markdown ou Textile et Liquid.
+Avec Jekyll, il n&#8217;y a aucune base de données. Le résultat est uniquement du HTML et peut donc
+être hébergé n&#8217;importe où. J&#8217;aime le fait d&#8217;avoir un rendu similaire à celui de n&#8217;importe quel site
+sans avoir aucune logique du côté serveur.</p>
+
+<p>Petit avertissement : Jekyll est destiné aux développeurs. J&#8217;imagine très mal une personne novice en
+informatique utiliser cet outil. Si c&#8217;est ce que vous souhaitez dirigiez-vous sur Wordpress.</p>
+
+<p>Jekyll est un outil très simple. Peut-être un peu trop simple pour faire ce que je souhaitais. Pour
+mon blog, je souhaite avoir une partie &ldquo;sociale&rdquo; et un design agréable. J&#8217;ai tout d&#8217;abord trouvé
+<a href="http://jekyllbootstrap.com/">JekyllBootstrap</a>. Sincèrement, je le déconseille. Je trouve ça
+compliqué pour rien. La structure du code est assez compliquée et prend du temps à modifier
+quand on n’est pas habitué à Jekyll. Pour ma part, c&#8217;était plus simple de tout faire moi-même avec
+Jekyll.</p>
+
+<h2>Octopress</h2>
+
+<p>Rapidement, je suis tombé sur <a href="http://octopress.org/">Octopress</a>. Octopress est à
+la fois simple, puissant et facilement modifiable. Il offre des commandes pour générer des pages,
+générer des posts et publier les modifications. Sans connaitre l&#8217;outil et en connaissant un peu
+Jekyll, en 10 minutes j&#8217;ai pu créer un blog, le publier, ajouter un post et configurer twitter,
+GitHub, google plus, etc. En plus de cela, Octopress vient avec un design qui peut-être modifiable,
+mais qui me convient parfaitement. J&#8217;ai donc choisi de le laisser tel quel.</p>
+
+<p>Malheureusement, Octopress ne supporte pas l&#8217;internationalisation. J&#8217;ai suivi <a href="http://lkdjiin.github.io/blog/2013/07/13/je-veux-mon-blog-octopress-en-francais/">cet article</a> afin de franciser mon site.</p>
+
+<h2>GitHub-Pages</h2>
+
+<p>Pour ce qui est de l&#8217;hébergement, j&#8217;ai choisi <a href="http://pages.github.com/">GitHub-Pages</a>. Il y a
+énormément d&#8217;avantages à utiliser GitHub-Pages. Tout d&#8217;abord, c&#8217;est gratuit. Ensuite, cela permet
+de créer et de modifier les articles en utilisant les outils d&#8217;éditions en ligne de GitHub. Enfin,
+le plus gros avantage selon moi est que n&#8217;importe qui peut faire un fork du projet et proposer des
+améliorations ou corriger des fautes d&#8217;orthographe (merci à <a href="https://twitter.com/abelar_s">Sylvain Abélard</a>).</p>
+
+<p>En général, je trouve qu&#8217;avoir un site du type &ldquo;monsite.wordpress.com&rdquo; ne fait pas très professionnel
+et j&#8217;aurais tendance à acheter un nom de domaine. Dans ce cas, &ldquo;gcorbel.github.io/blog&rdquo; ça ne dérange
+pas du tout. Ça fait développeur qui ne connais pas trop mal GitHub. J&#8217;économise sur le nom de domaine!</p>
+
+<h2>Conclusion</h2>
+
+<p>Pour ma part, je suis très content et je conseille à tous les développeurs cherchant un moteur de blog de l&#8217;essayer.</p>
+
+<p>Je vais essayer d&#8217;ajouter des articles plus souvent. Restez connectés et <a href="https://twitter.com/GuirecCorbel">follow me on twitter</a>.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Ajouté par <span class="fn">Guirec Corbel</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-11T22:23:00-04:00" pubdate data-updated="true">11 octobre 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/blog/categories/blog/'>Blog</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="/blog//twitter.com/share" class="twitter-share-button" data-url="http://GCorbel.github.io/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs/" data-via="GuirecCorbel" data-counturl="http://GCorbel.github.io/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/blog/2013/10/12/quand-jutilise-des-helpers-des-partials-des-presenters-et-des-decorators/" title="Next Post: Quand j'utilise des Helpers, des Partials, des Presenters et des Decorators">Quand j'utilise des Helpers, des Partials, des Presenters et des Decorators &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Derniers articles</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/blog/2014/05/18/principes-et-design-patterns-avec-rails/">Design principles et design patterns avec rails</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2014/04/22/digitalocean-vs-heroku-round-2/">Digitalocean vs heroku - round 2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2014/03/29/benchmark-entre-digitalocean-et-heroku/">Benchmark entre digitalocean et heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2013/11/01/sbire-et-leapmotion-commandez-votre-os-par-la-voix-et-les-mouvements/">Pyleapmouse: commandez votre os par la voix et les mouvements</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2013/10/27/sbire-dites-ce-que-vous-voulez-il-le-fera/">Sbire : dites ce que vous voulez, il le fera</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/GCorbel">@GCorbel</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/blog/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'GCorbel',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/blog/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Guirec Corbel -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'guireccorbel';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://GCorbel.github.io/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs/';
+        var disqus_url = 'http://GCorbel.github.io/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

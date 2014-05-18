@@ -1,0 +1,780 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Guirec Corbel]]></title>
+  <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
+  <link href="http://GCorbel.github.io/blog/"/>
+  <updated>2014-05-18T17:56:54-04:00</updated>
+  <id>http://GCorbel.github.io/blog/</id>
+  <author>
+    <name><![CDATA[Guirec Corbel]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Design Principles et Design Patterns avec Rails]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2014/05/18/principes-et-design-patterns-avec-rails/"/>
+    <updated>2014-05-18T06:52:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2014/05/18/principes-et-design-patterns-avec-rails</id>
+    <content type="html"><![CDATA[<p>Losque l&#8217;on débute notre vie de programmeur, l&#8217;architecture du code est
+secondaire. En prenant de l&#8217;expérience, on se rend compte qu&#8217;une
+application a besoin d&#8217;une structure quand sa taille augmente. Il est possible
+de développer ces propres techniques, mais d&#8217;autres personnes sont passées par le
+même chemin et certains ont publié leurs solutions. Ce sont les Principes et les Design Patterns.
+Cet article en présente quelques-unes appliquées à Ruby on Rails.</p>
+
+<!--more-->
+
+
+<h2>Programation Orienté Objet</h2>
+
+<p>Un des principes fondamentaux, en Ruby comme dans d&#8217;autres langages, est la
+Programation Orienté Objet (POO). Il est parfaitement possible d&#8217;écrire une
+application en code en procédural, mais il est vite difficile de la maintenir
+efficacement. Afin de faire une séparation logique du code, il est possible de
+le regrouper en classe et en méthode. Pour faire une bonne séparation, il est
+important de bien comprendre quels sont les principes existants. De plus, la
+POO est bien plus que mettre des bouts de cote dans des catégories. Il s&#8217;agit
+d&#8217;une manière de penser le code.</p>
+
+<h2>Design Principles</h2>
+
+<p>Dans le livre <a href="http://www.amazon.ca/Practical-Object-Oriented-Design-Ruby-Primer/dp/0321721330">Practical Object-Oriented Design in Ruby: An Agile Primer</a>, Sandi Metz définit qu&#8217;une application doit être TRUE :</p>
+
+<ul>
+<li><strong>T</strong>ransparent : Il doit être facile de comprendre quels vont être les impacts lors du changement d&#8217;un code;</li>
+<li><strong>R</strong>easonable : Le coût du changement doit impliquer un gain proportionnel;</li>
+<li><strong>U</strong>sable : Le code doit pouvoir être utilisé dans différents contextes;</li>
+<li><strong>E</strong>xemplary : Le code produit doit encourager une encourager une meilleure qu’alitée de la conception;</li>
+</ul>
+
+
+<p>Pour nous aider dans cette démarche, <a href="http://en.wikipedia.org/wiki/Robert_Cecil_Martin">Robert C. Martin</a> a défini cinq Design Principles (Principe de conception) communément acceptés. Une application doit être <a href="http://en.wikipedia.org/wiki/SOLID_%28object-oriented_design%29">SOLID</a> :</p>
+
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Single_responsibility_principle"><strong>S</strong>ingle Responsability Principle</a> &ndash; Une classe doit avoir une seule responsabilité;</li>
+<li><a href="http://en.wikipedia.org/wiki/Open/closed_principle"><strong>O</strong>pen/Clode Priciple</a> &ndash; Une classe doit être ouverte pour l&#8217;extension, mais fermée pour la modification;</li>
+<li><a href="http://en.wikipedia.org/wiki/Liskov_substitution_principle"><strong>L</strong>iskov Substition Principle</a> &ndash; Les types dérivés doivent pouvoir être remplacés par leur type de base;</li>
+<li><a href="http://en.wikipedia.org/wiki/Interface_segregation_principle"><strong>I</strong>nterface Segregation Principle</a> &ndash; Une classe ne doit pas dépendre d&#8217;une interface contenant des méthodes qu&#8217;elle n&#8217;utilise pas;</li>
+<li><a href="http://en.wikipedia.org/wiki/Dependency_inversion_principle"><strong>D</strong>ependency Inversion Principle</a> &ndash; Un module de haut niveau ne doit pas dépendre d&#8217;un module de bas niveau;</li>
+</ul>
+
+
+<p>Rails prône également les principes de <a href="http://en.wikipedia.org/wiki/Convention_over_Configuration">Convention Over Configuration</a>, qui vise</p>
+
+<p>a simplifier le développement en utilisant des conventions de nommage plutôt que
+des fichiers de configuration, et <a href="http://en.wikipedia.org/wiki/Don%27t_Repeat_Yourself">Don&rsquo;t Repeat Yourself</a>, qui dit que l&#8217;on ne
+devrait jamais dupliquer du code.</p>
+
+<p>Le plus discutable prône par Rails est Fat models, skinny controllers. Celui-ci
+vise à garder le contrôleur le plus simple possible et à ajouter la logique
+dans le modèle. Pourquoi discutable? Parce que je crois, comme d&#8217;autres, que les
+modèles deviennent trop complexes et difficiles à tester.</p>
+
+<p>Dans de prochains articles, je ferais une description détaillée de certains principes importants.</p>
+
+<h2>Desgin Patterns</h2>
+
+<p>Les Design Patterns ou Patrons de Conception sont des types de solutions à
+certains problèmes communs. En programmation web, je crois que le plus connu
+est <a href="http://en.wikipedia.org/wiki/MVC">MVC</a>. Celui-ci veut qu&#8217;une requête HTTP soit traité par un routeur qui instancie un contrôleur qui a pour but d&#8217;instancier les modèles et de
+renvoyer une vue.</p>
+
+<p>Il existe bien d&#8217;autres Design Patterns, avec Rails, mes préférés sont :</p>
+
+<ul>
+<li>Service Objects &ndash; Permet d&#8217;éviter la boulimie des modèles en extrayant les responsabilités dans des classes séparées;</li>
+<li>Form Objects &ndash; Simplifie le traitement des formulaires complexes;</li>
+<li>Decorators &ndash; Permet d&#8217;ajouter aux modèles des fonctions relatives à la vue;</li>
+<li>Presenters &ndash; Extrait les logiques complexes de la vue dans une classe;</li>
+</ul>
+
+
+<p>Encore une fois, je vais faire des articles sur certains Design Patterns.</p>
+
+<h2>Quand utiliser un Design Pattern?</h2>
+
+<p>Savoir quand utiliser un Design Pattern, peut paraitre anodin, mais il y a un
+autre principe à suivre <a href="http://en.wikipedia.org/wiki/Keep_it_simple">Keep It Simple and Stupid</a> (KISS). Ils doivent être
+utilisés quand il y a un problème ou en prévision d&#8217;un problème. Parfois, il
+ne sert à rien de se casser la tête. Si le programme est propre et facile a
+modifier, il ne sert à rien d&#8217;utiliser des techniques complexes.</p>
+
+<h2>Quel Design Pattern utiliser?</h2>
+
+<p>Il est parfois difficile de choisir quel Design Pattern utilisé. D&#8217;autant plus
+que certains peuvent se contredisent. Par exemple, il est difficile d&#8217;utiliser
+Tell Don&rsquo;t Ask dans un contrôleur quand viens le temps de savoir quelle vue
+retourner. Malheureusement, il n&#8217;y a pas de règles simples. Il faut savoir
+utiliser le bon sens et prendre des décisions.</p>
+
+<h2>L&#8217;impact psychologique</h2>
+
+<p>Je crois que l&#8217;impact psychologique des principes et des Design Patterns est
+non négligeable. C&#8217;est beaucoup plus agréable de travailler sur un projet bien
+structuré que de modifier du code sans savoir quels vont être les répercussions
+ou devoir modifier une grosse partie du code. Ruby est un langage fait pour
+rendre le développeur heureux. Chacun sait qu&#8217;un développeur moins stressé sera
+plus productif.</p>
+
+<p>De plus, une bonne qualité de code fera de vous fier de ce que vous faite.
+C&#8217;est super encourageant de rentrer tous les matins au travail en sachant que
+l&#8217;on fait du bon travail.</p>
+
+<h2>Conclusion</h2>
+
+<p>Ces sujets sont beaucoup trop complexes pour être écrit en un seul article. Ils mériteraient des livres. D&#8217;ailleurs, il y en a un paquet. Parmi ceux-ci, on peut citer <a href="http://www.amazon.ca/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882">Clean Code: A Handbook of Agile Software Craftsmanship</a> de Robert C. Martin, <a href="http://www.amazon.ca/Practical-Object-Oriented-Design-Ruby-Primer/dp/0321721330">Practical Object-Oriented Design in Ruby: An Agile Primer</a>, de Sandi Metz ou <a href="http://www.amazon.ca/Head-First-Design-Patterns-Freeman/dp/0596007124">Head First Design Patterns</a> de Eric Freeman, Elisabeth Robson, Bert Bates et Kathy Sierra.</p>
+
+<p>Comme indiqué ci-dessus, je vais bientôt écrire plusieurs articles et Design Pattern, so <a href="https://twitter.com/GuirecCorbel">Follow me on Twitter</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[DigitalOcean vs Heroku - Round 2]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2014/04/22/digitalocean-vs-heroku-round-2/"/>
+    <updated>2014-04-22T04:44:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2014/04/22/digitalocean-vs-heroku-round-2</id>
+    <content type="html"><![CDATA[<p>Dans <a href="http://gcorbel.github.io/blog/blog/2014/03/29/benchmark-entre-digitalocean-et-heroku/">un article précédent</a>, j&#8217;ai publier une comparaison entre un serveur <a href="https://www.digitalocean.com/">DigitalOcean</a> à 10$ pour 1go de RAM et la version gratuite de <a href="http://heroku.com/">Heroku</a> comportant 512mo de RAM. Plusieurs personnes m&#8217;ont demandé de faire le même test en augmentant le nombre de dyno de Heroku. Voici donc les résultats des tests demandés.</p>
+
+<!--more-->
+
+
+<h2>Un dino? Non, un dyno.</h2>
+
+<p>Avant d&#8217;aller plus loin, j&#8217;ai voulu comprendre le concept de dyno. Avant de connaitre Heroku, ce que je connaissais qui s&#8217;en rapprochait le plus c&#8217;était ça :</p>
+
+<p><img src="http://img4.hostingpics.net/pics/330071denverdernierdinosaure.jpg" alt="" /></p>
+
+<p>Pour Heroku, un dyno n&#8217;a rien à voir avec notre ami Denver. Un dyno est un processus qui va répondre à une requête. Plus on a de dyno, plus on va être capable de répondre à plusieurs requêtes en même temps.</p>
+
+<h2>Les tests</h2>
+
+<p>Comment dans l&#8217;article précédent, j&#8217;ai effectué les tests avec <a href="https://github.com/GCorbel/lescollectionneursassocies/tree/9d88ded4810575a37ac6ad5e7ceaaeeb93b40b17">cette application</a>. J&#8217;ai également utilisé les mêmes outils et les mêmes scénarios qu&#8217;auparavant. Encore une fois, il s&#8217;agit de la même application pour DigitalOcean et pour Heroku.</p>
+
+<h2>Les chiffres</h2>
+
+<p>Les tests en quelques chiffres : 50 visiteurs simulés utilisant 3 scénarios différents pendant 5 minutes.</p>
+
+<h3>DigitalOcean</h3>
+
+<p>Petit rappel sur les chiffres obtenus avec DigitalOcean :</p>
+
+<p><img src="http://img11.hostingpics.net/pics/410612Slection007.png" alt="" /></p>
+
+<p>Un temps de réponse plutôt correct.</p>
+
+<p>Avec DigitalOcean, j&#8217;utilise un swapfile de 2go et voici ma config Unicorn :</p>
+
+<pre><code>worker_processes 3
+timeout 120
+preload_app true
+</code></pre>
+
+<h3>Heroku</h3>
+
+<p>Et voilà le moment tant attendu. Voici les mêmes tests faits avec 2 dyno de 512mo :</p>
+
+<p><img src="http://img4.hostingpics.net/pics/326257Slection008.png" alt="" /></p>
+
+<p>Quoi?????? Je ne m&#8217;attendais vraiment pas à ça. J&#8217;ai essayé avec 1 dyno de 1go et 2 dyno de 1go et j&#8217;ai toujours sensiblement le même résultat. Le temps offert par Heroku est vraiment désastreux. Comme on peut le voir, le temps est majoritairement passé dans la queue.</p>
+
+<p>Pour en savoir plus, j&#8217;ai contacté le support Heroku. Tout d&#8217;abord, pour avoir de meilleur log au niveau de la mémoire, ils m&#8217;ont conseillé d&#8217;utiliser <a href="https://devcenter.heroku.com/articles/log-runtime-metrics">log-runtime-metrics</a>. J&#8217;ai fait un test en allant sur 5 pages de mon site et voici le résultat :</p>
+
+<pre><code>2014-04-12T11:27:41.246260+00:00 heroku[web.1]: State changed from starting to up
+
+2014-04-12T11:27:44.647222+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#memory_total=229.98MB sample#memory_rss=229.96MB sample#memory_cache=0.01MB sample#memory_swap=0.00MB sample#memory_pgpgin=64372pages sample#memory_pgpgout=5498pages
+
+2014-04-12T11:27:52.633087+00:00 app[web.1]: Started GET "/fr/pages/accueil" for 208.114.164.25 at 2014-04-12 11:27:52 +0000
+2014-04-12T11:27:56.361888+00:00 app[web.1]: Started GET "/fr/pages/accueil" for 208.114.164.25 at 2014-04-12 11:27:56 +0000
+2014-04-12T11:28:03.386496+00:00 app[web.1]: Started GET "/fr/pages/acheter-vendre" for 208.114.164.25 at 2014-04-12 11:28:03 +0000
+
+2014-04-12T11:28:04.772151+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#memory_total=423.66MB sample#memory_rss=423.34MB sample#memory_cache=0.33MB sample#memory_swap=0.00MB sample#memory_pgpgin=113959pages sample#memory_pgpgout=5501pages
+
+2014-04-12T11:28:08.154309+00:00 app[web.1]: Started GET "/fr/pages/services-aux-collectionneurs" for 208.114.164.25 at 2014-04-12 11:28:08 +0000
+2014-04-12T11:28:13.728267+00:00 app[web.1]: Started GET "/fr/pages/faq" for 208.114.164.25 at 2014-04-12 11:28:13 +0000
+
+2014-04-12T11:28:25.099729+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#load_avg_1m=0.00
+2014-04-12T11:28:25.100040+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#memory_total=444.60MB sample#memory_rss=444.18MB sample#memory_cache=0.42MB sample#memory_swap=0.00MB sample#memory_pgpgin=119319pages sample#memory_pgpgout=5501pages
+2014-04-12T11:28:44.717755+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#load_avg_1m=0.00
+2014-04-12T11:28:44.718017+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#memory_total=445.48MB sample#memory_rss=445.06MB sample#memory_cache=0.42MB sample#memory_swap=0.00MB sample#memory_pgpgin=119550pages sample#memory_pgpgout=5507pages
+2014-04-12T11:29:04.898773+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#load_avg_1m=0.00
+2014-04-12T11:29:04.899057+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#memory_total=445.48MB sample#memory_rss=445.06MB sample#memory_cache=0.42MB sample#memory_swap=0.00MB sample#memory_pgpgin=119550pages sample#memory_pgpgout=5507pages
+</code></pre>
+
+<p>Comme on peut le voir, juste après le démarrage, 230mo étaient utilisés. J&#8217;ai visité les 5 pages et la mémoire c&#8217;est chargée à 444mo. Ensuite, j&#8217;ai eu rapidement des <a href="https://devcenter.heroku.com/articles/error-codes#r14-memory-quota-exceeded">Memory quota exceeded</a>. Je n&#8217;ai aucun problème similaire avec DigitalOcean.</p>
+
+<p>Le support m&#8217;a ensuite indiqué que mon application était gourmande en mémoire. Ils m&#8217;ont conseillé d&#8217;utiliser la gem <a href="https://github.com/noahd1/oink">oink</a>. Cette gem permet d&#8217;indiquer quels sont les actions les plus utilisées. Je n&#8217;ai pas appris plus grand-chose de plus qu&#8217;avec NewRelic.</p>
+
+<h2>Un problème dans mon application?</h2>
+
+<p>Il y a effectivement plusieurs éléments qui peuvent prendre de la mémoire. Tout d&#8217;abord, c&#8217;est une application Rails. Rails n&#8217;est certainement pas ce qu&#8217;il y a de plus léger au monde. Ensuite, j&#8217;utilise beaucoup de cache. J&#8217;imagine qu&#8217;il y a beaucoup d&#8217;éléments stockés en mémoire dans ces cas-là. Ensuite, il s&#8217;agit d&#8217;une application d&#8217;une bonne taille avec plusieurs requêtes SQL par page maire rien d&#8217;extrême.</p>
+
+<p>Comme je l&#8217;ai dit plus tôt, j&#8217;ai comparé les deux serveurs avec la même application. Si j&#8217;avais vraiment un problème de mémoire dans celle-ci, j&#8217;imagine que les problèmes auraient dû être les mêmes. Or, je n&#8217;ai aucune erreur de mémoire dans Digital Ocean.</p>
+
+<h2>Conclusion</h2>
+
+<p>Je crois qu&#8217;il est assez clair que Heroku perd la bataille. Si quelqu&#8217;un à d&#8217;autres résultats ou aimerai m&#8217;indiquer comment corriger d&#8217;éventuels problèmes.</p>
+
+<p>Un autre avantage que je trouve à DigitalOcean est le fait d&#8217;avoir une plus grande accessibilité au système. Au début, le fait d&#8217;avoir un environnement prêt en quelques secondes avec Heroku est génial, mais lorsque l&#8217;on veut aller plus loin, je trouve que l&#8217;on rencontre beaucoup de limites. Avec DigitalOcean, nous avons le plein contrôle de l&#8217;OS. De plus, si l&#8217;on suit un bon guide, déployer une application n&#8217;est pas bien compliqué.</p>
+
+<p>Pour finir, la chanson que j&#8217;ai dans la tête depuis le début de l&#8217;écriture de l&#8217;article :</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/dFY-VWey5xw "></iframe></div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Benchmark entre DigitalOcean et Heroku]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2014/03/29/benchmark-entre-digitalocean-et-heroku/"/>
+    <updated>2014-03-29T14:10:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2014/03/29/benchmark-entre-digitalocean-et-heroku</id>
+    <content type="html"><![CDATA[<p>Aujourd&#8217;hui, j&#8217;avais envie de mettre des chiffres sur un fait que je pensais avéré. J&#8217;ai voulu faire un comparitif simple entre l&#8217;offre gratuite d&#8217;Heroku et celle la plus populaire de Digital Ocean.</p>
+
+<h2>L&#8217;application</h2>
+
+<p>L&#8217;application utilisée dans ce cas est une application Ruby on Rails standard utilisant Rails 3.2.17, Ruby 2.1.0 et Unicorn 4.8.2.</p>
+
+<h2>Les outils mesures</h2>
+
+<p>Pour mesurer les performences du serveur, j&#8217;ai utilisé <a href="http://newrelic.com/">New Relic</a>. Il s&#8217;agit d&#8217;un excellent utilitaire qui indique en détail les performences d&#8217;une application ainsi les différents points sensibles.</p>
+
+<p>J&#8217;ai également utilisé <a href="http://loadimpact.com/">Load Impact</a>, un outil au fonctionnement assez simple. Il suffit d&#8217;enregistrer un scénario pour pouvoir le rejouer en simulant un certain nombre de visiteurs. Load Impact fait en sorte d&#8217;augmenter peu à peu le nombre de visiteurs sur le site comme on peu le voir sur cette image :</p>
+
+<p><img src="http://img11.hostingpics.net/pics/628030Slection004.png"></p>
+
+<p>Grâce à cet outil, j&#8217;ai pu créer des scénarios et les jouers en simulant 50 visiteurs. L&#8217;application comporte 3 types d&#8217;utilisateurs, j&#8217;ai donc créé un scénario dans chacun de ces cas.</p>
+
+<h2>Les chiffres</h2>
+
+<h3>DigitalOcean</h3>
+
+<p>J&#8217;ai utilisé l&#8217;offre à 10$ par mois, la plus populaire,  de Digital Ocean pour effectuer ce test et voici le résultat :</p>
+
+<p><img src="http://img11.hostingpics.net/pics/410612Slection007.png"></p>
+
+<p>Comme on peut le voir, le temps de réponse est de moins de 800ms. Le temps de traitement est partagé entre Ruby et la base de données. Je crois qu&#8217;il s&#8217;agit d&#8217;un comportement normal et d&#8217;un bon temps de réponse.</p>
+
+<h3>Heroku</h3>
+
+<p>J&#8217;ai répété exactement le même test avec Heroku et voici le résultat :</p>
+
+<p><img src="http://img11.hostingpics.net/pics/502656Slection006.png"></p>
+
+<p>On voit clairement qu&#8217;Heroku est le grand perdant du duel. Je me doutais déjà du résultat, mais je ne pensais pas que la différence serait aussi probante. Le temps de réponse est supérieur à 25 secondes. La majeure partie du temps est prise dans la queue de traitement. On peut également voir qu&#8217;Heroku a eu du mal à se remettre du test sur ce graphique :</p>
+
+<p><img src="http://img11.hostingpics.net/pics/804402Slection005.png"></p>
+
+<p>Avant 10h, il s&#8217;agit du trafic normal. La pointe verte, entre 10h et 10h30 représente le pic lors du test effectué. On peut voir qu&#8217;après cette pointe, tous les temps sont très longs et la situation n&#8217;estpas revenue à la normale.</p>
+
+<h2>Conclusion</h2>
+
+<p>De part cet exemple, on peut voir assez clairement que DigitalOcean est plus rapide qu&#8217;Heroku.</p>
+
+<p>Les résultats obtenus ici <strong>ne montrent pas définitivement qu&#8217;Heroku est moins efficace que DigitalOcean</strong>. Premièrement, je suis loin d&#8217;avoir fait des tests exhaustifs. Pour aller plus loin, il serait nécessaire de faire des essais avec les offres payantes d&#8217;Heroku ainsi qu&#8217;en essayant d&#8217;autres scénarios et cas d&#8217;utilisation. De plus, Heroku reste génial comme environnement de développement et de test.</p>
+
+<p>Comme d&#8217;habitude, je ne prétend pas détenir la vérité. Si vous avez d&#8217;autres arguments permettant de confirmer ou d&#8217;infirmer ma conclusion, s&#8217;il vous plaît, laissez vos commentaires.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[PyLeapMouse: Commandez votre OS par la voix ET les mouvements]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2013/11/01/sbire-et-leapmotion-commandez-votre-os-par-la-voix-et-les-mouvements/"/>
+    <updated>2013-11-01T19:34:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2013/11/01/sbire-et-leapmotion-commandez-votre-os-par-la-voix-et-les-mouvements</id>
+    <content type="html"><![CDATA[<p>Suite à <a href="http://gcorbel.github.io/blog/blog/2013/10/27/sbire-dites-ce-que-vous-voulez-il-le-fera/">mon article et ma vidéo</a> sur <a href="https://github.com/gcorbel/sbire">Sbire</a>, je poursuis dans ma lancée pour expliquer comment j&#8217;ai modifier le projet PyLeapMouse pour coupler LeapMotion et Sbire.
+<a href="https://www.leapmotion.com/">LeapMotion</a> est un très bon outil permettant de détecter les mouvements. L&#8217;une des fonctionnalités évidentes que l&#8217;on imagine rapidement avec LeapMotion est de remplacer la souris pour commander le système d&#8217;exploitation.
+Pour cela, il existe le projet <a href="https://github.com/openleap/PyLeapMouse">openleap/PyLeapMouse</a>. Celui-ci émule le pointeur de la souris et permet de simuler les clics.
+Dans cet article, vous verrez le cheminement que j&#8217;ai effectué pour contrôler l&#8217;OS avec LeapMotion.</p>
+
+<!--more-->
+
+
+<h2>Exemple d&#8217;utilisation</h2>
+
+<p>Avant de commencer, voici une courte vidéo montrant l&#8217;utilisation de PyLeapMouse et Sbire.</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/l1BxiD1dx5s "></iframe></div>
+
+
+<h2>Diriger la souris/Executer des commandes?</h2>
+
+<p>Mon objectif principal pour cette application est de contrôler l&#8217;OS avec LeapMotion. En tant qu&#8217;adepte de l&#8217;Open-Source, j&#8217;ai premièrement cherché s&#8217;il existait un projet le permettant. Je suis tombé sur <a href="https://github.com/archetipo/leapmouse">LeapMouse</a>, écrit en C. J&#8217;ai rapidement vu les problèmes existants pour diriger la souris. Pour ma part, je mettais plus de 10 secondes pour réussir à fixer un bouton ou une icône. Sur ce point, l&#8217;utilisation classique de la souris est beaucoup plus efficace.
+De plus, il est nécessaire de maintenir la main à une certaine distance du contrôleur. On doit donc la maintenir en hauteur ce qui est rapidement fatigant.</p>
+
+<p>Le fait d&#8217;effectuer des commandes en fonction des mouvements m&#8217;a paru une méthode plus efficace et plus précise. Tout d&#8217;abord, une commande doit être actionnée par un mouvement court. Il n&#8217;est donc pas nécessaire de maintenir la main en suspension pendant une longue période. De plus, le besoin de précision est moindre ce qui rend l&#8217;utilisation plus efficace.</p>
+
+<h2>Pourquoi Python?</h2>
+
+<p>Il existe plusieurs SDK pour LeapMotion. Malheureusement pour moi, Ruby, mon langage préféré, n&#8217;est pas disponible officiellement. J&#8217;avais donc l&#8217;embarras du choix des langages.</p>
+
+<p>LeapMouse étant écrit en C, je me suis demandé pourquoi choisir ce langage plutôt qu&#8217;un autre. Il est vrai que ce langage possède l&#8217;avantage d&#8217;être plus bas niveau. La plupart des outils disponibles dans les autres langages sont des dérivés. Également, le C est très avantageux au niveau de la performance. Ces deux points constituent des avantages non négligeables pour l&#8217;utilisation du C.</p>
+
+<p>Cela faisait longtemps que je n&#8217;avais pas utilisé le C. Étant habitué à Ruby, j&#8217;avais un peu d&#8217;aprioris à utiliser un langage moins moderne. Je pensais avoir plus de mal avec la syntaxe, mais finalement c&#8217;est la difficulté à inclure des librairies qui m&#8217;a repoussé. Grâce à bundler, Ruby possède une manière très simple de gérer les dépendances d&#8217;un projet. En C, c&#8217;est parfois aussi simple de refaire des bouts de code. Réinventer la roue n&#8217;étant pas ce que je préfère, j&#8217;ai abandonné le C et pris la résolution de l&#8217;utiliser uniquement si je n&#8217;ai pas le choix. Évidemment, c&#8217;est une conclusion très personnelle. Libre à chacun de choisir autre chose.</p>
+
+<p>Python est un langage tout aussi moderne que Ruby. La gestion des dépendances se fait également très bien avec Pip. Bien que la philosophie soit différente que celle de Ruby, il est très facile de passer de l&#8217;un à l&#8217;autre. De plus, c&#8217;est toujours agréable de découvrir autre chose et de changer un peu.</p>
+
+<h2>Pourquoi PyLeapMouse?</h2>
+
+<p>Ensuite, j&#8217;ai choisi de modifier <a href="https://github.com/openleap/PyLeapMouse">openleap/PyLeapMouse</a>. Tout d&#8217;abord PyLeapMouse possède déjà un bon nombre de fonctionnalités. De plus, il est relativement populaire et possède déjà une bonne communauté. Ce choix fut assez rapide. Je crois que c&#8217;est le projet le plus abouti concernant le contrôle de la souris avec LeapMotion.</p>
+
+<h2>Mon développement sur PyLeapMouse</h2>
+
+<p>Malgré le fait que PyLeapMouse soit fonctionnel, l&#8217;utiliser pour déplacer le pointeur de la souris est très fastidieux. Ceci est dû aux limites expliquées dans <a href="http://gcorbel.github.io/blog/blog/2013/10/12/leap-motion-le-point-de-vue-dun-developpeur/">cet article</a>.</p>
+
+<p>J&#8217;ai donc fait un fork du projet pour ajouter la possibilité d&#8217;exécuter des commandes en fonctions des mouvements effectuées. Le fonctionnement est assez simple. PyLeapMouse va lire un fichier <code>commands.ini</code> comme celui-ci :</p>
+
+<pre><code>[screentap]
+
+[keytap]
+
+[swiperight]
+1finger: rhythmbox-client --next
+
+[swipeleft]
+1finger: rhythmbox-client --previous
+
+[clockwise]
+1finger: sbire start
+2finger: sbire start
+3finger: sbire start
+4finger: sbire start
+5finger: sbire start
+
+[counterclockwise]
+1finger: sbire stop
+2finger: sbire stop
+3finger: sbire stop
+4finger: sbire stop
+5finger: sbire stop
+</code></pre>
+
+<p>À chaque changement détecté par LeapMotion, le programme recherche dans une liste d&#8217;objets avec des classes comme celle-ci :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">KeytapCommand</span><span class="p">():</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;keytap&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">applicable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">gestures</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">Leap</span><span class="o">.</span><span class="n">Gesture</span><span class="o">.</span><span class="n">TYPE_KEY_TAP</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Chaque commande possède un nom, permettant de l&#8217;identifier, et une fonction <code>applicable</code> permettant de voir si les conditions sont réunies pour exécuter la commande en fonction de la variable <code>frame</code> représentant les données passées par LeapMotion.</p>
+
+<p>Ensuite, il va rechercher dans la configuration quelle commande il doit exécuter en fonction du nombre de doigts reconnus et du mouvement. Pour plus de détails, vous pouvez voir le <a href="https://github.com/openleap/PyLeapMouse/blob/master/MotionControl.py">code complet sur GitHub</a>.</p>
+
+<p>Cette amélioration rend l&#8217;utilisation plus efficace, mais n&#8217;est pas fiable à 100%. Il y a très souvent des imperfections dans les mouvements détectés.</p>
+
+<p>Afin d&#8217;augmenter la précision, il existe des projets comme <a href="https://github.com/roboleary/LeapTrainer.js">LeapTrainer</a>. Celui-ci fait en sorte que le système apprend les mouvements. Il est ensuite possible d&#8217;exporter le mouvement appris puis de l&#8217;importer dans d&#8217;autres outils. C&#8217;est effectivement un très bon projet, mais cela manque encore d&#8217;efficacité.</p>
+
+<h2>Pourquoi lier avec Sbire?</h2>
+
+<p>Malrgès le fait que lier les commandes aux mouvements soit plus précis, il reste encore beaucoup d&#8217;erreurs. C&#8217;est pour cette raison qu&#8217;il est mieux de le coupler avec Sbire. Sbire est plus précis et les possibilités sont plus vastes. LeapMotion possède une petite liste de mouvements prédéfinis. Sbire, quant à lui, peut reconnaitre un nombre illimité de phrases pour chercher les commandes à exécuter.</p>
+
+<h2>Conclusion</h2>
+
+<p>Je pense que le couplage des deux outils est plutôt bien. Cependant, je trouve qu&#8217;utiliser un raccourci clavier pour démarrer et arrêter Sbire est encore une solution plus efficace. Je crois que LeapMotion a encore du travail à faire pour rendre l&#8217;outil 100% fonctionnel.</p>
+
+<p>À sa décharge, LeapMotion est encore en développement et les développeurs se font une priorité d&#8217;augmenter la précision dans les prochaines versions. Je suis encore plein d&#8217;espoir pour cet outil.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Sbire : Dites ce que vous voulez, il le fera]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2013/10/27/sbire-dites-ce-que-vous-voulez-il-le-fera/"/>
+    <updated>2013-10-27T13:24:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2013/10/27/sbire-dites-ce-que-vous-voulez-il-le-fera</id>
+    <content type="html"><![CDATA[<p>Sbire est un outil permettant d&#8217;exécuter des commandes grâce à la voix. Le principe est simple. Vous taper une commande pour l&#8217;enregistrement d&#8217;une phrase avec un micro et vous taper une seconde commande pour terminer l&#8217;enregistrement. Suite à cela, Sbire reconnait votre voix et exécute la commande associée.</p>
+
+<!--more-->
+
+
+<h2>Sbire en action</h2>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/Fvu9tS0lsYE "></iframe></div>
+
+
+<h2>Comment ça marche?</h2>
+
+<p>Il s&#8217;agit d&#8217;un programme écrit en Ruby. Celui-ci fait appel à sox pour faire un enregistrement audio. Il fait ensuite appel à Google voice en y joignant le fichier et y récupère le résultat en format JSon. Ce résultat est ensuite traité et la commande trouvée est exécutée.</p>
+
+<h2>Contibuer</h2>
+
+<p>Évidemment, je suis ouvert à toute remarque et suggestion. Les contributions sont également les bienvenues. Vous pouvez les soumettes sur <a href="https://github.com/GCorbel/sbire">Github</a>.</p>
+
+<h2>Plus d&#8217;informations</h2>
+
+<p>Pour des informations sur l&#8217;installation, l&#8217;utilisation et la configuration, rendez-vous sur la <a href="https://github.com/GCorbel/sbire">page Github du projet</a>.</p>
+
+<h2>Encore plus d&#8217;informations</h2>
+
+<p>Si vous avez d&#8217;autres questions, contactez moi par email, à guirec.corbel@gmail.com, ou sur <a href="https://twitter.com/GuirecCorbel">twitter</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Table ronde en ligne]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2013/10/22/table-ronde-en-ligne/"/>
+    <updated>2013-10-22T19:47:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2013/10/22/table-ronde-en-ligne</id>
+    <content type="html"><![CDATA[<p style="text-align:center;">Le <strong>dimanche 3 novembre à 17h</strong> (heure française) aura lieu la première édition d&#8217;une <strong>table ronde en ligne</strong>.</p>
+
+<!--more-->
+
+
+<h2>Principe</h2>
+
+<p>Une table ronde est une discussion, avec plusieurs participants, sur un sujet.
+Les participants ne doivent pas forcement être des experts dans le domaine, mais doivent avoir de connaissance pour pouvoir en parler.
+La discussion doit se faire dans une ambiance cordiale. Personne ne prétend détenir la solution à tous les problèmes et chacun doit pouvoir exprimer son point de vue en gardant l&#8217;esprit ouvert.</p>
+
+<h2>Sujet</h2>
+
+<p>Le sujet de la première discussion sera <strong>les designs patterns</strong> avec Ruby on Rails.</p>
+
+<p>Voici le plan de la première rencontre :</p>
+
+<ul>
+<li>Présentation des participants;</li>
+<li>Définition d&#8217;un design pattern;</li>
+<li>Discussion à propos des designs patterns connus :
+
+<ul>
+<li>Fat model/Skinny controllers</li>
+<li>Service objects</li>
+<li>Form objects</li>
+<li>DCI</li>
+</ul>
+</li>
+<li>Quels design pattern utilisez-vous?</li>
+<li>Varia;</li>
+</ul>
+
+
+<p>Le plan pourra varier selon l&#8217;avancement de la discussion. Aucune limite de temps n&#8217;est imposée pour la première rencontre.</p>
+
+<h2>Où sera publiée la discussion?</h2>
+
+<p>La discussion sera publiée sur YouTube. Je publierais la vidéo sur <a href="http://www.youtube.com/channel/UCRSzJI-E_8cqKwFH3KsZDxQ">ma chaine YouTube</a>. Je publierai l&#8217;adresse sur twitter.</p>
+
+<h2>Comment pourrais-je rejoindre la discussion?</h2>
+
+<p>La discussion se fera par Google Hangout. Je donnerais le lien aux participants une heure avant la rencontre.
+Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour participer ainsi qu&#8217;un micro et une webcam qui fonctionne avant de participer.</p>
+
+<h2>Comment participer?</h2>
+
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#105;&#x6c;&#x74;&#111;&#x3a;&#103;&#x75;&#105;&#114;&#x65;&#x63;&#x2e;&#x63;&#111;&#x72;&#x62;&#x65;&#x6c;&#64;&#103;&#109;&#97;&#x69;&#108;&#x2e;&#x63;&#111;&#109;">&#x67;&#x75;&#x69;&#x72;&#101;&#99;&#46;&#x63;&#111;&#x72;&#x62;&#x65;&#108;&#64;&#103;&#x6d;&#97;&#x69;&#108;&#46;&#x63;&#x6f;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+
+<p>À dimanche!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Leap Motion : le point de vue d'un développeur]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2013/10/12/leap-motion-le-point-de-vue-dun-developpeur/"/>
+    <updated>2013-10-12T07:41:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2013/10/12/leap-motion-le-point-de-vue-dun-developpeur</id>
+    <content type="html"><![CDATA[<p>La semaine dernière, la société <a href="http://www.optik360.com/">Optik 360</a>, spécialisée en photo 360 degrés, m&#8217;a demandé de tester Leap Motion en faisant une application permettant de visionner des images panoramiques. L&#8217;image devait se déplacer en fonction des mouvements fait par l&#8217;utilisateur.</p>
+
+<p>Pour ceux qui ne connaissent pas encore Leap Motion, il s&#8217;agit d&#8217;un petit capteur de mouvements d&#8217;environ 8 centimètres. Pour plus d&#8217;informations, rendez-vous sur <a href="https://www.leapmotion.com/">leur site officiel</a>.</p>
+
+<!--more-->
+
+
+<h2>Phase 1 : Installation</h2>
+
+<p>Sous Windows, l&#8217;installation s&#8217;est faite en moins de 5 minutes. Je me suis rendu sur la page indiquée pour télécharger l&#8217;application, je l&#8217;ai installée et mes mouvements ont été détectés par le contrôleur Leap Motion.</p>
+
+<p>Je m&#8217;attendais à ce que mon CPU soit surchargé. Ce n&#8217;est vraiment pas le cas. Quand je bouge devant le contrôleur, Leap Motion prend 7% du CPU. Windows Media Player prend 8%. J&#8217;ai pourtant choisi le maximum de précision, au détriment de la rapidité, dans le panneau de configuration. Donc, il n&#8217;y a aucun problème au niveau de la rapidité.</p>
+
+<p>Après avoir bougé les mains dans tous les sens en testant les applications fournies (mon chien me prend pour un fou), j&#8217;ai voulu l&#8217;installer sur Ubuntu 12.04. Il est possible de télécharger une version du SDK compatible Linux sur leur site. L&#8217;installation se fait également très rapidement. Le contrôleur et le panneau de configuration se sont lancés correctement. Le seul problème que j&#8217;ai rencontré : ça ne fonctionne pas. Le contrôleur ne reconnait pas mes mouvements alors qu&#8217;il n&#8217;y a aucun problème sur Windows. J&#8217;ai envoyé <a href="https://developer.leapmotion.com/forums/forums/10/topics/1811">un message sur leur forum</a>. Pour le moment, je n&#8217;ai eu aucune réponse. On va voir pour la suite.</p>
+
+<h2>Phase 2 : Premier développement</h2>
+
+<p>Par la suite, je suis retourné sur Windows pour commencer à développer. Leap Motion possède des SDK officiels dans plusieurs langages. Malheureusement, mon langage préféré, Ruby, n&#8217;est pas supporté officiellement. Je trouve ça génial d&#8217;avoir choisi d&#8217;être compatible avec plusieurs langages. Ça laisse énormément de possibilités aux développeurs.</p>
+
+<p>Pour mon projet, j&#8217;ai choisi de développer en JavaScript. LeapMotion permet de faire une application coté client. L&#8217;application écoute un certain port pour recevoir des données depuis le contrôleur. Le choix du JavaScript s&#8217;est fait uniquement sur le fait qu&#8217;il n&#8217;est pas nécessaire de faire une installation sur un PC. Un simple navigateur (moderne), permet d&#8217;avoir une application qui fonctionne avec Leap. Génial!</p>
+
+<p>La bibliothèque offerte par Leap est impressionnante. C&#8217;est super simple de faire une application. Il suffit de quelques lignes de code. Voici un exemple :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Leap</span><span class="p">.</span><span class="nx">loop</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">frame</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">frame</span><span class="p">.</span><span class="nx">fingers</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ce petit bout de code permet de voir le nombre de doigts détectés par le contrôleur. N&#8217;importe quel développeur est capable de faire ça.</p>
+
+<h2>Phase 3 : Recherche d&#8217;une bibliothèque JavaScript</h2>
+
+<p>Après quelques tests, je me suis mis à la recherche d&#8217;un code existant permettant d&#8217;afficher une image panoramique. Je suis tombé sur <a href="http://mrdoob.github.io/three.js/examples/webgl_panorama_equirectangular.html">ce projet</a>. L&#8217;avantage de ce code est qu&#8217;il utilise <a href="http://threejs.org/">Three.js</a>. Three.js est une bibliothèque permettant de faire des animations 3D en JavaScript. Il existe beaucoup d&#8217;<a href="http://mrdoob.github.io/three.js/">exemples fournis pas les développeurs de Three.js</a>. Avec du travail, on peut développer une version compatible avec Leap de tous ces exemples.</p>
+
+<p>J&#8217;ai donc téléchargé le code en local et j&#8217;ai commencé à le modifier pour le mettre un peu plus &ldquo;à ma sauce&rdquo;. Je l&#8217;ai changé pour qu&#8217;il soit un peu plus orienté objet et j&#8217;ai utilisé coffeescript.</p>
+
+<h2>Phase 4 : Intégration de Leap à la bibliothèque</h2>
+
+<p>J&#8217;ai étudié le comportement de la souris et j&#8217;ai voulu le reproduire. Tout d&#8217;abord, j&#8217;ai extrait le code relatif à la souris dans un objet à part. Pour tester le déplacement avec Leap Motion, mon premier réflexe a été de faire ce genre de code :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">class</span> <span class="nx">LeapPano</span><span class="p">.</span><span class="nx">LeapMotion</span>
+</span><span class='line'>  <span class="nv">constructor: </span><span class="nf">(view) -&gt;</span>
+</span><span class='line'>    <span class="vi">@view = </span><span class="nx">view</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">init: </span><span class="o">=&gt;</span>
+</span><span class='line'>    <span class="nx">Leap</span><span class="p">.</span><span class="nx">loop</span><span class="p">(</span><span class="nf">(frame) =&gt;</span>
+</span><span class='line'>      <span class="nx">@view</span><span class="p">.</span><span class="nx">setLon</span><span class="p">(</span><span class="nx">@view</span><span class="p">.</span><span class="nx">getLon</span><span class="p">()</span> <span class="o">+</span> <span class="p">.</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ce code permet, à chaque itération, de déplacer horizontalement la caméra. Le problème que je trouve avec ce que est que je ne gère pas la rapidité des itérations. Je n&#8217;ai pas trouvé de façon de faire dans la documentation de Leap. J&#8217;ai donc choisi de modifier le code comme ceci :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">class</span> <span class="nx">LeapPano</span><span class="p">.</span><span class="nx">LeapMotion</span>
+</span><span class='line'>  <span class="nv">constructor: </span><span class="nf">(view) -&gt;</span>
+</span><span class='line'>    <span class="vi">@view = </span><span class="nx">view</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">setFrame: </span><span class="nf">(frame) -&gt;</span>
+</span><span class='line'>    <span class="vi">@frame = </span><span class="nx">frame</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">init: </span><span class="nf">-&gt;</span>
+</span><span class='line'>    <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">@checkMotion</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nv">checkMotion: </span><span class="o">=&gt;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nx">@frame</span><span class="o">?</span>
+</span><span class='line'>      <span class="nx">@view</span><span class="p">.</span><span class="nx">setLon</span><span class="p">(</span><span class="nx">@view</span><span class="p">.</span><span class="nx">getLon</span><span class="p">()</span> <span class="o">+</span> <span class="p">.</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">@checkMotion</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>L&#8217;appel de la fonction <code>Leap.loop</code> est extraite de cet objet et le résultat est passé via un setter à chaque itération. À l&#8217;initialisation, la fonction setTimeout, permettant d’exécuter la fonction de reconnaissance des mouvements toutes les dix millisecondes, est lancée. Ce code permet également de ne pas avoir plusieurs appels à la fonction <code>Leap.loop</code>. La boucle est lancée dans la page principale et les données détectées sont transmises aux différents objets en ayant besoin. Je crois que c&#8217;est une meilleure architecture.</p>
+
+<p>Maintenant que ça marche comme je veux, je peux m&#8217;occuper de la reconnaissance des mouvements. J&#8217;ai modifié la fonction <code>checkMotion</code> comme ceci :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nv">checkMotion: </span><span class="o">=&gt;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="nx">@frame</span><span class="o">?</span>
+</span><span class='line'>    <span class="nv">finger = </span><span class="nx">@frame</span><span class="p">.</span><span class="nx">fingers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nx">finger</span><span class="o">?</span>
+</span><span class='line'>      <span class="nv">x = </span><span class="nx">finger</span><span class="p">.</span><span class="nx">tipPosition</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'>      <span class="nv">y = </span><span class="nx">finger</span><span class="p">.</span><span class="nx">tipPosition</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>      <span class="nx">@view</span><span class="p">.</span><span class="nx">setLon</span><span class="p">(</span><span class="nx">@view</span><span class="p">.</span><span class="nx">getLon</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="nx">x</span><span class="o">/</span><span class="mi">320</span><span class="p">))</span>
+</span><span class='line'>      <span class="nx">@view</span><span class="p">.</span><span class="nx">setLat</span><span class="p">(</span><span class="nx">@view</span><span class="p">.</span><span class="nx">getLat</span><span class="p">()</span> <span class="o">+</span> <span class="p">((</span><span class="nx">y</span><span class="o">-</span><span class="mi">160</span><span class="p">)</span><span class="o">/</span><span class="mi">320</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">@checkMotion</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>@frame.fingers[0]</code> permet de récupérer le premier doigt détecté. <code>finger.tipPosition</code> retourne un tableau contenant la position en X, en Y et en Z. Enfin, je change la position de la caméra dans la scène 3D. Le calcul d&#8217;un ratio permet de faire en sorte d’accélérer ou de ralentir le mouvement selon la position du doigt. Plus le doigt est éloigné du centre, plus le déplacement est rapide.</p>
+
+<p>La dernière fonction que j&#8217;ai voulu ajouté a été de changer l&#8217;image lorsque l&#8217;on décrit un cercle. J&#8217;ai donc ajouté ceci :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">if</span><span class="p">(</span><span class="nx">@frame</span><span class="p">.</span><span class="nx">gestures</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>  <span class="nv">gesture = </span><span class="nx">@frame</span><span class="p">.</span><span class="nx">gestures</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'>  <span class="k">if</span> <span class="nx">gesture</span><span class="p">.</span><span class="nx">type</span> <span class="o">==</span> <span class="s">&quot;circle&quot;</span>
+</span><span class='line'>    <span class="nx">@view</span><span class="p">.</span><span class="nx">switchFile</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Encore une fois, c&#8217;est très simple. <code>@frame.gestures</code> retourne une liste des mouvements détectés. Par la suite, il faut vérifier si le type de mouvement est un cercle. Si c&#8217;est le cas, alors on change d&#8217;image.</p>
+
+<p>Pour permettre la reconnaissance des mouvements, il est nécessaire d&#8217;appeller la fonction <code>Leap.loop</code> :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nx">Leap</span><span class="p">.</span><span class="nx">loop</span><span class="p">({</span><span class="nv">enableGestures: </span><span class="kc">true</span><span class="p">},</span> <span class="nx">function</span><span class="p">(</span><span class="nx">frame</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">pano</span><span class="p">.</span><span class="nx">setFrame</span><span class="p">(</span><span class="nx">frame</span><span class="p">)</span>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Et voila! Tout fonctionne. En tant que bon contributeur Open-Source j&#8217;ai affiché le code ici : <a href="https://github.com/GCorbel/LeapPano">https://github.com/GCorbel/LeapPano</a>. J&#8217;ai également créé un page grâce a <a href="http://pages.github.com/">GitHub-Pages</a> visible ici : <a href="http://gcorbel.github.io/LeapPano/">http://gcorbel.github.io/LeapPano/</a>.</p>
+
+<h2>Ce que j&#8217;aime dans Leap Motion</h2>
+
+<p>Premièrement, j&#8217;ai beaucoup aimé la facilité d&#8217;installation. On branche, on installe et ça marche. Le développement est extrêmement facile. L&#8217;API fournie est la plus simple possible. Le fait qu&#8217;elle soit disponible en plusieurs langages est génial. Je suis vraiment impressionné des possibilités fournies et de la simplicité.</p>
+
+<h2>Là où j&#8217;ai des doutes</h2>
+
+<p>Petit bémol pour la documentation. Je trouve que la documentation officielle est assez peu détaillée. Il y a peu de code affiché. Pour voir du code réel, il est nécessaire de rechercher les exemples disponibles sur GitHub.</p>
+
+<p>Au niveau de la reconnaissance des mouvements, il existe trois mouvements &ldquo;de base&rdquo; : Circle, Swipe et Tap. Ajouter d&#8217;autres mouvements est beaucoup plus complexe. On ne peut pas imaginer faire un jeu comme <a href="http://fr.wikipedia.org/wiki/Black_and_White_%28jeu_vid%C3%A9o%29">Black &amp; White</a> pour le moment.</p>
+
+<p>Le gros point faible est la précision. Le nombre de doigts détectés n&#8217;est pas toujours réel et la position est approximative. Quand on y pense, c&#8217;est normal. Si l&#8217;on pointe une image vers l&#8217;écran, notre doigt tremble. Viser une icône peut être très long. Leap Motion ne n&#8217;est pas prêt à remplacer la souris.</p>
+
+<p>De plus, je trouve que la détection de pointeurs est très hasardeuse. Un crayon passe de détecté à non détecté sans raison. La détection des doigts est beaucoup plus stable.</p>
+
+<p>Ceci dit, Leap Motion est à sa version 0.8. Il s&#8217;agit d&#8217;un système tout nouveau. On peut imaginer que le système va s&#8217;améliorer au fil du temps.</p>
+
+<h2>Conclusion</h2>
+
+<p>J&#8217;adore Leap Motion. Il suffit de compter le nombre de fois ou j&#8217;ai marqué &ldquo;Génial&rdquo; dans cet article pour le comprendre.</p>
+
+<p>Le futur comme imaginé dans les années 80/90 est à notre portée. On n&#8217;est pas encore capable de faire des tableaux comme dans Minority Report mais on s&#8217;y approche. Des technologies comme Leap, Google Voice, Google glaces, la domotique, etc. font rêver. Le futur est accessible et n&#8217;importe quel développeur est capable de faire des choses impressionnantes.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Quand j'utilise des Helpers, des Partials, des Presenters et des Decorators]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2013/10/12/quand-jutilise-des-helpers-des-partials-des-presenters-et-des-decorators/"/>
+    <updated>2013-10-12T07:38:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2013/10/12/quand-jutilise-des-helpers-des-partials-des-presenters-et-des-decorators</id>
+    <content type="html"><![CDATA[<p>Il existe plusieurs différentes façons d&#8217;avoir une meilleure organisation des vues dans une application Ruby on Rails. Les Partials et les Heplers sont des méthodes standard. Il y a également les Presenters et les Decorators. Cela peut-être quelque peu difficile de savoir comment et quand les utiliser.</p>
+
+<!--more-->
+
+
+<h1>Mon organisation</h1>
+
+<p>Toutes les techniques ont leur propre utilité.</p>
+
+<h2>Les Helpers</h2>
+
+<p>Les Helpers sont des méthodes génériques qui peuvent être utilisées pour différents types d&#8217;objet. Je crée des helpers du style <code>link_to_update</code>, <code>big_image</code>, <code>styled_form</code>, etc. Ces méthodes créent du code html avec, par exemple, un style css ou un texte standard.</p>
+
+<h2>Les Partials</h2>
+
+<p>Les Partials sont utilisés pour diviser une grosse vue dans de plus petites parties logiques. Je peux avoir un partial <code>side_menu</code>, <code>comment_list</code>, <code>header</code>, etc.</p>
+
+<h2>Les Presenters</h2>
+
+<p>Les Presenters sont créés pour des requêtes plus compliquées avec un modèle ou plus. J&#8217;ai des presenters comme <code>@page_presenter.page_in_category(ruby_category)</code> ou <code>@user_presenter.user_following(an_article)</code>.</p>
+
+<h2>Les Decorators</h2>
+
+<p>Les Decorators doivent interagir avec un modèle seulement et ne doivent pas avoir de paramètre (si possible). Je peux faire cette sorte de code : <code>user.full_name</code>, <code>page.big_title</code> ou <code>category.permalink</code>. J&#8217;utilise la Gem <a href="https://github.com/drapergem/draper">Draper</a>.</p>
+
+<p>Si je cherche plusieurs modèles, Je n&#8217;accède pas à la classe du modèle directement dans la vue. J&#8217;utilise la fonction de Draper <a href="https://github.com/drapergem/draper#decorated-finders">decorates_finders</a>.</p>
+
+<h2>Conclusion</h2>
+
+<p>Il peut y avoir de meilleures solutions mais ça marche pour moi. Si vous pensez avoir de meilleures solutions, dites le moi!</p>
+
+<p>Il y a juste une chose que je n&#8217;aime pas avec les Presenters. Je n&#8217;aime pas instancier un objet dans le contrôleur et le passer à la vue. Cela ne respecte pas la <a href="http://robots.thoughtbot.com/post/50655960596/sandi-metz-rules-for-developers">règle de Sandi Metz</a>. Toutes les règles peuvent être brisées avec des bonnes raisons&hellip;</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Octopress : Un moteur de blog pour les développeurs]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs/"/>
+    <updated>2013-10-11T22:23:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs</id>
+    <content type="html"><![CDATA[<p>Comme beaucoup de développeurs, je souhaite partager ma connaissance sur certains sujets. Pour ce
+faire, j&#8217;ai voulu créer un blog. Cet article décrit la démarche que j&#8217;ai effectuée afin de créer
+le blog.</p>
+
+<!--more-->
+
+
+<p>Afin de choisir un moteur de blog, j&#8217;ai fait le tour des sites de développeurs. Plusieurs solutions
+sont couramment utilisées.</p>
+
+<p>Premièrement, beaucoup de développeurs créent, eux-mêmes, leur site. Ne voulant pas réinventer la
+roue, j&#8217;ai choisi d&#8217;utiliser un outil déjà existant. Créer un blog est assez répandu et il y a une kyrielle de bons outils créés pour répondre à ce besoin.</p>
+
+<p>Il existe également beaucoup de personnes utilisant Wordpress. Wordpress ne correspond pas à ma
+philosophie. Tout d&#8217;abord, c&#8217;est écrit en PHP et j&#8217;aime Ruby. Ensuite, je trouve que Wordpress est
+une &ldquo;usine à gaz&rdquo;. C&#8217;est un peu comme utiliser Joomla pour faire des sites internet. C&#8217;est
+probablement très bien pour les webmestres néophytes, mais je suis développeur et je souhaite
+avoir plus de contrôle sur mon site, kit à mettre les mains dans le cambouis.</p>
+
+<h2>Jekyll</h2>
+
+<p>En continuant mes recherches, j&#8217;ai trouvé Jekyll que je connaissais seulement de nom. Jekyll est un
+générateur de site statique. Celui-ci est extrêment puissant pour faire ce qu&#8217;il sait faire. Il
+permet de générer des pages HTML à partir de fichiers textes créés en Markdown ou Textile et Liquid.
+Avec Jekyll, il n&#8217;y a aucune base de données. Le résultat est uniquement du HTML et peut donc
+être hébergé n&#8217;importe où. J&#8217;aime le fait d&#8217;avoir un rendu similaire à celui de n&#8217;importe quel site
+sans avoir aucune logique du côté serveur.</p>
+
+<p>Petit avertissement : Jekyll est destiné aux développeurs. J&#8217;imagine très mal une personne novice en
+informatique utiliser cet outil. Si c&#8217;est ce que vous souhaitez dirigiez-vous sur Wordpress.</p>
+
+<p>Jekyll est un outil très simple. Peut-être un peu trop simple pour faire ce que je souhaitais. Pour
+mon blog, je souhaite avoir une partie &ldquo;sociale&rdquo; et un design agréable. J&#8217;ai tout d&#8217;abord trouvé
+<a href="http://jekyllbootstrap.com/">JekyllBootstrap</a>. Sincèrement, je le déconseille. Je trouve ça
+compliqué pour rien. La structure du code est assez compliquée et prend du temps à modifier
+quand on n’est pas habitué à Jekyll. Pour ma part, c&#8217;était plus simple de tout faire moi-même avec
+Jekyll.</p>
+
+<h2>Octopress</h2>
+
+<p>Rapidement, je suis tombé sur <a href="http://octopress.org/">Octopress</a>. Octopress est à
+la fois simple, puissant et facilement modifiable. Il offre des commandes pour générer des pages,
+générer des posts et publier les modifications. Sans connaitre l&#8217;outil et en connaissant un peu
+Jekyll, en 10 minutes j&#8217;ai pu créer un blog, le publier, ajouter un post et configurer twitter,
+GitHub, google plus, etc. En plus de cela, Octopress vient avec un design qui peut-être modifiable,
+mais qui me convient parfaitement. J&#8217;ai donc choisi de le laisser tel quel.</p>
+
+<p>Malheureusement, Octopress ne supporte pas l&#8217;internationalisation. J&#8217;ai suivi <a href="http://lkdjiin.github.io/blog/2013/07/13/je-veux-mon-blog-octopress-en-francais/">cet article</a> afin de franciser mon site.</p>
+
+<h2>GitHub-Pages</h2>
+
+<p>Pour ce qui est de l&#8217;hébergement, j&#8217;ai choisi <a href="http://pages.github.com/">GitHub-Pages</a>. Il y a
+énormément d&#8217;avantages à utiliser GitHub-Pages. Tout d&#8217;abord, c&#8217;est gratuit. Ensuite, cela permet
+de créer et de modifier les articles en utilisant les outils d&#8217;éditions en ligne de GitHub. Enfin,
+le plus gros avantage selon moi est que n&#8217;importe qui peut faire un fork du projet et proposer des
+améliorations ou corriger des fautes d&#8217;orthographe (merci à <a href="https://twitter.com/abelar_s">Sylvain Abélard</a>).</p>
+
+<p>En général, je trouve qu&#8217;avoir un site du type &ldquo;monsite.wordpress.com&rdquo; ne fait pas très professionnel
+et j&#8217;aurais tendance à acheter un nom de domaine. Dans ce cas, &ldquo;gcorbel.github.io/blog&rdquo; ça ne dérange
+pas du tout. Ça fait développeur qui ne connais pas trop mal GitHub. J&#8217;économise sur le nom de domaine!</p>
+
+<h2>Conclusion</h2>
+
+<p>Pour ma part, je suis très content et je conseille à tous les développeurs cherchant un moteur de blog de l&#8217;essayer.</p>
+
+<p>Je vais essayer d&#8217;ajouter des articles plus souvent. Restez connectés et <a href="https://twitter.com/GuirecCorbel">follow me on twitter</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Catégorie : Ruby | Guirec Corbel]]></title>
+  <link href="http://GCorbel.github.io/blog/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://GCorbel.github.io/blog/"/>
+  <updated>2014-05-18T17:56:54-04:00</updated>
+  <id>http://GCorbel.github.io/blog/</id>
+  <author>
+    <name><![CDATA[Guirec Corbel]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Sbire : Dites ce que vous voulez, il le fera]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2013/10/27/sbire-dites-ce-que-vous-voulez-il-le-fera/"/>
+    <updated>2013-10-27T13:24:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2013/10/27/sbire-dites-ce-que-vous-voulez-il-le-fera</id>
+    <content type="html"><![CDATA[<p>Sbire est un outil permettant d'exécuter des commandes grâce à la voix. Le principe est simple. Vous taper une commande pour l'enregistrement d'une phrase avec un micro et vous taper une seconde commande pour terminer l'enregistrement. Suite à cela, Sbire reconnait votre voix et exécute la commande associée.</p>
+
+<!--more-->
+
+
+<h2>Sbire en action</h2>
+
+<p><div class="embed-video-container"><iframe src="http://www.youtube.com/embed/Fvu9tS0lsYE "></iframe></div></p>
+
+<h2>Comment ça marche?</h2>
+
+<p>Il s'agit d'un programme écrit en Ruby. Celui-ci fait appel à sox pour faire un enregistrement audio. Il fait ensuite appel à Google voice en y joignant le fichier et y récupère le résultat en format JSon. Ce résultat est ensuite traité et la commande trouvée est exécutée.</p>
+
+<h2>Contibuer</h2>
+
+<p>Évidemment, je suis ouvert à toute remarque et suggestion. Les contributions sont également les bienvenues. Vous pouvez les soumettes sur <a href="https://github.com/GCorbel/sbire">Github</a>.</p>
+
+<h2>Plus d'informations</h2>
+
+<p>Pour des informations sur l'installation, l'utilisation et la configuration, rendez-vous sur la <a href="https://github.com/GCorbel/sbire">page Github du projet</a>.</p>
+
+<h2>Encore plus d'informations</h2>
+
+<p>Si vous avez d'autres questions, contactez moi par email, à guirec.corbel@gmail.com, ou sur <a href="https://twitter.com/GuirecCorbel">twitter</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Table ronde en ligne]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2013/10/22/table-ronde-en-ligne/"/>
+    <updated>2013-10-22T19:47:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2013/10/22/table-ronde-en-ligne</id>
+    <content type="html"><![CDATA[<p style="text-align:center;">Le <strong>dimanche 3 novembre à 17h</strong> (heure française) aura lieu la première édition d'une <strong>table ronde en ligne</strong>.</p>
+
+<!--more-->
+
+
+<h2>Principe</h2>
+
+<p>Une table ronde est une discussion, avec plusieurs participants, sur un sujet.
+Les participants ne doivent pas forcement être des experts dans le domaine, mais doivent avoir de connaissance pour pouvoir en parler.
+La discussion doit se faire dans une ambiance cordiale. Personne ne prétend détenir la solution à tous les problèmes et chacun doit pouvoir exprimer son point de vue en gardant l'esprit ouvert.</p>
+
+<h2>Sujet</h2>
+
+<p>Le sujet de la première discussion sera <strong>les designs patterns</strong> avec Ruby on Rails.</p>
+
+<p>Voici le plan de la première rencontre :</p>
+
+<ul>
+<li>Présentation des participants;</li>
+<li>Définition d'un design pattern;</li>
+<li>Discussion à propos des designs patterns connus :
+
+<ul>
+<li>Fat model/Skinny controllers</li>
+<li>Service objects</li>
+<li>Form objects</li>
+<li>DCI</li>
+</ul>
+</li>
+<li>Quels design pattern utilisez-vous?</li>
+<li>Varia;</li>
+</ul>
+
+
+<p>Le plan pourra varier selon l'avancement de la discussion. Aucune limite de temps n'est imposée pour la première rencontre.</p>
+
+<h2>Où sera publiée la discussion?</h2>
+
+<p>La discussion sera publiée sur YouTube. Je publierais la vidéo sur <a href="http://www.youtube.com/channel/UCRSzJI-E_8cqKwFH3KsZDxQ">ma chaine YouTube</a>. Je publierai l'adresse sur twitter.</p>
+
+<h2>Comment pourrais-je rejoindre la discussion?</h2>
+
+<p>La discussion se fera par Google Hangout. Je donnerais le lien aux participants une heure avant la rencontre.
+Assurez-vous d'avoir correctement installé le plug-in nécessaire pour participer ainsi qu'un micro et une webcam qui fonctionne avant de participer.</p>
+
+<h2>Comment participer?</h2>
+
+<p>Si vous êtes disponible à l'heure et à la date indiquée, vous pouvez demander à participer en m'envoyant un courriel à <a href="&#x6d;&#97;&#105;&#108;&#116;&#111;&#58;&#103;&#117;&#105;&#x72;&#x65;&#x63;&#x2e;&#99;&#x6f;&#x72;&#x62;&#101;&#108;&#64;&#103;&#109;&#x61;&#105;&#x6c;&#x2e;&#99;&#x6f;&#109;">&#x67;&#x75;&#105;&#x72;&#x65;&#99;&#46;&#x63;&#111;&#114;&#x62;&#101;&#x6c;&#64;&#x67;&#x6d;&#x61;&#105;&#x6c;&#x2e;&#99;&#x6f;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+
+<p>À dimanche!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Quand j'utilise des Helpers, des Partials, des Presenters et des Decorators]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2013/10/12/quand-jutilise-des-helpers-des-partials-des-presenters-et-des-decorators/"/>
+    <updated>2013-10-12T07:38:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2013/10/12/quand-jutilise-des-helpers-des-partials-des-presenters-et-des-decorators</id>
+    <content type="html"><![CDATA[<p>Il existe plusieurs différentes façons d'avoir une meilleure organisation des vues dans une application Ruby on Rails. Les Partials et les Heplers sont des méthodes standard. Il y a également les Presenters et les Decorators. Cela peut-être quelque peu difficile de savoir comment et quand les utiliser.</p>
+
+<!--more-->
+
+
+<h1>Mon organisation</h1>
+
+<p>Toutes les techniques ont leur propre utilité.</p>
+
+<h2>Les Helpers</h2>
+
+<p>Les Helpers sont des méthodes génériques qui peuvent être utilisées pour différents types d'objet. Je crée des helpers du style <code>link_to_update</code>, <code>big_image</code>, <code>styled_form</code>, etc. Ces méthodes créent du code html avec, par exemple, un style css ou un texte standard.</p>
+
+<h2>Les Partials</h2>
+
+<p>Les Partials sont utilisés pour diviser une grosse vue dans de plus petites parties logiques. Je peux avoir un partial <code>side_menu</code>, <code>comment_list</code>, <code>header</code>, etc.</p>
+
+<h2>Les Presenters</h2>
+
+<p>Les Presenters sont créés pour des requêtes plus compliquées avec un modèle ou plus. J'ai des presenters comme <code>@page_presenter.page_in_category(ruby_category)</code> ou <code>@user_presenter.user_following(an_article)</code>.</p>
+
+<h2>Les Decorators</h2>
+
+<p>Les Decorators doivent interagir avec un modèle seulement et ne doivent pas avoir de paramètre (si possible). Je peux faire cette sorte de code : <code>user.full_name</code>, <code>page.big_title</code> ou <code>category.permalink</code>. J'utilise la Gem <a href="https://github.com/drapergem/draper">Draper</a>.</p>
+
+<p>Si je cherche plusieurs modèles, Je n'accède pas à la classe du modèle directement dans la vue. J'utilise la fonction de Draper <a href="https://github.com/drapergem/draper#decorated-finders">decorates_finders</a>.</p>
+
+<h2>Conclusion</h2>
+
+<p>Il peut y avoir de meilleures solutions mais ça marche pour moi. Si vous pensez avoir de meilleures solutions, dites le moi!</p>
+
+<p>Il y a juste une chose que je n'aime pas avec les Presenters. Je n'aime pas instancier un objet dans le contrôleur et le passer à la vue. Cela ne respecte pas la <a href="http://robots.thoughtbot.com/post/50655960596/sandi-metz-rules-for-developers">règle de Sandi Metz</a>. Toutes les règles peuvent être brisées avec des bonnes raisons&hellip;</p>
+]]></content>
+  </entry>
+  
+</feed>

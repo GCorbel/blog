@@ -1,0 +1,390 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>PyLeapMouse: Commandez votre OS par la voix ET les mouvements - Guirec Corbel</title>
+  <meta name="author" content="Guirec Corbel">
+
+  
+  <meta name="description" content="Suite à mon article et ma vidéo sur Sbire, je poursuis dans ma lancée pour expliquer comment j&#8217;ai modifier le projet PyLeapMouse pour coupler &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://GCorbel.github.io/blog/blog/2013/11/01/sbire-et-leapmotion-commandez-votre-os-par-la-voix-et-les-mouvements">
+  <link href="/blog/favicon.png" rel="icon">
+  <link href="/blog/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/blog/atom.xml" rel="alternate" title="Guirec Corbel" type="application/atom+xml">
+  <script src="/blog/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/blog/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="/blog/stylesheets/rve-styles.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-42784059-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <a href="https://github.com/gcorbel/blog">
+    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png" alt="Suivez moi sur GitHub">
+  </a>
+  <h1><a href="/blog/">Guirec Corbel</a></h1>
+  
+    <h2>Mon blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/blog/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:GCorbel.github.io/blog" />
+    <input class="search" type="text" name="q" results="0" placeholder="Rechercher"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/blog/">Blog</a></li>
+  <li><a href="/blog/blog/archives">Archives</a></li>
+  <li><a href="/blog-en">English version</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Pyleapmouse: commandez votre os par la voix et les mouvements</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-01T19:34:00-04:00" pubdate data-updated="true">1<span>er</span> novembre 2013</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://GCorbel.github.io/blog">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Suite à <a href="http://gcorbel.github.io/blog/blog/2013/10/27/sbire-dites-ce-que-vous-voulez-il-le-fera/">mon article et ma vidéo</a> sur <a href="https://github.com/gcorbel/sbire">Sbire</a>, je poursuis dans ma lancée pour expliquer comment j&#8217;ai modifier le projet PyLeapMouse pour coupler LeapMotion et Sbire.
+<a href="https://www.leapmotion.com/">LeapMotion</a> est un très bon outil permettant de détecter les mouvements. L&#8217;une des fonctionnalités évidentes que l&#8217;on imagine rapidement avec LeapMotion est de remplacer la souris pour commander le système d&#8217;exploitation.
+Pour cela, il existe le projet <a href="https://github.com/openleap/PyLeapMouse">openleap/PyLeapMouse</a>. Celui-ci émule le pointeur de la souris et permet de simuler les clics.
+Dans cet article, vous verrez le cheminement que j&#8217;ai effectué pour contrôler l&#8217;OS avec LeapMotion.</p>
+
+<!--more-->
+
+
+<h2>Exemple d&#8217;utilisation</h2>
+
+<p>Avant de commencer, voici une courte vidéo montrant l&#8217;utilisation de PyLeapMouse et Sbire.</p>
+
+<div class="embed-video-container"><iframe src="http://www.youtube.com/embed/l1BxiD1dx5s "></iframe></div>
+
+
+<h2>Diriger la souris/Executer des commandes?</h2>
+
+<p>Mon objectif principal pour cette application est de contrôler l&#8217;OS avec LeapMotion. En tant qu&#8217;adepte de l&#8217;Open-Source, j&#8217;ai premièrement cherché s&#8217;il existait un projet le permettant. Je suis tombé sur <a href="https://github.com/archetipo/leapmouse">LeapMouse</a>, écrit en C. J&#8217;ai rapidement vu les problèmes existants pour diriger la souris. Pour ma part, je mettais plus de 10 secondes pour réussir à fixer un bouton ou une icône. Sur ce point, l&#8217;utilisation classique de la souris est beaucoup plus efficace.
+De plus, il est nécessaire de maintenir la main à une certaine distance du contrôleur. On doit donc la maintenir en hauteur ce qui est rapidement fatigant.</p>
+
+<p>Le fait d&#8217;effectuer des commandes en fonction des mouvements m&#8217;a paru une méthode plus efficace et plus précise. Tout d&#8217;abord, une commande doit être actionnée par un mouvement court. Il n&#8217;est donc pas nécessaire de maintenir la main en suspension pendant une longue période. De plus, le besoin de précision est moindre ce qui rend l&#8217;utilisation plus efficace.</p>
+
+<h2>Pourquoi Python?</h2>
+
+<p>Il existe plusieurs SDK pour LeapMotion. Malheureusement pour moi, Ruby, mon langage préféré, n&#8217;est pas disponible officiellement. J&#8217;avais donc l&#8217;embarras du choix des langages.</p>
+
+<p>LeapMouse étant écrit en C, je me suis demandé pourquoi choisir ce langage plutôt qu&#8217;un autre. Il est vrai que ce langage possède l&#8217;avantage d&#8217;être plus bas niveau. La plupart des outils disponibles dans les autres langages sont des dérivés. Également, le C est très avantageux au niveau de la performance. Ces deux points constituent des avantages non négligeables pour l&#8217;utilisation du C.</p>
+
+<p>Cela faisait longtemps que je n&#8217;avais pas utilisé le C. Étant habitué à Ruby, j&#8217;avais un peu d&#8217;aprioris à utiliser un langage moins moderne. Je pensais avoir plus de mal avec la syntaxe, mais finalement c&#8217;est la difficulté à inclure des librairies qui m&#8217;a repoussé. Grâce à bundler, Ruby possède une manière très simple de gérer les dépendances d&#8217;un projet. En C, c&#8217;est parfois aussi simple de refaire des bouts de code. Réinventer la roue n&#8217;étant pas ce que je préfère, j&#8217;ai abandonné le C et pris la résolution de l&#8217;utiliser uniquement si je n&#8217;ai pas le choix. Évidemment, c&#8217;est une conclusion très personnelle. Libre à chacun de choisir autre chose.</p>
+
+<p>Python est un langage tout aussi moderne que Ruby. La gestion des dépendances se fait également très bien avec Pip. Bien que la philosophie soit différente que celle de Ruby, il est très facile de passer de l&#8217;un à l&#8217;autre. De plus, c&#8217;est toujours agréable de découvrir autre chose et de changer un peu.</p>
+
+<h2>Pourquoi PyLeapMouse?</h2>
+
+<p>Ensuite, j&#8217;ai choisi de modifier <a href="https://github.com/openleap/PyLeapMouse">openleap/PyLeapMouse</a>. Tout d&#8217;abord PyLeapMouse possède déjà un bon nombre de fonctionnalités. De plus, il est relativement populaire et possède déjà une bonne communauté. Ce choix fut assez rapide. Je crois que c&#8217;est le projet le plus abouti concernant le contrôle de la souris avec LeapMotion.</p>
+
+<h2>Mon développement sur PyLeapMouse</h2>
+
+<p>Malgré le fait que PyLeapMouse soit fonctionnel, l&#8217;utiliser pour déplacer le pointeur de la souris est très fastidieux. Ceci est dû aux limites expliquées dans <a href="http://gcorbel.github.io/blog/blog/2013/10/12/leap-motion-le-point-de-vue-dun-developpeur/">cet article</a>.</p>
+
+<p>J&#8217;ai donc fait un fork du projet pour ajouter la possibilité d&#8217;exécuter des commandes en fonctions des mouvements effectuées. Le fonctionnement est assez simple. PyLeapMouse va lire un fichier <code>commands.ini</code> comme celui-ci :</p>
+
+<pre><code>[screentap]
+
+[keytap]
+
+[swiperight]
+1finger: rhythmbox-client --next
+
+[swipeleft]
+1finger: rhythmbox-client --previous
+
+[clockwise]
+1finger: sbire start
+2finger: sbire start
+3finger: sbire start
+4finger: sbire start
+5finger: sbire start
+
+[counterclockwise]
+1finger: sbire stop
+2finger: sbire stop
+3finger: sbire stop
+4finger: sbire stop
+5finger: sbire stop
+</code></pre>
+
+<p>À chaque changement détecté par LeapMotion, le programme recherche dans une liste d&#8217;objets avec des classes comme celle-ci :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">KeytapCommand</span><span class="p">():</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;keytap&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">applicable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">gestures</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">Leap</span><span class="o">.</span><span class="n">Gesture</span><span class="o">.</span><span class="n">TYPE_KEY_TAP</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Chaque commande possède un nom, permettant de l&#8217;identifier, et une fonction <code>applicable</code> permettant de voir si les conditions sont réunies pour exécuter la commande en fonction de la variable <code>frame</code> représentant les données passées par LeapMotion.</p>
+
+<p>Ensuite, il va rechercher dans la configuration quelle commande il doit exécuter en fonction du nombre de doigts reconnus et du mouvement. Pour plus de détails, vous pouvez voir le <a href="https://github.com/openleap/PyLeapMouse/blob/master/MotionControl.py">code complet sur GitHub</a>.</p>
+
+<p>Cette amélioration rend l&#8217;utilisation plus efficace, mais n&#8217;est pas fiable à 100%. Il y a très souvent des imperfections dans les mouvements détectés.</p>
+
+<p>Afin d&#8217;augmenter la précision, il existe des projets comme <a href="https://github.com/roboleary/LeapTrainer.js">LeapTrainer</a>. Celui-ci fait en sorte que le système apprend les mouvements. Il est ensuite possible d&#8217;exporter le mouvement appris puis de l&#8217;importer dans d&#8217;autres outils. C&#8217;est effectivement un très bon projet, mais cela manque encore d&#8217;efficacité.</p>
+
+<h2>Pourquoi lier avec Sbire?</h2>
+
+<p>Malrgès le fait que lier les commandes aux mouvements soit plus précis, il reste encore beaucoup d&#8217;erreurs. C&#8217;est pour cette raison qu&#8217;il est mieux de le coupler avec Sbire. Sbire est plus précis et les possibilités sont plus vastes. LeapMotion possède une petite liste de mouvements prédéfinis. Sbire, quant à lui, peut reconnaitre un nombre illimité de phrases pour chercher les commandes à exécuter.</p>
+
+<h2>Conclusion</h2>
+
+<p>Je pense que le couplage des deux outils est plutôt bien. Cependant, je trouve qu&#8217;utiliser un raccourci clavier pour démarrer et arrêter Sbire est encore une solution plus efficace. Je crois que LeapMotion a encore du travail à faire pour rendre l&#8217;outil 100% fonctionnel.</p>
+
+<p>À sa décharge, LeapMotion est encore en développement et les développeurs se font une priorité d&#8217;augmenter la précision dans les prochaines versions. Je suis encore plein d&#8217;espoir pour cet outil.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Ajouté par <span class="fn">Guirec Corbel</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-01T19:34:00-04:00" pubdate data-updated="true">1<span>er</span> novembre 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/blog/categories/leap-motion/'>Leap Motion</a>, <a class='category' href='/blog/blog/categories/sbire/'>Sbire</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="/blog//twitter.com/share" class="twitter-share-button" data-url="http://GCorbel.github.io/blog/blog/2013/11/01/sbire-et-leapmotion-commandez-votre-os-par-la-voix-et-les-mouvements/" data-via="GuirecCorbel" data-counturl="http://GCorbel.github.io/blog/blog/2013/11/01/sbire-et-leapmotion-commandez-votre-os-par-la-voix-et-les-mouvements/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/blog/2013/10/27/sbire-dites-ce-que-vous-voulez-il-le-fera/" title="Previous Post: Sbire : Dites ce que vous voulez, il le fera">&laquo; Sbire : Dites ce que vous voulez, il le fera</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/blog/2014/03/29/benchmark-entre-digitalocean-et-heroku/" title="Next Post: Benchmark entre DigitalOcean et Heroku">Benchmark entre DigitalOcean et Heroku &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Derniers articles</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/blog/2014/05/18/principes-et-design-patterns-avec-rails/">Design principles et design patterns avec rails</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2014/04/22/digitalocean-vs-heroku-round-2/">Digitalocean vs heroku - round 2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2014/03/29/benchmark-entre-digitalocean-et-heroku/">Benchmark entre digitalocean et heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2013/11/01/sbire-et-leapmotion-commandez-votre-os-par-la-voix-et-les-mouvements/">Pyleapmouse: commandez votre os par la voix et les mouvements</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2013/10/27/sbire-dites-ce-que-vous-voulez-il-le-fera/">Sbire : dites ce que vous voulez, il le fera</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/GCorbel">@GCorbel</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/blog/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'GCorbel',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/blog/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Guirec Corbel -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'guireccorbel';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://GCorbel.github.io/blog/blog/2013/11/01/sbire-et-leapmotion-commandez-votre-os-par-la-voix-et-les-mouvements/';
+        var disqus_url = 'http://GCorbel.github.io/blog/blog/2013/11/01/sbire-et-leapmotion-commandez-votre-os-par-la-voix-et-les-mouvements/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Catégorie : Blog | Guirec Corbel]]></title>
+  <link href="http://GCorbel.github.io/blog/blog/categories/blog/atom.xml" rel="self"/>
+  <link href="http://GCorbel.github.io/blog/"/>
+  <updated>2014-05-18T17:56:54-04:00</updated>
+  <id>http://GCorbel.github.io/blog/</id>
+  <author>
+    <name><![CDATA[Guirec Corbel]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Octopress : Un moteur de blog pour les développeurs]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs/"/>
+    <updated>2013-10-11T22:23:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs</id>
+    <content type="html"><![CDATA[<p>Comme beaucoup de développeurs, je souhaite partager ma connaissance sur certains sujets. Pour ce
+faire, j'ai voulu créer un blog. Cet article décrit la démarche que j'ai effectuée afin de créer
+le blog.</p>
+
+<!--more-->
+
+
+<p>Afin de choisir un moteur de blog, j'ai fait le tour des sites de développeurs. Plusieurs solutions
+sont couramment utilisées.</p>
+
+<p>Premièrement, beaucoup de développeurs créent, eux-mêmes, leur site. Ne voulant pas réinventer la
+roue, j'ai choisi d'utiliser un outil déjà existant. Créer un blog est assez répandu et il y a une kyrielle de bons outils créés pour répondre à ce besoin.</p>
+
+<p>Il existe également beaucoup de personnes utilisant Wordpress. Wordpress ne correspond pas à ma
+philosophie. Tout d'abord, c'est écrit en PHP et j'aime Ruby. Ensuite, je trouve que Wordpress est
+une &ldquo;usine à gaz&rdquo;. C'est un peu comme utiliser Joomla pour faire des sites internet. C'est
+probablement très bien pour les webmestres néophytes, mais je suis développeur et je souhaite
+avoir plus de contrôle sur mon site, kit à mettre les mains dans le cambouis.</p>
+
+<h2>Jekyll</h2>
+
+<p>En continuant mes recherches, j'ai trouvé Jekyll que je connaissais seulement de nom. Jekyll est un
+générateur de site statique. Celui-ci est extrêment puissant pour faire ce qu'il sait faire. Il
+permet de générer des pages HTML à partir de fichiers textes créés en Markdown ou Textile et Liquid.
+Avec Jekyll, il n'y a aucune base de données. Le résultat est uniquement du HTML et peut donc
+être hébergé n'importe où. J'aime le fait d'avoir un rendu similaire à celui de n'importe quel site
+sans avoir aucune logique du côté serveur.</p>
+
+<p>Petit avertissement : Jekyll est destiné aux développeurs. J'imagine très mal une personne novice en
+informatique utiliser cet outil. Si c'est ce que vous souhaitez dirigiez-vous sur Wordpress.</p>
+
+<p>Jekyll est un outil très simple. Peut-être un peu trop simple pour faire ce que je souhaitais. Pour
+mon blog, je souhaite avoir une partie &ldquo;sociale&rdquo; et un design agréable. J'ai tout d'abord trouvé
+<a href="http://jekyllbootstrap.com/">JekyllBootstrap</a>. Sincèrement, je le déconseille. Je trouve ça
+compliqué pour rien. La structure du code est assez compliquée et prend du temps à modifier
+quand on n’est pas habitué à Jekyll. Pour ma part, c'était plus simple de tout faire moi-même avec
+Jekyll.</p>
+
+<h2>Octopress</h2>
+
+<p>Rapidement, je suis tombé sur <a href="http://octopress.org/">Octopress</a>. Octopress est à
+la fois simple, puissant et facilement modifiable. Il offre des commandes pour générer des pages,
+générer des posts et publier les modifications. Sans connaitre l'outil et en connaissant un peu
+Jekyll, en 10 minutes j'ai pu créer un blog, le publier, ajouter un post et configurer twitter,
+GitHub, google plus, etc. En plus de cela, Octopress vient avec un design qui peut-être modifiable,
+mais qui me convient parfaitement. J'ai donc choisi de le laisser tel quel.</p>
+
+<p>Malheureusement, Octopress ne supporte pas l'internationalisation. J'ai suivi <a href="http://lkdjiin.github.io/blog/2013/07/13/je-veux-mon-blog-octopress-en-francais/">cet article</a> afin de franciser mon site.</p>
+
+<h2>GitHub-Pages</h2>
+
+<p>Pour ce qui est de l'hébergement, j'ai choisi <a href="http://pages.github.com/">GitHub-Pages</a>. Il y a
+énormément d'avantages à utiliser GitHub-Pages. Tout d'abord, c'est gratuit. Ensuite, cela permet
+de créer et de modifier les articles en utilisant les outils d'éditions en ligne de GitHub. Enfin,
+le plus gros avantage selon moi est que n'importe qui peut faire un fork du projet et proposer des
+améliorations ou corriger des fautes d'orthographe (merci à <a href="https://twitter.com/abelar_s">Sylvain Abélard</a>).</p>
+
+<p>En général, je trouve qu'avoir un site du type &ldquo;monsite.wordpress.com&rdquo; ne fait pas très professionnel
+et j'aurais tendance à acheter un nom de domaine. Dans ce cas, &ldquo;gcorbel.github.io/blog&rdquo; ça ne dérange
+pas du tout. Ça fait développeur qui ne connais pas trop mal GitHub. J'économise sur le nom de domaine!</p>
+
+<h2>Conclusion</h2>
+
+<p>Pour ma part, je suis très content et je conseille à tous les développeurs cherchant un moteur de blog de l'essayer.</p>
+
+<p>Je vais essayer d'ajouter des articles plus souvent. Restez connectés et <a href="https://twitter.com/GuirecCorbel">follow me on twitter</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>

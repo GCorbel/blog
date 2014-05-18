@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Catégorie : Ruby On Rails | Guirec Corbel]]></title>
+  <link href="http://GCorbel.github.io/blog/blog/categories/ruby-on-rails/atom.xml" rel="self"/>
+  <link href="http://GCorbel.github.io/blog/"/>
+  <updated>2014-05-18T17:56:54-04:00</updated>
+  <id>http://GCorbel.github.io/blog/</id>
+  <author>
+    <name><![CDATA[Guirec Corbel]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Quand j'utilise des Helpers, des Partials, des Presenters et des Decorators]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2013/10/12/quand-jutilise-des-helpers-des-partials-des-presenters-et-des-decorators/"/>
+    <updated>2013-10-12T07:38:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2013/10/12/quand-jutilise-des-helpers-des-partials-des-presenters-et-des-decorators</id>
+    <content type="html"><![CDATA[<p>Il existe plusieurs différentes façons d'avoir une meilleure organisation des vues dans une application Ruby on Rails. Les Partials et les Heplers sont des méthodes standard. Il y a également les Presenters et les Decorators. Cela peut-être quelque peu difficile de savoir comment et quand les utiliser.</p>
+
+<!--more-->
+
+
+<h1>Mon organisation</h1>
+
+<p>Toutes les techniques ont leur propre utilité.</p>
+
+<h2>Les Helpers</h2>
+
+<p>Les Helpers sont des méthodes génériques qui peuvent être utilisées pour différents types d'objet. Je crée des helpers du style <code>link_to_update</code>, <code>big_image</code>, <code>styled_form</code>, etc. Ces méthodes créent du code html avec, par exemple, un style css ou un texte standard.</p>
+
+<h2>Les Partials</h2>
+
+<p>Les Partials sont utilisés pour diviser une grosse vue dans de plus petites parties logiques. Je peux avoir un partial <code>side_menu</code>, <code>comment_list</code>, <code>header</code>, etc.</p>
+
+<h2>Les Presenters</h2>
+
+<p>Les Presenters sont créés pour des requêtes plus compliquées avec un modèle ou plus. J'ai des presenters comme <code>@page_presenter.page_in_category(ruby_category)</code> ou <code>@user_presenter.user_following(an_article)</code>.</p>
+
+<h2>Les Decorators</h2>
+
+<p>Les Decorators doivent interagir avec un modèle seulement et ne doivent pas avoir de paramètre (si possible). Je peux faire cette sorte de code : <code>user.full_name</code>, <code>page.big_title</code> ou <code>category.permalink</code>. J'utilise la Gem <a href="https://github.com/drapergem/draper">Draper</a>.</p>
+
+<p>Si je cherche plusieurs modèles, Je n'accède pas à la classe du modèle directement dans la vue. J'utilise la fonction de Draper <a href="https://github.com/drapergem/draper#decorated-finders">decorates_finders</a>.</p>
+
+<h2>Conclusion</h2>
+
+<p>Il peut y avoir de meilleures solutions mais ça marche pour moi. Si vous pensez avoir de meilleures solutions, dites le moi!</p>
+
+<p>Il y a juste une chose que je n'aime pas avec les Presenters. Je n'aime pas instancier un objet dans le contrôleur et le passer à la vue. Cela ne respecte pas la <a href="http://robots.thoughtbot.com/post/50655960596/sandi-metz-rules-for-developers">règle de Sandi Metz</a>. Toutes les règles peuvent être brisées avec des bonnes raisons&hellip;</p>
+]]></content>
+  </entry>
+  
+</feed>
