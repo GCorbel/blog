@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2014-05-18T18:28:49-04:00</updated>
+  <updated>2014-05-18T19:39:41-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -18,26 +18,18 @@
     <link href="http://GCorbel.github.io/blog/blog/2014/05/18/principes-et-design-patterns-avec-rails/"/>
     <updated>2014-05-18T06:52:00-04:00</updated>
     <id>http://GCorbel.github.io/blog/blog/2014/05/18/principes-et-design-patterns-avec-rails</id>
-    <content type="html"><![CDATA[<p>Losque l&#8217;on débute notre vie de programmeur, l&#8217;architecture du code est
-secondaire. En prenant de l&#8217;expérience, on se rend compte qu&#8217;une
-application a besoin d&#8217;une structure quand sa taille augmente. Il est possible
-de développer ces propres techniques, mais d&#8217;autres personnes sont passées par le
-même chemin et certains ont publié leurs solutions. Ce sont les Principes et les Design Patterns.
-Cet article en présente quelques-unes appliquées à Ruby on Rails.</p>
+    <content type="html"><![CDATA[<p>Losque l&#8217;on débute notre vie de programmeur, l&#8217;architecture du code est secondaire. En prenant de l&#8217;expérience, on se rend compte qu&#8217;une application a besoin d&#8217;une structure quand sa taille augmente. Il est possible de développer ces propres techniques, mais d&#8217;autres personnes sont passées par le même chemin et certains ont publié leurs solutions. Ce sont les Principes et les Design Patterns. Cet article en présente quelques-unes appliquées à Ruby on Rails.</p>
 
 <!--more-->
 
 
+<h2>Introduction</h2>
+
+<p>Cet article est une brève présentation des Design Principles, ou Principes de Conception, et des Design Patterns, ou Patrons de Conception. Le but de cet article n&#8217;est pas de détailler chacun de ces concepts, mais de donner un bref aperçu de ceux-ci. D&#8217;autres articles suivront pour rentrer plus dans les détails.</p>
+
 <h2>Programation Orienté Objet</h2>
 
-<p>Un des principes fondamentaux, en Ruby comme dans d&#8217;autres langages, est la
-Programation Orienté Objet (POO). Il est parfaitement possible d&#8217;écrire une
-application en code en procédural, mais il est vite difficile de la maintenir
-efficacement. Afin de faire une séparation logique du code, il est possible de
-le regrouper en classe et en méthode. Pour faire une bonne séparation, il est
-important de bien comprendre quels sont les principes existants. De plus, la
-POO est bien plus que mettre des bouts de cote dans des catégories. Il s&#8217;agit
-d&#8217;une manière de penser le code.</p>
+<p>Un des principes fondamentaux, en Ruby comme dans d&#8217;autres langages, est la Programation Orienté Objet (POO). Il est parfaitement possible d&#8217;écrire une application en code en procédural, mais il est vite difficile de la maintenir efficacement. Afin de faire une séparation logique du code, il est possible de le regrouper en classe et en méthode. Pour faire une bonne séparation, il est important de bien comprendre quels sont les principes existants. De plus, la POO est bien plus que mettre des bouts de cote dans des catégories. Il s&#8217;agit d&#8217;une manière de penser le code.</p>
 
 <h2>Design Principles</h2>
 
@@ -47,11 +39,11 @@ d&#8217;une manière de penser le code.</p>
 <li><strong>T</strong>ransparent : Il doit être facile de comprendre quels vont être les impacts lors du changement d&#8217;un code;</li>
 <li><strong>R</strong>easonable : Le coût du changement doit impliquer un gain proportionnel;</li>
 <li><strong>U</strong>sable : Le code doit pouvoir être utilisé dans différents contextes;</li>
-<li><strong>E</strong>xemplary : Le code produit doit encourager une encourager une meilleure qu’alitée de la conception;</li>
+<li><strong>E</strong>xemplary : Le code produit doit encourager une meilleure qualité de la conception;</li>
 </ul>
 
 
-<p>Pour nous aider dans cette démarche, <a href="http://en.wikipedia.org/wiki/Robert_Cecil_Martin">Robert C. Martin</a> a défini cinq Design Principles (Principe de conception) communément acceptés. Une application doit être <a href="http://en.wikipedia.org/wiki/SOLID_%28object-oriented_design%29">SOLID</a> :</p>
+<p>Pour nous aider dans cette démarche, <a href="http://en.wikipedia.org/wiki/Robert_Cecil_Martin">Robert C. Martin</a> a défini cinq Design Principles (Principe de conception) communément acceptés. Une application doit être <a href="http://en.wikipedia.org/wiki/SOLID_%28object-oriented_design%29">SOLID</a>, l&#8217;acronyme pour :</p>
 
 <ul>
 <li><a href="http://en.wikipedia.org/wiki/Single_responsibility_principle"><strong>S</strong>ingle Responsability Principle</a> &ndash; Une classe doit avoir une seule responsabilité;</li>
@@ -62,27 +54,19 @@ d&#8217;une manière de penser le code.</p>
 </ul>
 
 
-<p>Rails prône également les principes de <a href="http://en.wikipedia.org/wiki/Convention_over_Configuration">Convention Over Configuration</a>, qui vise</p>
+<p>Ce qu&#8217;il y a d&#8217;intéressant avec ces principes, c&#8217;est qu&#8217;ils se renforcent mutuellement. Si l&#8217;on en utilise certains, les autres vont être plus évidents ce qui encouragera une meilleure qualité.</p>
 
-<p>a simplifier le développement en utilisant des conventions de nommage plutôt que
-des fichiers de configuration, et <a href="http://en.wikipedia.org/wiki/Don%27t_Repeat_Yourself">Don&rsquo;t Repeat Yourself</a>, qui dit que l&#8217;on ne
-devrait jamais dupliquer du code.</p>
+<p>Rails prône également les principes de <a href="http://en.wikipedia.org/wiki/Convention_over_Configuration">Convention Over Configuration</a>, qui vise a simplifier le développement en utilisant des conventions de nommage plutôt que des fichiers de configuration, et <a href="http://en.wikipedia.org/wiki/Don%27t_Repeat_Yourself">Don&rsquo;t Repeat Yourself</a>, qui dit que l&#8217;on ne devrait jamais dupliquer du code.</p>
 
-<p>Le plus discutable prône par Rails est Fat models, skinny controllers. Celui-ci
-vise à garder le contrôleur le plus simple possible et à ajouter la logique
-dans le modèle. Pourquoi discutable? Parce que je crois, comme d&#8217;autres, que les
-modèles deviennent trop complexes et difficiles à tester.</p>
+<p>Le plus discutable prôné par Rails est Fat models, skinny controllers. Celui-ci vise à garder le contrôleur le plus simple possible et à ajouter la logique dans le modèle. Pourquoi discutable? Parce que je crois, comme d&#8217;autres, que les modèles deviennent trop complexes et difficiles à tester.</p>
 
-<p>Dans de prochains articles, je ferais une description détaillée de certains principes importants.</p>
+<p>Il n&#8217;est pas toujours facile de faire l&#8217;unanimité sur des techniques. Heureusement, <a href="http://david.heinemeierhansson.com/2012/rails-is-omakase.html">Rails is Omakasee</a>. Le framework est suffisamment souple pour nous laisser le choix des techniques à utiliser. La &ldquo;Rails Way&rdquo; est de faire du &ldquo;Fat models, skinny controllers&rdquo; mais il est tout à fait possible d&#8217;introduire d&#8217;autres concepts et de créer de bons vieux purs objets Ruby.</p>
 
 <h2>Desgin Patterns</h2>
 
-<p>Les Design Patterns ou Patrons de Conception sont des types de solutions à
-certains problèmes communs. En programmation web, je crois que le plus connu
-est <a href="http://en.wikipedia.org/wiki/MVC">MVC</a>. Celui-ci veut qu&#8217;une requête HTTP soit traité par un routeur qui instancie un contrôleur qui a pour but d&#8217;instancier les modèles et de
-renvoyer une vue.</p>
+<p>Les Design Patterns ou Patrons de Conception sont des types de solutions répondant à certains problèmes communs. En programmation web, je crois que le plus connu est <a href="http://en.wikipedia.org/wiki/MVC">MVC</a>. Celui-ci veut qu&#8217;une requête HTTP soit traitée par un routeur qui instancie un contrôleur qui a pour but d&#8217;instancier les modèles et de renvoyer une vue.</p>
 
-<p>Il existe bien d&#8217;autres Design Patterns, avec Rails, mes préférés sont :</p>
+<p>Il existe bien d&#8217;autres Design Patterns. Avec Rails, mes préférés sont :</p>
 
 <ul>
 <li>Service Objects &ndash; Permet d&#8217;éviter la boulimie des modèles en extrayant les responsabilités dans des classes séparées;</li>
@@ -92,36 +76,21 @@ renvoyer une vue.</p>
 </ul>
 
 
-<p>Encore une fois, je vais faire des articles sur certains Design Patterns.</p>
+<p>Lorsque l&#8217;on s&#8217;attaque à un problème, il est intelligent de se renseigner d&#8217;abord sur les solutions qui existent. Une fois appliqué, on apprend à reconnaitre les patterns et l&#8217;on applique plus vite les solutions. Le temps passé à faire la recherche initiale est largement rentabilisé avec le temps.</p>
 
 <h2>Quand utiliser un Design Pattern?</h2>
 
-<p>Savoir quand utiliser un Design Pattern, peut paraitre anodin, mais il y a un
-autre principe à suivre <a href="http://en.wikipedia.org/wiki/Keep_it_simple">Keep It Simple and Stupid</a> (KISS). Ils doivent être
-utilisés quand il y a un problème ou en prévision d&#8217;un problème. Parfois, il
-ne sert à rien de se casser la tête. Si le programme est propre et facile a
-modifier, il ne sert à rien d&#8217;utiliser des techniques complexes.</p>
+<p>Savoir quand utiliser un Design Pattern, peut paraitre anodin, mais il y a un autre principe à suivre <a href="http://en.wikipedia.org/wiki/Keep_it_simple">Keep It Simple and Stupid</a> (KISS). Ils doivent être utilisés quand il y a un problème ou en prévision d&#8217;un problème. Parfois, il ne sert à rien de se casser la tête. Si le programme est propre et facile a modifier, il ne sert à rien d&#8217;utiliser des techniques complexes.</p>
 
 <h2>Quel Design Pattern utiliser?</h2>
 
-<p>Il est parfois difficile de choisir quel Design Pattern utilisé. D&#8217;autant plus
-que certains peuvent se contredisent. Par exemple, il est difficile d&#8217;utiliser
-Tell Don&rsquo;t Ask dans un contrôleur quand viens le temps de savoir quelle vue
-retourner. Malheureusement, il n&#8217;y a pas de règles simples. Il faut savoir
-utiliser le bon sens et prendre des décisions.</p>
+<p>Il est parfois difficile de choisir quel Design Pattern utilisé. D&#8217;autant plus que certains peuvent se contredisent. Par exemple, il est difficile d&#8217;utiliser Tell Don&rsquo;t Ask dans un contrôleur quand viens le temps de savoir quelle vue retourner. Malheureusement, il n&#8217;y a pas de règles simples. Il faut savoir utiliser le bon sens et prendre des décisions.</p>
 
 <h2>L&#8217;impact psychologique</h2>
 
-<p>Je crois que l&#8217;impact psychologique des principes et des Design Patterns est
-non négligeable. C&#8217;est beaucoup plus agréable de travailler sur un projet bien
-structuré que de modifier du code sans savoir quels vont être les répercussions
-ou devoir modifier une grosse partie du code. Ruby est un langage fait pour
-rendre le développeur heureux. Chacun sait qu&#8217;un développeur moins stressé sera
-plus productif.</p>
+<p>Je crois que l&#8217;impact psychologique des principes et des Design Patterns est non négligeable. C&#8217;est beaucoup plus agréable de travailler sur un projet bien structuré que de modifier du code sans savoir quels vont être les répercussions ou devoir modifier une grosse partie du code. Ruby est un langage fait pour rendre le développeur heureux. Chacun sait qu&#8217;un développeur moins stressé sera plus productif.</p>
 
-<p>De plus, une bonne qualité de code fera de vous fier de ce que vous faite.
-C&#8217;est super encourageant de rentrer tous les matins au travail en sachant que
-l&#8217;on fait du bon travail.</p>
+<p>De plus, une bonne qualité de code fera de vous fier de ce que vous faite. C&#8217;est super encourageant de rentrer tous les matins au travail en sachant que l&#8217;on fait du bon travail.</p>
 
 <h2>Conclusion</h2>
 
@@ -473,7 +442,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#x69;&#108;&#116;&#111;&#58;&#x67;&#x75;&#105;&#x72;&#x65;&#99;&#x2e;&#x63;&#x6f;&#x72;&#x62;&#x65;&#x6c;&#64;&#103;&#109;&#x61;&#x69;&#108;&#x2e;&#99;&#111;&#x6d;">&#x67;&#117;&#x69;&#114;&#101;&#x63;&#x2e;&#99;&#111;&#114;&#98;&#101;&#x6c;&#x40;&#x67;&#x6d;&#97;&#105;&#108;&#x2e;&#x63;&#111;&#x6d;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#x6f;&#x3a;&#x67;&#x75;&#x69;&#x72;&#x65;&#99;&#46;&#x63;&#111;&#114;&#98;&#x65;&#108;&#x40;&#103;&#109;&#97;&#x69;&#x6c;&#46;&#99;&#111;&#x6d;">&#x67;&#x75;&#x69;&#114;&#x65;&#99;&#x2e;&#99;&#111;&#x72;&#x62;&#x65;&#108;&#x40;&#x67;&#x6d;&#97;&#x69;&#108;&#x2e;&#x63;&#x6f;&#x6d;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
