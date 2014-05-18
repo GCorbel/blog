@@ -1,0 +1,91 @@
+---
+layout: post
+title: "DigitalOcean vs Heroku - Round 2"
+date: 2014-04-22 04:44
+comments: true
+categories:
+---
+
+Dans [un article précédent](http://gcorbel.github.io/blog/blog/2014/03/29/benchmark-entre-digitalocean-et-heroku/), j&#8217;ai publier une comparaison entre un serveur [DigitalOcean](https://www.digitalocean.com/) à 10$ pour 1go de RAM et la version gratuite de [Heroku](http://heroku.com/) comportant 512mo de RAM. Plusieurs personnes m&#8217;ont demandé de faire le même test en augmentant le nombre de dyno de Heroku. Voici donc les résultats des tests demandés.
+
+<!--more-->
+
+## Un dino? Non, un dyno.
+
+Avant d&#8217;aller plus loin, j&#8217;ai voulu comprendre le concept de dyno. Avant de connaitre Heroku, ce que je connaissais qui s&#8217;en rapprochait le plus c&#8217;était ça :
+
+![](http://img4.hostingpics.net/pics/330071denverdernierdinosaure.jpg)
+
+Pour Heroku, un dyno n&#8217;a rien à voir avec notre ami Denver. Un dyno est un processus qui va répondre à une requête. Plus on a de dyno, plus on va être capable de répondre à plusieurs requêtes en même temps.
+
+## Les tests
+
+Comment dans l&#8217;article précédent, j&#8217;ai effectué les tests avec [cette application](https://github.com/GCorbel/lescollectionneursassocies/tree/9d88ded4810575a37ac6ad5e7ceaaeeb93b40b17). J&#8217;ai également utilisé les mêmes outils et les mêmes scénarios qu&#8217;auparavant. Encore une fois, il s&#8217;agit de la même application pour DigitalOcean et pour Heroku.
+
+## Les chiffres
+
+Les tests en quelques chiffres : 50 visiteurs simulés utilisant 3 scénarios différents pendant 5 minutes.
+
+### DigitalOcean
+
+Petit rappel sur les chiffres obtenus avec DigitalOcean :
+
+![](http://img11.hostingpics.net/pics/410612Slection007.png)
+
+Un temps de réponse plutôt correct.
+
+Avec DigitalOcean, j&#8217;utilise un swapfile de 2go et voici ma config Unicorn :
+
+    worker_processes 3
+    timeout 120
+    preload_app true
+
+### Heroku
+
+Et voilà le moment tant attendu. Voici les mêmes tests faits avec 2 dyno de 512mo :
+
+![](http://img4.hostingpics.net/pics/326257Slection008.png)
+
+Quoi?????? Je ne m&#8217;attendais vraiment pas à ça. J&#8217;ai essayé avec 1 dyno de 1go et 2 dyno de 1go et j&#8217;ai toujours sensiblement le même résultat. Le temps offert par Heroku est vraiment désastreux. Comme on peut le voir, le temps est majoritairement passé dans la queue.
+
+Pour en savoir plus, j&#8217;ai contacté le support Heroku. Tout d&#8217;abord, pour avoir de meilleur log au niveau de la mémoire, ils m&#8217;ont conseillé d&#8217;utiliser [log-runtime-metrics](https://devcenter.heroku.com/articles/log-runtime-metrics). J&#8217;ai fait un test en allant sur 5 pages de mon site et voici le résultat :
+
+    2014-04-12T11:27:41.246260+00:00 heroku[web.1]: State changed from starting to up
+
+    2014-04-12T11:27:44.647222+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#memory_total=229.98MB sample#memory_rss=229.96MB sample#memory_cache=0.01MB sample#memory_swap=0.00MB sample#memory_pgpgin=64372pages sample#memory_pgpgout=5498pages
+
+    2014-04-12T11:27:52.633087+00:00 app[web.1]: Started GET "/fr/pages/accueil" for 208.114.164.25 at 2014-04-12 11:27:52 +0000
+    2014-04-12T11:27:56.361888+00:00 app[web.1]: Started GET "/fr/pages/accueil" for 208.114.164.25 at 2014-04-12 11:27:56 +0000
+    2014-04-12T11:28:03.386496+00:00 app[web.1]: Started GET "/fr/pages/acheter-vendre" for 208.114.164.25 at 2014-04-12 11:28:03 +0000
+
+    2014-04-12T11:28:04.772151+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#memory_total=423.66MB sample#memory_rss=423.34MB sample#memory_cache=0.33MB sample#memory_swap=0.00MB sample#memory_pgpgin=113959pages sample#memory_pgpgout=5501pages
+
+    2014-04-12T11:28:08.154309+00:00 app[web.1]: Started GET "/fr/pages/services-aux-collectionneurs" for 208.114.164.25 at 2014-04-12 11:28:08 +0000
+    2014-04-12T11:28:13.728267+00:00 app[web.1]: Started GET "/fr/pages/faq" for 208.114.164.25 at 2014-04-12 11:28:13 +0000
+
+    2014-04-12T11:28:25.099729+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#load_avg_1m=0.00
+    2014-04-12T11:28:25.100040+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#memory_total=444.60MB sample#memory_rss=444.18MB sample#memory_cache=0.42MB sample#memory_swap=0.00MB sample#memory_pgpgin=119319pages sample#memory_pgpgout=5501pages
+    2014-04-12T11:28:44.717755+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#load_avg_1m=0.00
+    2014-04-12T11:28:44.718017+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#memory_total=445.48MB sample#memory_rss=445.06MB sample#memory_cache=0.42MB sample#memory_swap=0.00MB sample#memory_pgpgin=119550pages sample#memory_pgpgout=5507pages
+    2014-04-12T11:29:04.898773+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#load_avg_1m=0.00
+    2014-04-12T11:29:04.899057+00:00 heroku[web.1]: source=web.1 dyno=heroku.16040091.5565eaf7-72e9-4184-b1d8-46a1612f8e49 sample#memory_total=445.48MB sample#memory_rss=445.06MB sample#memory_cache=0.42MB sample#memory_swap=0.00MB sample#memory_pgpgin=119550pages sample#memory_pgpgout=5507pages
+
+Comme on peut le voir, juste après le démarrage, 230mo étaient utilisés. J&#8217;ai visité les 5 pages et la mémoire c&#8217;est chargée à 444mo. Ensuite, j&#8217;ai eu rapidement des [Memory quota exceeded](https://devcenter.heroku.com/articles/error-codes#r14-memory-quota-exceeded). Je n&#8217;ai aucun problème similaire avec DigitalOcean.
+
+Le support m&#8217;a ensuite indiqué que mon application était gourmande en mémoire. Ils m&#8217;ont conseillé d&#8217;utiliser la gem [oink](https://github.com/noahd1/oink). Cette gem permet d&#8217;indiquer quels sont les actions les plus utilisées. Je n&#8217;ai pas appris plus grand-chose de plus qu&#8217;avec NewRelic.
+
+## Un problème dans mon application?
+
+Il y a effectivement plusieurs éléments qui peuvent prendre de la mémoire. Tout d&#8217;abord, c&#8217;est une application Rails. Rails n&#8217;est certainement pas ce qu&#8217;il y a de plus léger au monde. Ensuite, j&#8217;utilise beaucoup de cache. J&#8217;imagine qu&#8217;il y a beaucoup d&#8217;éléments stockés en mémoire dans ces cas-là. Ensuite, il s&#8217;agit d&#8217;une application d&#8217;une bonne taille avec plusieurs requêtes SQL par page maire rien d&#8217;extrême.
+
+Comme je l&#8217;ai dit plus tôt, j&#8217;ai comparé les deux serveurs avec la même application. Si j&#8217;avais vraiment un problème de mémoire dans celle-ci, j&#8217;imagine que les problèmes auraient dû être les mêmes. Or, je n&#8217;ai aucune erreur de mémoire dans Digital Ocean.
+
+## Conclusion
+
+Je crois qu&#8217;il est assez clair que Heroku perd la bataille. Si quelqu&#8217;un à d&#8217;autres résultats ou aimerai m&#8217;indiquer comment corriger d&#8217;éventuels problèmes.
+
+Un autre avantage que je trouve à DigitalOcean est le fait d&#8217;avoir une plus grande accessibilité au système. Au début, le fait d&#8217;avoir un environnement prêt en quelques secondes avec Heroku est génial, mais lorsque l&#8217;on veut aller plus loin, je trouve que l&#8217;on rencontre beaucoup de limites. Avec DigitalOcean, nous avons le plein contrôle de l&#8217;OS. De plus, si l&#8217;on suit un bon guide, déployer une application n&#8217;est pas bien compliqué.
+
+Pour finir, la chanson que j&#8217;ai dans la tête depuis le début de l&#8217;écriture de l&#8217;article :
+
+{% youtube dFY-VWey5xw %}
