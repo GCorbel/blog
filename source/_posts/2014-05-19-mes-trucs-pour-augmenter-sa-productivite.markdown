@@ -25,18 +25,19 @@ pour l'utilisation du terminal.
 
 Linux vs Mac : Il n'y a pas de bonnes ou de mauvaises réponses. Je n'utilise pas
 Mac, car il ne correspond pas à ma philosophie. Je n'ai pas envie d'être
-contrôle par Apple et j'adore l'Open Source. Si vous préférez payer, libre a
+contrôlé par Apple et j'adore l'Open Source. Si vous préférez payer, libre a
 vous.
 
-Pourquoi Ubuntu? Tout simplement parceque c'est la distribution la plus connue.
+Pourquoi Ubuntu? Tout simplement parce que c'est la distribution la plus connue.
 
 ## Terminal - ZSH
 
-[Zsh](http://www.zsh.org/) est un remplaçant de Bash. Il offre beaucoup de petits
-trucs rapides comme, par exemple, la possibilité de faire des raccourcis. Dans
-mon cas, lorsque je tape `gst`, il exécute la commande `git status`. Zsh offre
-également un meilleur affichage et une navigation plus rapide en ne tenant pas
-compte des majuscules dans les noms de fichiers et de dossiers. [Oh-My-Zsh](https://github.com/robbyrussell/oh-my-zsh) offre
+[Zsh](http://www.zsh.org/) est un remplaçant de Bash. Zsh offre
+un meilleur affichage et une navigation plus rapide en ne tenant pas
+compte des majuscules dans les noms de fichiers et de dossiers. Une meilleure
+intégration avec git est disponible. Si votre répertoire est versionné, vous
+verrez quelle est la branche courante.
+[Oh-My-Zsh](https://github.com/robbyrussell/oh-my-zsh) offre
 des configurations préfaites pour certains outils comme git ou rails.
 
 Il est possible de configurer Zsh. Si l'on n'aime pas le fait d'ignorer la
@@ -88,7 +89,7 @@ combinaisons du clavier pour exécuter plus rapidement certaines actions.
 
 ## TMUX
 
-[Tmux](http://tmux.sourceforge.net/) permet d'exploiter plusieurs terminaux au sein d'un seul écran. On peut
+[Tmux](http://tmux.sourceforge.net/) permets d'exploiter plusieurs terminaux au sein d'un seul écran. On peut
 créer des panneaux, qui vont séparer l'écran en plusieurs parties, chaque
 partie étant un terminal où il est possible d'exécuter des commandes. Il est
 possible de regrouper les panneaux en fenêtres. La liste des fenêtres est
@@ -105,7 +106,7 @@ tout en restant asynchrone et en me permettant d'afficher et de garder la trace
 de l'erreur lorsque je modifie mon code.
 
 J'utilise également [Tmuxinator](https://github.com/tmuxinator/tmuxinator), qui permet d'enregistrer des configurations Tmux
-et de démarrer une session avec un certain affichage et executer certaines
+et de démarrer une session avec un certain affichage et exécuter certaines
 commandes au démarrage. Je l'ai configuré pour accéder rapidement aux projets
 sur lesquels je travaille. La commande `tmuxinator c`, me mettra dans le dossier
 du projet et créera trois panneaux, le principal avec Vim, le second lancera le
@@ -136,7 +137,7 @@ Le plus important est de ne jamais arrêter de coder. C'est avec la pratique
 qu'on s'améliore. Il faut également prendre des temps pour regarder de plus
 près ce que l'on fait et se poser les bonnes questions.
 
-Petit conseil pour les unilingues francophone : N'ayez pas peur de l'anglais.
+Petit conseil pour les unilingues francophones : N'ayez pas peur de l'anglais.
 C'est dur au début, mais avec le temps ça va mieux. De plus, quand on lit des
 livres sur le développement, c'est possible de comprendre le sens en lisant le
 code.
