@@ -98,7 +98,7 @@ qui sont un regroupement de fenêtres. À tout instant, il est possible de
 naviguer entre les différents éléments à l'aide de raccourcis clavier.
 
 Mon truc préféré avec Tmux est de le faire parler avec Vim. J'ai ajouté le
-plug-in [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator), qui permet d'envoyer une commande dans un panneau.
+plug-in [tslime](https://github.com/kikijump/tslime.vim/blob/master/tslime.vim), qui permet d'envoyer une commande dans un panneau.
 Je l'utilise pour exécuter les tests. Lorsque j'appuie sur les touches `,t`,
 Vim lance l'exécution de Rspec, avec le fichier et la ligne courante, et lance
 le test dans un panneau séparé. Cela me permet d'exécuter les tests rapidement
