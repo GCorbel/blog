@@ -27,7 +27,7 @@ Dans le livre [Practical Object-Oriented Design in Ruby: An Agile Primer](http:/
 * **U**sable : Le code doit pouvoir être utilisé dans différents contextes;
 * **E**xemplary : Le code produit doit encourager une meilleure qualité de la conception;
 
-Pour nous aider dans cette démarche, [Robert C. Martin](http://en.wikipedia.org/wiki/Robert_Cecil_Martin) a défini cinq Design Principles (Principe de conception) communément acceptés. Une application doit être [SOLID](http://en.wikipedia.org/wiki/SOLID_%28object-oriented_design%29), l'acronyme pour :
+Pour nous aider dans cette démarche, [Robert C. Martin](http://en.wikipedia.org/wiki/Robert_Cecil_Martin) a défini cinq Design Principles communément acceptés. Une application doit être [SOLID](http://en.wikipedia.org/wiki/SOLID_%28object-oriented_design%29), l'acronyme pour :
 
 * [**S**ingle Responsability Principle](http://en.wikipedia.org/wiki/Single_responsibility_principle) - Une classe doit avoir une seule responsabilité;
 * [**O**pen/Clode Priciple](http://en.wikipedia.org/wiki/Open/closed_principle) - Une classe doit être ouverte pour l'extension, mais fermée pour la modification;
@@ -45,7 +45,7 @@ Il n'est pas toujours facile de faire l'unanimité sur des techniques. Heureusem
 
 ## Desgin Patterns
 
-Les Design Patterns ou Patrons de Conception sont des types de solutions répondant à certains problèmes communs. En programmation web, je crois que le plus connu est [MVC](http://en.wikipedia.org/wiki/MVC). Celui-ci veut qu'une requête HTTP soit traitée par un routeur qui instancie un contrôleur qui a pour but d'instancier les modèles et de renvoyer une vue.
+Les Design Patterns sont des types de solutions répondant à certains problèmes communs. En programmation web, je crois que le plus connu est [MVC](http://en.wikipedia.org/wiki/MVC). Celui-ci veut qu'une requête HTTP soit traitée par un routeur qui instancie un contrôleur qui a pour but d'instancier les modèles et de renvoyer une vue.
 
 Il existe bien d'autres Design Patterns. Avec Rails, mes préférés sont :
 
