@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2014-05-19T08:30:24-04:00</updated>
+  <updated>2014-05-19T09:54:45-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -38,18 +38,19 @@ pour l&#8217;utilisation du terminal.</p>
 
 <p>Linux vs Mac : Il n&#8217;y a pas de bonnes ou de mauvaises réponses. Je n&#8217;utilise pas
 Mac, car il ne correspond pas à ma philosophie. Je n&#8217;ai pas envie d&#8217;être
-contrôle par Apple et j&#8217;adore l&#8217;Open Source. Si vous préférez payer, libre a
+contrôlé par Apple et j&#8217;adore l&#8217;Open Source. Si vous préférez payer, libre a
 vous.</p>
 
-<p>Pourquoi Ubuntu? Tout simplement parceque c&#8217;est la distribution la plus connue.</p>
+<p>Pourquoi Ubuntu? Tout simplement parce que c&#8217;est la distribution la plus connue.</p>
 
 <h2>Terminal &ndash; ZSH</h2>
 
-<p><a href="http://www.zsh.org/">Zsh</a> est un remplaçant de Bash. Il offre beaucoup de petits
-trucs rapides comme, par exemple, la possibilité de faire des raccourcis. Dans
-mon cas, lorsque je tape <code>gst</code>, il exécute la commande <code>git status</code>. Zsh offre
-également un meilleur affichage et une navigation plus rapide en ne tenant pas
-compte des majuscules dans les noms de fichiers et de dossiers. <a href="https://github.com/robbyrussell/oh-my-zsh">Oh-My-Zsh</a> offre
+<p><a href="http://www.zsh.org/">Zsh</a> est un remplaçant de Bash. Zsh offre
+un meilleur affichage et une navigation plus rapide en ne tenant pas
+compte des majuscules dans les noms de fichiers et de dossiers. Une meilleure
+intégration avec git est disponible. Si votre répertoire est versionné, vous
+verrez quelle est la branche courante.
+<a href="https://github.com/robbyrussell/oh-my-zsh">Oh-My-Zsh</a> offre
 des configurations préfaites pour certains outils comme git ou rails.</p>
 
 <p>Il est possible de configurer Zsh. Si l&#8217;on n&#8217;aime pas le fait d&#8217;ignorer la
@@ -107,7 +108,7 @@ combinaisons du clavier pour exécuter plus rapidement certaines actions.</p>
 
 <h2>TMUX</h2>
 
-<p><a href="http://tmux.sourceforge.net/">Tmux</a> permet d&#8217;exploiter plusieurs terminaux au sein d&#8217;un seul écran. On peut
+<p><a href="http://tmux.sourceforge.net/">Tmux</a> permets d&#8217;exploiter plusieurs terminaux au sein d&#8217;un seul écran. On peut
 créer des panneaux, qui vont séparer l&#8217;écran en plusieurs parties, chaque
 partie étant un terminal où il est possible d&#8217;exécuter des commandes. Il est
 possible de regrouper les panneaux en fenêtres. La liste des fenêtres est
@@ -124,7 +125,7 @@ tout en restant asynchrone et en me permettant d&#8217;afficher et de garder la 
 de l&#8217;erreur lorsque je modifie mon code.</p>
 
 <p>J&#8217;utilise également <a href="https://github.com/tmuxinator/tmuxinator">Tmuxinator</a>, qui permet d&#8217;enregistrer des configurations Tmux
-et de démarrer une session avec un certain affichage et executer certaines
+et de démarrer une session avec un certain affichage et exécuter certaines
 commandes au démarrage. Je l&#8217;ai configuré pour accéder rapidement aux projets
 sur lesquels je travaille. La commande <code>tmuxinator c</code>, me mettra dans le dossier
 du projet et créera trois panneaux, le principal avec Vim, le second lancera le
@@ -155,7 +156,7 @@ me donne une rigueur qui me permet d&#8217;approfondir certaines connaissances.<
 qu&#8217;on s&#8217;améliore. Il faut également prendre des temps pour regarder de plus
 près ce que l&#8217;on fait et se poser les bonnes questions.</p>
 
-<p>Petit conseil pour les unilingues francophone : N&#8217;ayez pas peur de l&#8217;anglais.
+<p>Petit conseil pour les unilingues francophones : N&#8217;ayez pas peur de l&#8217;anglais.
 C&#8217;est dur au début, mais avec le temps ça va mieux. De plus, quand on lit des
 livres sur le développement, c&#8217;est possible de comprendre le sens en lisant le
 code.</p>
@@ -599,7 +600,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#105;&#108;&#x74;&#111;&#x3a;&#103;&#x75;&#x69;&#114;&#101;&#99;&#x2e;&#99;&#111;&#x72;&#x62;&#101;&#108;&#64;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#x6f;&#109;">&#x67;&#117;&#x69;&#x72;&#101;&#99;&#46;&#x63;&#x6f;&#x72;&#98;&#x65;&#x6c;&#x40;&#103;&#x6d;&#x61;&#105;&#108;&#46;&#99;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#x61;&#105;&#108;&#116;&#111;&#58;&#x67;&#117;&#x69;&#114;&#101;&#99;&#x2e;&#x63;&#x6f;&#x72;&#98;&#101;&#x6c;&#64;&#103;&#x6d;&#x61;&#105;&#108;&#x2e;&#99;&#111;&#109;">&#x67;&#117;&#105;&#x72;&#101;&#99;&#46;&#x63;&#x6f;&#114;&#98;&#x65;&#108;&#x40;&#103;&#x6d;&#97;&#x69;&#108;&#46;&#x63;&#111;&#x6d;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
