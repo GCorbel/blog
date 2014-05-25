@@ -93,11 +93,16 @@ on = True
 RPIO.setmode(RPIO.BCM)
 RPIO.setup(gpio, RPIO.OUT)
 
-while True:
-    RPIO.output(gpio, on)
-    on = not on
-    time.sleep(.1)
+try:
+    while True:
+        RPIO.output(gpio, on)
+        on = not on
+        time.sleep(.1)
+except KeyboardInterrupt:
+   RPIO.cleanup()
 ```
+
+Pour lancer l'application, il suffit de faire `sudo python myfile.py`. Pour quitter, il faut appuyer sur CTRL+C.
 
 Comme vous pouvez le constater, j'ai choisi d'utiliser
 [RPIO](https://pypi.python.org/pypi/RPIO). Une bibliothèque simple
@@ -112,7 +117,10 @@ du GPIO. Les deux fonctionnent aussi bien et le choix est à votre convenance.
 d'une entrée ou d'une sortie. Dans ce cas, il s'agit d'une sortie.
 
 `RPIO.output` permet d'indiquer le signal à envoyer au port. Il est possible de
-lui envoyer un booléen, 0, `GPIO.LOW:`, 1 ou `GPIO.HIGH`.
+lui envoyer un booléen, 0, `GPIO.LOW`, 1 ou `GPIO.HIGH`.
+
+Finalement, lorsque le programme est interrompu, les GPIOs sont remis dans leurs
+états initiaux.
 
 ## Connecter le programme avec GMail
 
@@ -133,12 +141,15 @@ gpio = 17
 RPIO.setmode(RPIO.BCM)
 RPIO.setup(gpio, RPIO.OUT)
 
-while True:
-    _, data = gmail.search(None, 'UnSeen')
-    if len(data[0].split()) == 0:
-        RPIO.output(gpio, False)
-    else:
-        RPIO.output(gpio, True)
+try:
+    while True:
+        _, data = gmail.search(None, 'UnSeen')
+        if len(data[0].split()) == 0:
+            RPIO.output(gpio, False)
+        else:
+            RPIO.output(gpio, True)
+except KeyboardInterrupt:
+   RPIO.cleanup()
 ```
 
 Et voilà! Quand un nouveau email arrive, la LED s'allume. Si le courriel
