@@ -43,12 +43,17 @@ correspondants :
 ![](http://img11.hostingpics.net/pics/720336RaspberryPiGPIOLayoutRevision1.png)
 
 Le circuit électrique que j'ai fait est celui de [cet article](https://projects.drogon.net/raspberry-pi/gpio-examples/tux-crossing/gpio-examples-1-a-single-led/).
+
+Voici le schéma suivi et adapter pour utiliser les pièces du kit :
+
+|[](http://img15.hostingpics.net/pics/2000521ledgpiobb1267x300.jpg)
+
 Tout d'abord, pour vérifier que le circuit fonctionne correctement, je l'ai
 connecté au port du 3.3v comme montré sur cette image :
 
 ![](http://img11.hostingpics.net/pics/861306photo1.jpg)
 
-Ça fonctionne, je peux passer à la création du programme.
+Le chemin doit about à la mise à la terre (ground). Par convention, le positif est représenté par des fils rouges et le négatif est représenté par des fils noirs. Ça fonctionne, je peux passer à la création du programme.
 
 ## Choix du langage
 Le premier choix à faire lors du commencement d'un programme est celui du langage.
