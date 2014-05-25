@@ -208,6 +208,9 @@ se connecter à GMail, j&#8217;ai commencé par faire clignoter la LED. Voici le
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">RPIO</span>
 </span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
 </span><span class='line'>
@@ -217,12 +220,17 @@ se connecter à GMail, j&#8217;ai commencé par faire clignoter la LED. Voici le
 </span><span class='line'><span class="n">RPIO</span><span class="o">.</span><span class="n">setmode</span><span class="p">(</span><span class="n">RPIO</span><span class="o">.</span><span class="n">BCM</span><span class="p">)</span>
 </span><span class='line'><span class="n">RPIO</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">gpio</span><span class="p">,</span> <span class="n">RPIO</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'><span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-</span><span class='line'>    <span class="n">RPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">gpio</span><span class="p">,</span> <span class="n">on</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">on</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">on</span>
-</span><span class='line'>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="k">try</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">RPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">gpio</span><span class="p">,</span> <span class="n">on</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">on</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">on</span>
+</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+</span><span class='line'>   <span class="n">RPIO</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+<p>Pour lancer l&#8217;application, il suffit de faire <code>sudo python myfile.py</code>. Pour quitter, il faut appuyer sur CTRL+C.</p>
 
 <p>Comme vous pouvez le constater, j&#8217;ai choisi d&#8217;utiliser
 <a href="https://pypi.python.org/pypi/RPIO">RPIO</a>. Une bibliothèque simple
@@ -237,7 +245,10 @@ du GPIO. Les deux fonctionnent aussi bien et le choix est à votre convenance.
 d&#8217;une entrée ou d&#8217;une sortie. Dans ce cas, il s&#8217;agit d&#8217;une sortie.</p>
 
 <p><code>RPIO.output</code> permet d&#8217;indiquer le signal à envoyer au port. Il est possible de
-lui envoyer un booléen, 0, <code>GPIO.LOW:</code>, 1 ou <code>GPIO.HIGH</code>.</p>
+lui envoyer un booléen, 0, <code>GPIO.LOW</code>, 1 ou <code>GPIO.HIGH</code>.</p>
+
+<p>Finalement, lorsque le programme est interrompu, les GPIOs sont remis dans leurs
+états initiaux.</p>
 
 <h2>Connecter le programme avec GMail</h2>
 
@@ -263,6 +274,9 @@ Voici le résultat final :</p>
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
 <span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">RPIO</span>
 </span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
 </span><span class='line'><span class="kn">import</span> <span class="nn">imaplib</span>
@@ -276,12 +290,15 @@ Voici le résultat final :</p>
 </span><span class='line'><span class="n">RPIO</span><span class="o">.</span><span class="n">setmode</span><span class="p">(</span><span class="n">RPIO</span><span class="o">.</span><span class="n">BCM</span><span class="p">)</span>
 </span><span class='line'><span class="n">RPIO</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">gpio</span><span class="p">,</span> <span class="n">RPIO</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'><span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-</span><span class='line'>    <span class="n">_</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">gmail</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;UnSeen&#39;</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span class='line'>        <span class="n">RPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">gpio</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
-</span><span class='line'>        <span class="n">RPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">gpio</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</span><span class='line'><span class="k">try</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">_</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">gmail</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;UnSeen&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">RPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">gpio</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">RPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">gpio</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</span><span class='line'><span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+</span><span class='line'>   <span class="n">RPIO</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
