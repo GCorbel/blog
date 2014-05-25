@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2014-05-19T14:09:35-04:00</updated>
+  <updated>2014-05-25T13:19:49-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -12,6 +12,188 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Allumer une LED lors de la réception d'un email avec Raspberry Pi]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2014/05/25/allumer-une-led-lors-de-la-reception-dun-email-avec-raspberry-pi/"/>
+    <updated>2014-05-25T10:01:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2014/05/25/allumer-une-led-lors-de-la-reception-dun-email-avec-raspberry-pi</id>
+    <content type="html"><![CDATA[<p>L&#8217;article a pour but d&#8217;expliquer, en détail, les principes de programmation avec le
+<a href="http://www.raspberrypi.org/">Raspberry Pi</a>. Comme exemple, je vais indiquer
+les différentes étapes pour faire un petit programme en Python permettant
+d&#8217;allumer une LED lorsqu&#8217;un courriel arrive sur un compte GMail.</p>
+
+<!--more-->
+
+
+<h2>Raspberry Pi</h2>
+
+<p>Commençons par la base. Le Raspberry Pi est un petit ordinateur possédant un
+processeur ARM. Dans la même catégorie, il existe <a href="http://www.arduino.cc/">Arduino</a> et <a href="http://beagleboard.org/bone">BeagleBone</a>. Chacun
+possède ses forces comme indiqué dans <a href="http://makezine.com/2013/04/15/arduino-uno-vs-beaglebone-vs-raspberry-pi/">cet article</a>.
+Avec le Raspberry Pi, il est possible de choisir un OS à installer. Le plus
+utilisé est Raspbian, une version dérivée de Debian pour Raspberry. C&#8217;est celui
+que j&#8217;utilise dans cet article.</p>
+
+<p>Dans mon cas, j&#8217;ai acheté le <a href="http://www.amazon.ca/CanaKit-Raspberry-Ultimate-Starter-Components/dp/B00GWTNYJW/ref=sr_1_1?ie=UTF8&amp;qid=1401027372&amp;sr=8-1">Raspberry Pi Ultimate Starter Kit</a>.</p>
+
+<h2>Le circuit</h2>
+
+<p>Mes notions d&#8217;électroniques remontent au collège et avaient besoin d&#8217;être
+dépoussiérées. Le principe est simple, l&#8217;électricité est émise par le Raspberry
+et suit un chemin du positif vers le négatif. Entre ces deux étapes, j&#8217;ai
+placé une LED, pour la lumière, et une résistance, pour s&#8217;assurer que
+le voltage ne dépasse pas une certaine puissance.</p>
+
+<p>Le Raspberry Pi possède différents ports d&#8217;entrées et de sorties. Les signaux
+électriques sont envoyés par des GPIOs. Un GPIO (General Purpose Input/Output)
+est un port sans but prédéfini. Il est possible de choisir s&#8217;il s&#8217;agit d&#8217;un
+port d&#8217;entrée ou de sortie ainsi que la puissance émise par ce port.</p>
+
+<p>Il est facile de se perdre dans le numéro des GPIO et des ports. Les deux
+possèdent une numérotation différente et sont souvent utilisées dans les
+articles. Voici une image indiquant la liste des ports et les GPIOs
+correspondants :</p>
+
+<p><img src="http://img11.hostingpics.net/pics/720336RaspberryPiGPIOLayoutRevision1.png" alt="" /></p>
+
+<p>Le circuit électrique que j&#8217;ai fait est celui de <a href="https://projects.drogon.net/raspberry-pi/gpio-examples/tux-crossing/gpio-examples-1-a-single-led/">cet article</a>.
+Tout d&#8217;abord, pour vérifier que le circuit fonctionne correctement, je l&#8217;ai
+connecté au port du 3.3v comme montré sur cette image :</p>
+
+<p><img src="http://img11.hostingpics.net/pics/861306photo1.jpg" alt="" /></p>
+
+<p>Ça fonctionne, je peux passer à la création du programme.</p>
+
+<h2>Choix du langage</h2>
+
+<p>Le premier choix à faire lors du commencement d&#8217;un programme est celui du langage.
+J&#8217;ai toujours pensé qu&#8217;un projet avec une composante électrique devait avoir
+un langage comme le C, ou plus bas niveau.</p>
+
+<p>Étant donné que Raspberry Pi fonctionne avec un OS normal, il est possible
+d&#8217;installer n&#8217;importe quel langage, mais je crois qu&#8217;il est bon de rester sur
+les deux installés de base tout simplement parce que ce sont ceux qu&#8217;utilise la
+communauté Raspberry. Ces deux langages sont les C et le Python.</p>
+
+<p>Après un comparatif de ces langages, <strong>j&#8217;ai finalement choisi le Python</strong>. Bien que le
+langage en lui-même est plus lent, il est tellement plus rapide de programmer
+avec celui-ci qu&#8217;il reste une option intéressante. Je crois qu&#8217;une bonne pratique
+est de faire un programme en Python et, si la rapidité devient un point
+problématique, refaire le même programme en C.</p>
+
+<p>De toute façon de nombreux autres éléments peuvent influencer de manière plus
+importante la rapidité, comme la vitesse du réseau par exemple.</p>
+
+<h2>Allumer une LED via un GPIO</h2>
+
+<p>Dans cet exemple, nous allons utiliser le GPIO 17. Le choix est totalement
+arbitraire et n&#8217;a aucune importance. Avant de faire un programme permettant de
+se connecter à GMail, j&#8217;ai commencé par faire clignoter la LED. Voici le circuit avec le GPIO changé :</p>
+
+<p><img src="http://img11.hostingpics.net/pics/250456photo2.jpg" alt="" /></p>
+
+<p>Et voici le programme :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">RPIO</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">gpio</span> <span class="o">=</span> <span class="mi">17</span>
+</span><span class='line'><span class="n">on</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">RPIO</span><span class="o">.</span><span class="n">setmode</span><span class="p">(</span><span class="n">RPIO</span><span class="o">.</span><span class="n">BCM</span><span class="p">)</span>
+</span><span class='line'><span class="n">RPIO</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">gpio</span><span class="p">,</span> <span class="n">RPIO</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">RPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">gpio</span><span class="p">,</span> <span class="n">on</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">on</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">on</span>
+</span><span class='line'>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Comme vous pouvez le constater, j&#8217;ai choisi d&#8217;utiliser
+<a href="https://pypi.python.org/pypi/RPIO">RPIO</a>. Une bibliothèque simple
+et efficace.</p>
+
+<p>Deux modes permettent d&#8217;indiquer le type de numérotation que l&#8217;on souhaite.
+Si l&#8217;on choisit <code>RPIO.BOARD</code>, il faudra indiquer le numéro du port et pour <code>RPIO.BCM</code> celui
+du GPIO. Les deux fonctionnent aussi bien et le choix est à votre convenance.
+<code>RPIO.setmode</code> permet de choisir un mode ou l&#8217;autre.</p>
+
+<p><code>RPIO.setup</code> permet de configurer le port pour faire en sorte qu&#8217;il s&#8217;agisse
+d&#8217;une entrée ou d&#8217;une sortie. Dans ce cas, il s&#8217;agit d&#8217;une sortie.</p>
+
+<p><code>RPIO.output</code> permet d&#8217;indiquer le signal à envoyer au port. Il est possible de
+lui envoyer un booléen, 0, <code>GPIO.LOW:</code>, 1 ou <code>GPIO.HIGH</code>.</p>
+
+<h2>Connecter le programme avec GMail</h2>
+
+<p>Pour connecter le programme avec GMail, j&#8217;ai utilisé <a href="https://docs.python.org/2/library/imaplib.html">imaplib</a>.
+Voici le résultat final :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">RPIO</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">imaplib</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">gmail</span> <span class="o">=</span> <span class="n">imaplib</span><span class="o">.</span><span class="n">IMAP4_SSL</span><span class="p">(</span><span class="s">&#39;imap.gmail.com&#39;</span><span class="p">,</span> <span class="s">&#39;993&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">gmail</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="s">&#39;username&#39;</span><span class="p">,</span> <span class="s">&#39;password&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">gmail</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">gpio</span> <span class="o">=</span> <span class="mi">17</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">RPIO</span><span class="o">.</span><span class="n">setmode</span><span class="p">(</span><span class="n">RPIO</span><span class="o">.</span><span class="n">BCM</span><span class="p">)</span>
+</span><span class='line'><span class="n">RPIO</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">gpio</span><span class="p">,</span> <span class="n">RPIO</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">_</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">gmail</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;UnSeen&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">RPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">gpio</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">RPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">gpio</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Et voilà! Quand un nouveau email arrive, la LED s&#8217;allume. Si le courriel
+n&#8217;est plus marqué comme lu, celle-ci s&#8217;éteind.</p>
+
+<h2>Conclusion</h2>
+
+<p>L&#8217;application utilisée comme exemple n&#8217;est pas la plus utile du monde, mais
+permet de voir les concepts de base du développement avec Raspberry Pi.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Mes trucs pour augmenter sa productivité]]></title>
@@ -600,7 +782,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#58;&#103;&#x75;&#105;&#x72;&#101;&#99;&#x2e;&#x63;&#x6f;&#x72;&#x62;&#x65;&#108;&#64;&#103;&#109;&#x61;&#x69;&#108;&#x2e;&#x63;&#111;&#109;">&#x67;&#117;&#105;&#114;&#101;&#99;&#x2e;&#99;&#111;&#114;&#98;&#101;&#108;&#64;&#x67;&#109;&#x61;&#x69;&#x6c;&#x2e;&#x63;&#111;&#x6d;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#103;&#117;&#105;&#x72;&#x65;&#99;&#x2e;&#x63;&#x6f;&#114;&#x62;&#x65;&#108;&#64;&#x67;&#109;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#x6d;">&#x67;&#117;&#x69;&#114;&#x65;&#99;&#46;&#99;&#111;&#114;&#98;&#x65;&#108;&#x40;&#103;&#x6d;&#97;&#105;&#108;&#x2e;&#x63;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>

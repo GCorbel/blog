@@ -57,8 +57,14 @@
         <lastmod>2014-05-19T14:09:18-04:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://GCorbel.github.io/blog/blog/2014/05/25/allumer-une-led-lors-de-la-reception-dun-email-avec-raspberry-pi/
+        </loc>
+        <lastmod>2014-05-25T13:18:55-04:00</lastmod>
+    </url>
+    <url>
         <loc>http://GCorbel.github.io/blog/blog/archives/</loc>
-        <lastmod>2014-05-19T14:09:18-04:00</lastmod>
+        <lastmod>2014-05-25T13:18:55-04:00</lastmod>
     </url>
     <url>
         <loc>http://GCorbel.github.io/blog/robots.txt</loc>
@@ -66,6 +72,6 @@
     </url>
     <url>
         <loc>http://GCorbel.github.io/blog/</loc>
-        <lastmod>2014-05-19T14:09:18-04:00</lastmod>
+        <lastmod>2014-05-25T13:18:55-04:00</lastmod>
     </url>
 </urlset>
