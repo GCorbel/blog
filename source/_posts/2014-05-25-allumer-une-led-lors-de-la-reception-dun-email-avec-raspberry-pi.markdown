@@ -11,6 +11,8 @@ L'article a pour but d'expliquer, en détail, les principes de programmation ave
 les différentes étapes pour faire un petit programme en Python permettant
 d'allumer une LED lorsqu'un courriel arrive sur un compte GMail.
 
+<!--more-->
+
 ## Raspberry Pi
 Commençons par la base. Le Raspberry Pi est un petit ordinateur possédant un
 processeur ARM. Dans la même catégorie, il existe [Arduino](http://www.arduino.cc/) et [BeagleBone](http://beagleboard.org/bone). Chacun
