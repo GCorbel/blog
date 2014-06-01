@@ -16,7 +16,7 @@ Cet article est une brève présentation des Design Principles, ou Principes de 
 
 ## Programation Orienté Objet
 
-Un des principes fondamentaux, en Ruby comme dans d'autres langages, est la Programation Orienté Objet (POO). Il est parfaitement possible d'écrire une application en code en procédural, mais il est vite difficile de la maintenir efficacement. Afin de faire une séparation logique du code, il est possible de le regrouper en classe et en méthode. Pour faire une bonne séparation, il est important de bien comprendre quels sont les principes existants. De plus, la POO est bien plus que mettre des bouts de cote dans des catégories. Il s'agit d'une manière de penser le code.
+Un des principes fondamentaux, en Ruby comme dans d'autres langages, est la Programation Orienté Objet (POO). Il est parfaitement possible d'écrire une application en code en procédural, mais il est vite difficile de la maintenir efficacement. Afin de faire une séparation logique du code, il est possible de le regrouper en classes et en méthodes. Pour faire une bonne séparation, il est important de bien comprendre quels sont les principes existants. De plus, la POO est bien plus que mettre des bouts de cote dans des catégories. Il s'agit d'une manière de penser le code.
 
 ## Design Principles
 
@@ -62,7 +62,7 @@ Savoir quand utiliser un Design Pattern, peut paraitre anodin, mais il y a un au
 
 ## Quel Design Pattern utiliser?
 
-Il est parfois difficile de choisir quel Design Pattern utilisé. D'autant plus que certains peuvent se contredisent. Par exemple, il est difficile d'utiliser Tell Don't Ask dans un contrôleur quand viens le temps de savoir quelle vue retourner. Malheureusement, il n'y a pas de règles simples. Il faut savoir utiliser le bon sens et prendre des décisions.
+Il est parfois difficile de choisir quel Design Pattern utilisé. D'autant plus que certains peuvent se contredire. Par exemple, il est difficile d'utiliser Tell Don't Ask dans un contrôleur quand viens le temps de savoir quelle vue retourner. Malheureusement, il n'y a pas de règles simples. Il faut savoir utiliser le bon sens et prendre des décisions.
 
 ## L'impact psychologique
 
