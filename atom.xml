@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2014-05-25T16:09:26-04:00</updated>
+  <updated>2014-06-01T07:30:50-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -391,7 +391,7 @@ faire ses propres choix.</p>
 
 <h2>Programation Orienté Objet</h2>
 
-<p>Un des principes fondamentaux, en Ruby comme dans d&#8217;autres langages, est la Programation Orienté Objet (POO). Il est parfaitement possible d&#8217;écrire une application en code en procédural, mais il est vite difficile de la maintenir efficacement. Afin de faire une séparation logique du code, il est possible de le regrouper en classe et en méthode. Pour faire une bonne séparation, il est important de bien comprendre quels sont les principes existants. De plus, la POO est bien plus que mettre des bouts de cote dans des catégories. Il s&#8217;agit d&#8217;une manière de penser le code.</p>
+<p>Un des principes fondamentaux, en Ruby comme dans d&#8217;autres langages, est la Programation Orienté Objet (POO). Il est parfaitement possible d&#8217;écrire une application en code en procédural, mais il est vite difficile de la maintenir efficacement. Afin de faire une séparation logique du code, il est possible de le regrouper en classes et en méthodes. Pour faire une bonne séparation, il est important de bien comprendre quels sont les principes existants. De plus, la POO est bien plus que mettre des bouts de cote dans des catégories. Il s&#8217;agit d&#8217;une manière de penser le code.</p>
 
 <h2>Design Principles</h2>
 
@@ -446,7 +446,7 @@ faire ses propres choix.</p>
 
 <h2>Quel Design Pattern utiliser?</h2>
 
-<p>Il est parfois difficile de choisir quel Design Pattern utilisé. D&#8217;autant plus que certains peuvent se contredisent. Par exemple, il est difficile d&#8217;utiliser Tell Don&rsquo;t Ask dans un contrôleur quand viens le temps de savoir quelle vue retourner. Malheureusement, il n&#8217;y a pas de règles simples. Il faut savoir utiliser le bon sens et prendre des décisions.</p>
+<p>Il est parfois difficile de choisir quel Design Pattern utilisé. D&#8217;autant plus que certains peuvent se contredire. Par exemple, il est difficile d&#8217;utiliser Tell Don&rsquo;t Ask dans un contrôleur quand viens le temps de savoir quelle vue retourner. Malheureusement, il n&#8217;y a pas de règles simples. Il faut savoir utiliser le bon sens et prendre des décisions.</p>
 
 <h2>L&#8217;impact psychologique</h2>
 
@@ -804,7 +804,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#x6f;&#58;&#x67;&#x75;&#x69;&#114;&#101;&#99;&#x2e;&#99;&#111;&#x72;&#x62;&#101;&#x6c;&#64;&#x67;&#109;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#x6d;">&#x67;&#x75;&#105;&#114;&#x65;&#x63;&#46;&#x63;&#x6f;&#x72;&#98;&#x65;&#108;&#64;&#103;&#109;&#x61;&#x69;&#108;&#x2e;&#99;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#103;&#x75;&#x69;&#x72;&#101;&#99;&#46;&#x63;&#x6f;&#114;&#98;&#101;&#108;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#x6f;&#x6d;">&#103;&#x75;&#x69;&#x72;&#101;&#x63;&#46;&#x63;&#111;&#x72;&#98;&#x65;&#x6c;&#64;&#103;&#109;&#x61;&#105;&#108;&#46;&#x63;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
