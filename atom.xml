@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2014-06-01T07:30:50-04:00</updated>
+  <updated>2014-06-02T05:02:27-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -20,8 +20,8 @@
     <id>http://GCorbel.github.io/blog/blog/2014/05/25/allumer-une-led-lors-de-la-reception-dun-email-avec-raspberry-pi</id>
     <content type="html"><![CDATA[<p>L&#8217;article a pour but d&#8217;expliquer, en détail, les principes de programmation avec le
 <a href="http://www.raspberrypi.org/">Raspberry Pi</a>. Comme exemple, je vais indiquer
-les différentes étapes pour faire un petit programme en Python permettant
-d&#8217;allumer une LED lorsqu&#8217;un courriel arrive sur un compte GMail.</p>
+les différentes étapes nécessaires pour faire un petit programme en Python permettant
+d&#8217;allumer une LED à la réception d&#8217;un email sur un compte GMail.</p>
 
 <!--more-->
 
@@ -31,8 +31,8 @@ d&#8217;allumer une LED lorsqu&#8217;un courriel arrive sur un compte GMail.</p>
 <p>Commençons par la base. Le Raspberry Pi est un petit ordinateur possédant un
 processeur ARM. Dans la même catégorie, il existe <a href="http://www.arduino.cc/">Arduino</a> et <a href="http://beagleboard.org/bone">BeagleBone</a>. Chacun
 possède ses forces comme indiqué dans <a href="http://makezine.com/2013/04/15/arduino-uno-vs-beaglebone-vs-raspberry-pi/">cet article</a>.
-Avec le Raspberry Pi, il est possible de choisir un OS à installer. Le plus
-utilisé est Raspbian, une version dérivée de Debian pour Raspberry. C&#8217;est celui
+Raspberry utilise une distribution de Linux. La plus
+utilisé est Raspbian, une version dérivée de Debian pour Raspberry. C&#8217;est celle
 que j&#8217;utilise dans cet article.</p>
 
 <p>Dans mon cas, j&#8217;ai acheté le <a href="http://www.amazon.ca/CanaKit-Raspberry-Ultimate-Starter-Components/dp/B00GWTNYJW/ref=sr_1_1?ie=UTF8&amp;qid=1401027372&amp;sr=8-1">Raspberry Pi Ultimate Starter Kit</a>.</p>
@@ -57,9 +57,9 @@ correspondants :</p>
 
 <p><img src="http://img11.hostingpics.net/pics/720336RaspberryPiGPIOLayoutRevision1.png" alt="" /></p>
 
-<p>Le circuit électrique que j&#8217;ai fait est celui de <a href="https://projects.drogon.net/raspberry-pi/gpio-examples/tux-crossing/gpio-examples-1-a-single-led/">cet article</a>.</p>
+<p>Le circuit électrique que j&#8217;ai fait correspond à celui de <a href="https://projects.drogon.net/raspberry-pi/gpio-examples/tux-crossing/gpio-examples-1-a-single-led/">cet article</a>.</p>
 
-<p>Voici le schéma suivi et adapter pour utiliser les pièces du kit :</p>
+<p>Voici le schéma suivi et adapté pour utiliser les pièces du kit :</p>
 
 <p>|<a href="http://img15.hostingpics.net/pics/2000521ledgpiobb1267x300.jpg"></a></p>
 
@@ -68,7 +68,9 @@ connecté au port du 3.3v comme montré sur cette image :</p>
 
 <p><img src="http://img11.hostingpics.net/pics/861306photo1.jpg" alt="" /></p>
 
-<p>Le chemin doit about à la mise à la terre (ground). Par convention, le positif est représenté par des fils rouges et le négatif est représenté par des fils noirs. Ça fonctionne, je peux passer à la création du programme.</p>
+<p>Le chemin doit terminer par la mise à la terre (ground). Par convention, le
+positif est représenté par des fils rouges et le négatif est représenté par des
+fils noirs. Tout fonctionne, je peux passer à la création du programme.</p>
 
 <h2>Choix du langage</h2>
 
@@ -76,18 +78,18 @@ connecté au port du 3.3v comme montré sur cette image :</p>
 J&#8217;ai toujours pensé qu&#8217;un projet avec une composante électrique devait avoir
 un langage comme le C, ou plus bas niveau.</p>
 
-<p>Étant donné que Raspberry Pi fonctionne avec un OS normal, il est possible
+<p>Étant donné que Raspberry Pi fonctionne avec un Linux, il est possible
 d&#8217;installer n&#8217;importe quel langage, mais je crois qu&#8217;il est bon de rester sur
 les deux installés de base tout simplement parce que ce sont ceux qu&#8217;utilise la
-communauté Raspberry. Ces deux langages sont les C et le Python.</p>
+communauté Raspberry. Ces deux langages sont le C et le Python.</p>
 
 <p>Après un comparatif de ces langages, <strong>j&#8217;ai finalement choisi le Python</strong>. Bien que le
-langage en lui-même est plus lent, il est tellement plus rapide de programmer
+langage en lui-même soit plus lent, il est tellement plus rapide de programmer
 avec celui-ci qu&#8217;il reste une option intéressante. Je crois qu&#8217;une bonne pratique
 est de faire un programme en Python et, si la rapidité devient un point
 problématique, refaire le même programme en C.</p>
 
-<p>De toute façon de nombreux autres éléments peuvent influencer de manière plus
+<p>De toute façon, de nombreux autres éléments peuvent influencer de manière plus
 importante la rapidité, comme la vitesse du réseau par exemple.</p>
 
 <h2>Allumer une LED via un GPIO</h2>
@@ -181,9 +183,7 @@ Voici le résultat final :</p>
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
-<span class='line-number'>22</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">RPIO</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
 </span><span class='line'><span class="kn">import</span> <span class="nn">imaplib</span>
 </span><span class='line'>
 </span><span class='line'><span class="n">gmail</span> <span class="o">=</span> <span class="n">imaplib</span><span class="o">.</span><span class="n">IMAP4_SSL</span><span class="p">(</span><span class="s">&#39;imap.gmail.com&#39;</span><span class="p">,</span> <span class="s">&#39;993&#39;</span><span class="p">)</span>
@@ -207,7 +207,7 @@ Voici le résultat final :</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Et voilà! Quand un nouveau email arrive, la LED s&#8217;allume. Si le courriel
+<p>Et voilà! Quand un nouveau email arrive, la LED s&#8217;allume. Si l&#8217;email
 n&#8217;est plus marqué comme lu, celle-ci s&#8217;éteind.</p>
 
 <h2>Conclusion</h2>
@@ -804,7 +804,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#103;&#x75;&#x69;&#x72;&#101;&#99;&#46;&#x63;&#x6f;&#114;&#98;&#101;&#108;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#x6f;&#x6d;">&#103;&#x75;&#x69;&#x72;&#101;&#x63;&#46;&#x63;&#111;&#x72;&#98;&#x65;&#x6c;&#64;&#103;&#109;&#x61;&#105;&#108;&#46;&#x63;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#97;&#105;&#108;&#116;&#111;&#x3a;&#x67;&#x75;&#x69;&#114;&#x65;&#x63;&#46;&#99;&#111;&#114;&#x62;&#101;&#108;&#64;&#x67;&#109;&#97;&#105;&#x6c;&#x2e;&#x63;&#111;&#x6d;">&#x67;&#117;&#105;&#x72;&#101;&#99;&#x2e;&#x63;&#x6f;&#114;&#98;&#x65;&#108;&#64;&#x67;&#109;&#97;&#x69;&#x6c;&#46;&#99;&#x6f;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
