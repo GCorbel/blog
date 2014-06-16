@@ -8,8 +8,8 @@ categories:
 
 L'article a pour but d'expliquer, en détail, les principes de programmation avec le
 [Raspberry Pi](http://www.raspberrypi.org/). Comme exemple, je vais indiquer
-les différentes étapes pour faire un petit programme en Python permettant
-d'allumer une LED lorsqu'un courriel arrive sur un compte GMail.
+les différentes étapes nécessaires pour faire un petit programme en Python permettant
+d'allumer une LED à la réception d'un email sur un compte GMail.
 
 <!--more-->
 
@@ -17,8 +17,8 @@ d'allumer une LED lorsqu'un courriel arrive sur un compte GMail.
 Commençons par la base. Le Raspberry Pi est un petit ordinateur possédant un
 processeur ARM. Dans la même catégorie, il existe [Arduino](http://www.arduino.cc/) et [BeagleBone](http://beagleboard.org/bone). Chacun
 possède ses forces comme indiqué dans [cet article](http://makezine.com/2013/04/15/arduino-uno-vs-beaglebone-vs-raspberry-pi/).
-Avec le Raspberry Pi, il est possible de choisir un OS à installer. Le plus
-utilisé est Raspbian, une version dérivée de Debian pour Raspberry. C'est celui
+Raspberry utilise une distribution de Linux. La plus
+utilisé est Raspbian, une version dérivée de Debian pour Raspberry. C'est celle
 que j'utilise dans cet article.
 
 Dans mon cas, j'ai acheté le [Raspberry Pi Ultimate Starter Kit](http://www.amazon.ca/CanaKit-Raspberry-Ultimate-Starter-Components/dp/B00GWTNYJW/ref=sr_1_1?ie=UTF8&qid=1401027372&sr=8-1).
@@ -42,9 +42,9 @@ correspondants :
 
 ![](http://img11.hostingpics.net/pics/720336RaspberryPiGPIOLayoutRevision1.png)
 
-Le circuit électrique que j'ai fait est celui de [cet article](https://projects.drogon.net/raspberry-pi/gpio-examples/tux-crossing/gpio-examples-1-a-single-led/).
+Le circuit électrique que j'ai fait correspond à celui de [cet article](https://projects.drogon.net/raspberry-pi/gpio-examples/tux-crossing/gpio-examples-1-a-single-led/).
 
-Voici le schéma suivi et adapter pour utiliser les pièces du kit :
+Voici le schéma suivi et adapté pour utiliser les pièces du kit :
 
 |[](http://img15.hostingpics.net/pics/2000521ledgpiobb1267x300.jpg)
 
@@ -53,25 +53,27 @@ connecté au port du 3.3v comme montré sur cette image :
 
 ![](http://img11.hostingpics.net/pics/861306photo1.jpg)
 
-Le chemin doit about à la mise à la terre (ground). Par convention, le positif est représenté par des fils rouges et le négatif est représenté par des fils noirs. Ça fonctionne, je peux passer à la création du programme.
+Le chemin doit terminer par la mise à la terre (ground). Par convention, le
+positif est représenté par des fils rouges et le négatif est représenté par des
+fils noirs. Tout fonctionne, je peux passer à la création du programme.
 
 ## Choix du langage
 Le premier choix à faire lors du commencement d'un programme est celui du langage.
 J'ai toujours pensé qu'un projet avec une composante électrique devait avoir
 un langage comme le C, ou plus bas niveau.
 
-Étant donné que Raspberry Pi fonctionne avec un OS normal, il est possible
+Étant donné que Raspberry Pi fonctionne avec un Linux, il est possible
 d'installer n'importe quel langage, mais je crois qu'il est bon de rester sur
 les deux installés de base tout simplement parce que ce sont ceux qu'utilise la
-communauté Raspberry. Ces deux langages sont les C et le Python.
+communauté Raspberry. Ces deux langages sont le C et le Python.
 
 Après un comparatif de ces langages, **j'ai finalement choisi le Python**. Bien que le
-langage en lui-même est plus lent, il est tellement plus rapide de programmer
+langage en lui-même soit plus lent, il est tellement plus rapide de programmer
 avec celui-ci qu'il reste une option intéressante. Je crois qu'une bonne pratique
 est de faire un programme en Python et, si la rapidité devient un point
 problématique, refaire le même programme en C.
 
-De toute façon de nombreux autres éléments peuvent influencer de manière plus
+De toute façon, de nombreux autres éléments peuvent influencer de manière plus
 importante la rapidité, comme la vitesse du réseau par exemple.
 
 ## Allumer une LED via un GPIO
@@ -129,7 +131,6 @@ Voici le résultat final :
 
 ```python
 import RPIO
-import time
 import imaplib
 
 gmail = imaplib.IMAP4_SSL('imap.gmail.com', '993')
@@ -152,7 +153,7 @@ except KeyboardInterrupt:
    RPIO.cleanup()
 ```
 
-Et voilà! Quand un nouveau email arrive, la LED s'allume. Si le courriel
+Et voilà! Quand un nouveau email arrive, la LED s'allume. Si l'email
 n'est plus marqué comme lu, celle-ci s'éteind.
 
 ## Conclusion
