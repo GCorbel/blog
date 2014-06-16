@@ -30,7 +30,7 @@ Dans le livre [Practical Object-Oriented Design in Ruby: An Agile Primer](http:/
 Pour nous aider dans cette démarche, [Robert C. Martin](http://en.wikipedia.org/wiki/Robert_Cecil_Martin) a défini cinq Design Principles communément acceptés. Une application doit être [SOLID](http://en.wikipedia.org/wiki/SOLID_%28object-oriented_design%29), l'acronyme pour :
 
 * [**S**ingle Responsability Principle](http://en.wikipedia.org/wiki/Single_responsibility_principle) - Une classe doit avoir une seule responsabilité;
-* [**O**pen/Clode Priciple](http://en.wikipedia.org/wiki/Open/closed_principle) - Une classe doit être ouverte pour l'extension, mais fermée pour la modification;
+* [**O**pen/Close Priciple](http://en.wikipedia.org/wiki/Open/closed_principle) - Une classe doit être ouverte pour l'extension, mais fermée pour la modification;
 * [**L**iskov Substition Principle](http://en.wikipedia.org/wiki/Liskov_substitution_principle) - Les types dérivés doivent pouvoir être remplacés par leur type de base;
 * [**I**nterface Segregation Principle](http://en.wikipedia.org/wiki/Interface_segregation_principle) - Une classe ne doit pas dépendre d'une interface contenant des méthodes qu'elle n'utilise pas;
 * [**D**ependency Inversion Principle](http://en.wikipedia.org/wiki/Dependency_inversion_principle) - Un module de haut niveau ne doit pas dépendre d'un module de bas niveau;
@@ -62,7 +62,7 @@ Savoir quand utiliser un Design Pattern, peut paraitre anodin, mais il y a un au
 
 ## Quel Design Pattern utiliser?
 
-Il est parfois difficile de choisir quel Design Pattern utilisé. D'autant plus que certains peuvent se contredire. Par exemple, il est difficile d'utiliser Tell Don't Ask dans un contrôleur quand viens le temps de savoir quelle vue retourner. Malheureusement, il n'y a pas de règles simples. Il faut savoir utiliser le bon sens et prendre des décisions.
+Il est parfois difficile de choisir quel Design Pattern utilisé. D'autant plus que certains peuvent se contredire. Par exemple, il est difficile d'utiliser Tell Don't Ask dans un contrôleur quand vient le temps de savoir quelle vue retourner. Malheureusement, il n'y a pas de règles simples. Il faut savoir utiliser le bon sens et prendre des décisions.
 
 ## L'impact psychologique
 
