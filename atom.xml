@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2014-06-02T05:02:27-04:00</updated>
+  <updated>2014-06-16T05:23:50-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -409,7 +409,7 @@ faire ses propres choix.</p>
 
 <ul>
 <li><a href="http://en.wikipedia.org/wiki/Single_responsibility_principle"><strong>S</strong>ingle Responsability Principle</a> &ndash; Une classe doit avoir une seule responsabilité;</li>
-<li><a href="http://en.wikipedia.org/wiki/Open/closed_principle"><strong>O</strong>pen/Clode Priciple</a> &ndash; Une classe doit être ouverte pour l&#8217;extension, mais fermée pour la modification;</li>
+<li><a href="http://en.wikipedia.org/wiki/Open/closed_principle"><strong>O</strong>pen/Close Priciple</a> &ndash; Une classe doit être ouverte pour l&#8217;extension, mais fermée pour la modification;</li>
 <li><a href="http://en.wikipedia.org/wiki/Liskov_substitution_principle"><strong>L</strong>iskov Substition Principle</a> &ndash; Les types dérivés doivent pouvoir être remplacés par leur type de base;</li>
 <li><a href="http://en.wikipedia.org/wiki/Interface_segregation_principle"><strong>I</strong>nterface Segregation Principle</a> &ndash; Une classe ne doit pas dépendre d&#8217;une interface contenant des méthodes qu&#8217;elle n&#8217;utilise pas;</li>
 <li><a href="http://en.wikipedia.org/wiki/Dependency_inversion_principle"><strong>D</strong>ependency Inversion Principle</a> &ndash; Un module de haut niveau ne doit pas dépendre d&#8217;un module de bas niveau;</li>
@@ -446,7 +446,7 @@ faire ses propres choix.</p>
 
 <h2>Quel Design Pattern utiliser?</h2>
 
-<p>Il est parfois difficile de choisir quel Design Pattern utilisé. D&#8217;autant plus que certains peuvent se contredire. Par exemple, il est difficile d&#8217;utiliser Tell Don&rsquo;t Ask dans un contrôleur quand viens le temps de savoir quelle vue retourner. Malheureusement, il n&#8217;y a pas de règles simples. Il faut savoir utiliser le bon sens et prendre des décisions.</p>
+<p>Il est parfois difficile de choisir quel Design Pattern utilisé. D&#8217;autant plus que certains peuvent se contredire. Par exemple, il est difficile d&#8217;utiliser Tell Don&rsquo;t Ask dans un contrôleur quand vient le temps de savoir quelle vue retourner. Malheureusement, il n&#8217;y a pas de règles simples. Il faut savoir utiliser le bon sens et prendre des décisions.</p>
 
 <h2>L&#8217;impact psychologique</h2>
 
@@ -804,7 +804,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#97;&#105;&#108;&#116;&#111;&#x3a;&#x67;&#x75;&#x69;&#114;&#x65;&#x63;&#46;&#99;&#111;&#114;&#x62;&#101;&#108;&#64;&#x67;&#109;&#97;&#105;&#x6c;&#x2e;&#x63;&#111;&#x6d;">&#x67;&#117;&#105;&#x72;&#101;&#99;&#x2e;&#x63;&#x6f;&#114;&#98;&#x65;&#108;&#64;&#x67;&#109;&#97;&#x69;&#x6c;&#46;&#99;&#x6f;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#x67;&#117;&#x69;&#x72;&#x65;&#x63;&#46;&#99;&#x6f;&#114;&#98;&#101;&#x6c;&#64;&#103;&#109;&#x61;&#105;&#108;&#46;&#99;&#x6f;&#109;">&#103;&#117;&#x69;&#x72;&#x65;&#99;&#x2e;&#99;&#111;&#x72;&#x62;&#x65;&#108;&#64;&#x67;&#109;&#x61;&#x69;&#x6c;&#46;&#99;&#x6f;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
