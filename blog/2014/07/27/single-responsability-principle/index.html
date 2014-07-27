@@ -1,0 +1,581 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Single Responsability Principle - Guirec Corbel</title>
+  <meta name="author" content="Guirec Corbel">
+
+  
+  <meta name="description" content="S&#8217;il n&#8217;y avait qu&#8217;un principe de Programation Orienté Objet à retenir, ça
+serait celui-ci. Dans cet article, nous allons voir &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://GCorbel.github.io/blog/blog/2014/07/27/single-responsability-principle">
+  <link href="/blog/favicon.png" rel="icon">
+  <link href="/blog/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/blog/atom.xml" rel="alternate" title="Guirec Corbel" type="application/atom+xml">
+  <script src="/blog/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/blog/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="/blog/stylesheets/rve-styles.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-42784059-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <a href="https://github.com/gcorbel/blog">
+    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png" alt="Suivez moi sur GitHub">
+  </a>
+  <h1><a href="/blog/">Guirec Corbel</a></h1>
+  
+    <h2>Mon blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/blog/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:GCorbel.github.io/blog" />
+    <input class="search" type="text" name="q" results="0" placeholder="Rechercher"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/blog/">Blog</a></li>
+  <li><a href="/blog/blog/archives">Archives</a></li>
+  <li><a href="/blog-en">English version</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Single responsability principle</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-27T19:32:00-04:00" pubdate data-updated="true">27 juillet 2014</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://GCorbel.github.io/blog">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>S&#8217;il n&#8217;y avait qu&#8217;un principe de Programation Orienté Objet à retenir, ça
+serait celui-ci. Dans cet article, nous allons voir comment le Single
+Responsability Principle peut aider à avoir un code plus clair et plus simple à
+maintenir.</p>
+
+<!-- more -->
+
+
+<h2>Introduction</h2>
+
+<p>Le Single Responsability Principle (SRP) est le S des principes SOLID. Il a été
+introduit par <a href="http://en.wikipedia.org/wiki/Robert_Cecil_Martin">Robert C. Martin</a>,
+alias Uncle Bob. D&#8217;après celui-ci, une classe doit avoir une, et une seule, responsabilité.</p>
+
+<p>Le langage utilisé dans cet article est le Ruby, mais le principe est applicable
+dans tous les langages orientés objet.</p>
+
+<h2>Exemple de violation du SRP</h2>
+
+<p>Commençons par un exemple ayant plus d&#8217;une responsabilité.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">before_create</span> <span class="ss">:generate_token</span>
+</span><span class='line'>  <span class="n">after_create</span> <span class="ss">:notify_administrator</span>
+</span><span class='line'>  <span class="n">after_create</span> <span class="ss">:notify_user</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">to_param</span>
+</span><span class='line'>    <span class="n">token</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">notify_administrator</span>
+</span><span class='line'>    <span class="no">UserMailer</span><span class="o">.</span><span class="n">mail_after_creation_to_administrator</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">notify_user</span>
+</span><span class='line'>    <span class="no">UserMailer</span><span class="o">.</span><span class="n">nail_after_creation_to_user</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">generate_token</span>
+</span><span class='line'>    <span class="n">token</span> <span class="o">=</span> <span class="no">SecureRandom</span><span class="o">.</span><span class="n">urlsafe_base64</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Si l&#8217;on se demande quels sont les buts de cette classe, on comprend que celle-ci
+s&#8217;occupe de la persistance des données, de la génération des tokens, de l&#8217;envoi
+d&#8217;email après la création à l&#8217;administrateur et à l&#8217;utilisateur. Chacun de ces
+buts est une responsabilité.</p>
+
+<p>Cet exemple est très simple, mais est représentatif d&#8217;une classe qui grossit et
+gagne en complexité rapidement. Il en va souvent de même pour les modèles, le M du
+principe MVC. Ceux-ci sont des aspirateurs à responsabilité. Ceci est dû au
+principe &ldquo;Fat model, skinny controller&rdquo; prôné par <a href="http://rubyonrails.org/">Ruby on Rails</a> entre autres.</p>
+
+<h2>Bénéfices</h2>
+
+<p>Pourquoi changer cette classe? Il existe plusieurs bénéfices résultant de
+l&#8217;utilisation du Single Responsability Principle.</p>
+
+<h3>Clareté</h3>
+
+<p>Premièrement, le fait de segmenter les fonctions en plusieurs classes permet
+de clarifier le code. Les classes vont être moins longues et donc, plus lisibles.
+Si l&#8217;on suit <a href="http://robots.thoughtbot.com/sandi-metz-rules-for-developers">les principes de Sandi Metz</a>,
+une classe ne devrait pas dépasser cent lignes. Plus c&#8217;est court, plus c&#8217;est
+facile à comprendre.</p>
+
+<h3>Dimunition de l&#8217;arité</h3>
+
+<p>Il sera plus facile d&#8217;instancier et d&#8217;utiliser ces classes. Une classe avec une
+seule responsabilité aura besoin de moins d&#8217;arguments dans son constructeur.
+Avec des classes simples, il devient facile de les instancier à partir de
+n&#8217;importe quelle autre classe ou depuis la console.</p>
+
+<h3>Simplifie les tests</h3>
+
+<p>Étant donné que les classes sont plus courtes, possèdent moins de fonctions et
+sont plus faciles à instancier, elles sont plus faciles à tester. Un élément
+difficile à tester est un symptôme, mais pas le problème. Utiliser le SRP
+permet d&#8217;avoir des tests plus éfficaces, plus courts et plus compréhensibles.</p>
+
+<h3>Maintenance</h3>
+
+<p>Les classes suivant ce principe sont également plus faciles à changer. Les
+classes sont isolées les unes des autres, ce qui signifie qu&#8217;il en résulte
+moins de &ldquo;code spaghetti&rdquo;. Le changement d&#8217;une responsabilité est moins
+susceptible d&#8217;en impacter une autre.</p>
+
+<h3>Duck Typing</h3>
+
+<p>Enfin, une classe avec une seule responsabilité favorise l&#8217;utilisation du Duck
+Typing étant donné qu&#8217;il peut y avoir une seule méthode. Il est possible de
+nommer cette méthode de la même façon, <code>call</code> par exemple. Ce qui fait qu&#8217;il
+sera toujours possible d&#8217;appeler la méthode ainsi <code>object.call</code>.</p>
+
+<h2>Exemple de refactoring</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">to_param</span>
+</span><span class='line'>    <span class="n">token</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">UserCreator</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="ss">user</span><span class="p">:)</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span>
+</span><span class='line'>    <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>      <span class="vi">@user</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">generate_token</span>
+</span><span class='line'>      <span class="n">send_notification</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">send_notification</span>
+</span><span class='line'>    <span class="no">UserCreationNotifier</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">user</span><span class="p">:</span> <span class="vi">@user</span><span class="p">)</span><span class="o">.</span><span class="n">call</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">generate_token</span>
+</span><span class='line'>    <span class="no">TokenGenerator</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">call</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">UserCreationNotifier</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="ss">user</span><span class="p">:)</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span>
+</span><span class='line'>    <span class="n">notify_administrator</span>
+</span><span class='line'>    <span class="n">notify_user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">notify_administrator</span>
+</span><span class='line'>    <span class="no">UserMailer</span><span class="o">.</span><span class="n">mail_after_creation_to_administrator</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">notify_user</span>
+</span><span class='line'>    <span class="no">UserMailer</span><span class="o">.</span><span class="n">nail_after_creation_to_user</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TokenGenerator</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span>
+</span><span class='line'>    <span class="no">SecureRandom</span><span class="o">.</span><span class="n">urlsafe_base64</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Le premier modèle a été décomposé en plusieurs classes plus petites et plus simples.
+La principale différence est au niveau de la class <code>User</code>. Celle-ci est
+beaucoup plus simple et n&#8217;a qu&#8217;un seul but, celui de représenter la donnée.
+<code>UserCreator</code> s&#8217;occupe uniquement du processus de création d&#8217;un utilisateur et
+<code>UserCreationNotifier</code> s&#8217;occupe uniquement de la notification suite à la
+création. <code>TokenGenerator</code>, comment son nom l&#8217;indique, génère des tokens. Il
+s&#8217;agit d&#8217;une classe très réutilisable, pouvant servir dans de nombreux cas.</p>
+
+<h2>Only one reason to change</h2>
+
+<p>Robert C. Martin décrit une responsabilité comme une raison de changer. Une
+classe ou un module doit avoir seulement une raison de changer. Si l&#8217;on prend
+la première version de la classe <code>User</code>, celle-ci devra changer si l&#8217;on décide
+de générer des token différemment, ou encore si l&#8217;on change les notifications à
+envoyer, ou si l&#8217;on change le type de persistance des données. Bref, cette
+classe a définitivement plus d&#8217;une raison de changer.</p>
+
+<p>Si l&#8217;on prend la proposition de refactoring en y pensant en terme de raison de
+changement. La classe <code>User</code> changera uniquement si l&#8217;on décide de changer les
+données à sauvegarder. La classe <code>UserCreator</code> changera si l&#8217;on modifie le
+processus de création d&#8217;un utilisateur et <code>UserCreationNotifier</code> changera en
+fonction des notifications que l&#8217;on veut effectuer lors de la création d&#8217;un
+utilisateur. Enfin, <code>TokenGenerator</code> change si l&#8217;on souhaite changer la
+manière de générer des tokens.</p>
+
+<p>Il faut bien garder en tête que c&#8217;est la responsabilité qui doit avoir une
+raison de changer et non le code. On peut imaginer dix mille raisons de
+changer de code dans une classe, par exemple, changer le nom d&#8217;une fonction ou
+d&#8217;une variable, mais ces changements sont acceptables. Tandis que, si l&#8217;on change
+la responsabilité de la classe, on change sa raison d&#8217;être et il faut que ça
+soit justifié.</p>
+
+<h2>Personifier la classe pour éviter les violations</h2>
+
+<p>Un des moyens pouvant être utilisés pour déterminer si une classe à plus d&#8217;une
+responsabilité peut être de la personnifier et de lui demande quelles sont ces
+responsabilités. Un petit exemple de dialogue :</p>
+
+<p>Vous &ndash; Bonjour, madame <code>User</code>, que faites-vous dans la vie?<br/>
+La classe &ndash; Je m&#8217;occupe de la présidence des données ET de la notification ET du changement des tokens.</p>
+
+<p>Le mot clé est &ldquo;ET&rdquo;. S&#8217;il y en a un dans la réponse à la question que vous avez
+posé à la classe, c&#8217;est qu&#8217;elle à trop de responsabilités.</p>
+
+<h2>Conclusion</h2>
+
+<p>Le Single Responsability Principe est un concept très important à comprendre.
+Ceci dit, il faut l&#8217;utiliser avec du bon sens. Il y a une limite au bénéfice du
+principe et il faut faire attention à ne pas tomber dans l&#8217;excès.</p>
+
+<p>Chacun des principes se renforce mutuellement. Si l&#8217;on suit celui-ci, il sera
+plus facile d&#8217;en utiliser un autre. Cependant, parfois, ils peuvent être
+mutuellement exclusifs. Il n&#8217;existe pas de règle magique et il faut faire
+preuve de bon sens. Avec le temps et l&#8217;expérience, tout cela devient plus
+naturel.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Ajouté par <span class="fn">Guirec Corbel</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-27T19:32:00-04:00" pubdate data-updated="true">27 juillet 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="/blog//twitter.com/share" class="twitter-share-button" data-url="http://GCorbel.github.io/blog/blog/2014/07/27/single-responsability-principle/" data-via="GuirecCorbel" data-counturl="http://GCorbel.github.io/blog/blog/2014/07/27/single-responsability-principle/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/blog/2014/05/25/allumer-une-led-lors-de-la-reception-dun-email-avec-raspberry-pi/" title="Previous Post: Allumer une LED lors de la réception d'un email avec Raspberry Pi">&laquo; Allumer une LED lors de la réception d'un email avec Raspberry Pi</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Derniers articles</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/blog/2014/07/27/single-responsability-principle/">Single responsability principle</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2014/05/25/allumer-une-led-lors-de-la-reception-dun-email-avec-raspberry-pi/">Allumer une led lors de la réception d'un email avec raspberry pi</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2014/05/19/mes-trucs-pour-augmenter-sa-productivite/">Mes trucs pour augmenter sa productivité</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2014/05/18/principes-et-design-patterns-avec-rails/">Design principles et design patterns avec rails</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2014/04/22/digitalocean-vs-heroku-round-2/">Digitalocean vs heroku - round 2</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/GCorbel">@GCorbel</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/blog/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'GCorbel',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/blog/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Guirec Corbel -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'guireccorbel';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://GCorbel.github.io/blog/blog/2014/07/27/single-responsability-principle/';
+        var disqus_url = 'http://GCorbel.github.io/blog/blog/2014/07/27/single-responsability-principle/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

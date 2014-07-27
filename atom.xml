@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2014-06-16T05:23:50-04:00</updated>
+  <updated>2014-07-27T14:07:38-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -12,6 +12,313 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Single Responsability Principle]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2014/07/27/single-responsability-principle/"/>
+    <updated>2014-07-27T19:32:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2014/07/27/single-responsability-principle</id>
+    <content type="html"><![CDATA[<p>S&#8217;il n&#8217;y avait qu&#8217;un principe de Programation Orienté Objet à retenir, ça
+serait celui-ci. Dans cet article, nous allons voir comment le Single
+Responsability Principle peut aider à avoir un code plus clair et plus simple à
+maintenir.</p>
+
+<!-- more -->
+
+
+<h2>Introduction</h2>
+
+<p>Le Single Responsability Principle (SRP) est le S des principes SOLID. Il a été
+introduit par <a href="http://en.wikipedia.org/wiki/Robert_Cecil_Martin">Robert C. Martin</a>,
+alias Uncle Bob. D&#8217;après celui-ci, une classe doit avoir une, et une seule, responsabilité.</p>
+
+<p>Le langage utilisé dans cet article est le Ruby, mais le principe est applicable
+dans tous les langages orientés objet.</p>
+
+<h2>Exemple de violation du SRP</h2>
+
+<p>Commençons par un exemple ayant plus d&#8217;une responsabilité.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">before_create</span> <span class="ss">:generate_token</span>
+</span><span class='line'>  <span class="n">after_create</span> <span class="ss">:notify_administrator</span>
+</span><span class='line'>  <span class="n">after_create</span> <span class="ss">:notify_user</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">to_param</span>
+</span><span class='line'>    <span class="n">token</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">notify_administrator</span>
+</span><span class='line'>    <span class="no">UserMailer</span><span class="o">.</span><span class="n">mail_after_creation_to_administrator</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">notify_user</span>
+</span><span class='line'>    <span class="no">UserMailer</span><span class="o">.</span><span class="n">nail_after_creation_to_user</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">generate_token</span>
+</span><span class='line'>    <span class="n">token</span> <span class="o">=</span> <span class="no">SecureRandom</span><span class="o">.</span><span class="n">urlsafe_base64</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Si l&#8217;on se demande quels sont les buts de cette classe, on comprend que celle-ci
+s&#8217;occupe de la persistance des données, de la génération des tokens, de l&#8217;envoi
+d&#8217;email après la création à l&#8217;administrateur et à l&#8217;utilisateur. Chacun de ces
+buts est une responsabilité.</p>
+
+<p>Cet exemple est très simple, mais est représentatif d&#8217;une classe qui grossit et
+gagne en complexité rapidement. Il en va souvent de même pour les modèles, le M du
+principe MVC. Ceux-ci sont des aspirateurs à responsabilité. Ceci est dû au
+principe &ldquo;Fat model, skinny controller&rdquo; prôné par <a href="http://rubyonrails.org/">Ruby on Rails</a> entre autres.</p>
+
+<h2>Bénéfices</h2>
+
+<p>Pourquoi changer cette classe? Il existe plusieurs bénéfices résultant de
+l&#8217;utilisation du Single Responsability Principle.</p>
+
+<h3>Clareté</h3>
+
+<p>Premièrement, le fait de segmenter les fonctions en plusieurs classes permet
+de clarifier le code. Les classes vont être moins longues et donc, plus lisibles.
+Si l&#8217;on suit <a href="http://robots.thoughtbot.com/sandi-metz-rules-for-developers">les principes de Sandi Metz</a>,
+une classe ne devrait pas dépasser cent lignes. Plus c&#8217;est court, plus c&#8217;est
+facile à comprendre.</p>
+
+<h3>Dimunition de l&#8217;arité</h3>
+
+<p>Il sera plus facile d&#8217;instancier et d&#8217;utiliser ces classes. Une classe avec une
+seule responsabilité aura besoin de moins d&#8217;arguments dans son constructeur.
+Avec des classes simples, il devient facile de les instancier à partir de
+n&#8217;importe quelle autre classe ou depuis la console.</p>
+
+<h3>Simplifie les tests</h3>
+
+<p>Étant donné que les classes sont plus courtes, possèdent moins de fonctions et
+sont plus faciles à instancier, elles sont plus faciles à tester. Un élément
+difficile à tester est un symptôme, mais pas le problème. Utiliser le SRP
+permet d&#8217;avoir des tests plus éfficaces, plus courts et plus compréhensibles.</p>
+
+<h3>Maintenance</h3>
+
+<p>Les classes suivant ce principe sont également plus faciles à changer. Les
+classes sont isolées les unes des autres, ce qui signifie qu&#8217;il en résulte
+moins de &ldquo;code spaghetti&rdquo;. Le changement d&#8217;une responsabilité est moins
+susceptible d&#8217;en impacter une autre.</p>
+
+<h3>Duck Typing</h3>
+
+<p>Enfin, une classe avec une seule responsabilité favorise l&#8217;utilisation du Duck
+Typing étant donné qu&#8217;il peut y avoir une seule méthode. Il est possible de
+nommer cette méthode de la même façon, <code>call</code> par exemple. Ce qui fait qu&#8217;il
+sera toujours possible d&#8217;appeler la méthode ainsi <code>object.call</code>.</p>
+
+<h2>Exemple de refactoring</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">to_param</span>
+</span><span class='line'>    <span class="n">token</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">UserCreator</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="ss">user</span><span class="p">:)</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span>
+</span><span class='line'>    <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>      <span class="vi">@user</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">generate_token</span>
+</span><span class='line'>      <span class="n">send_notification</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">send_notification</span>
+</span><span class='line'>    <span class="no">UserCreationNotifier</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">user</span><span class="p">:</span> <span class="vi">@user</span><span class="p">)</span><span class="o">.</span><span class="n">call</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">generate_token</span>
+</span><span class='line'>    <span class="no">TokenGenerator</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">call</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">UserCreationNotifier</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="ss">user</span><span class="p">:)</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span>
+</span><span class='line'>    <span class="n">notify_administrator</span>
+</span><span class='line'>    <span class="n">notify_user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">notify_administrator</span>
+</span><span class='line'>    <span class="no">UserMailer</span><span class="o">.</span><span class="n">mail_after_creation_to_administrator</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">notify_user</span>
+</span><span class='line'>    <span class="no">UserMailer</span><span class="o">.</span><span class="n">nail_after_creation_to_user</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TokenGenerator</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span>
+</span><span class='line'>    <span class="no">SecureRandom</span><span class="o">.</span><span class="n">urlsafe_base64</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Le premier modèle a été décomposé en plusieurs classes plus petites et plus simples.
+La principale différence est au niveau de la class <code>User</code>. Celle-ci est
+beaucoup plus simple et n&#8217;a qu&#8217;un seul but, celui de représenter la donnée.
+<code>UserCreator</code> s&#8217;occupe uniquement du processus de création d&#8217;un utilisateur et
+<code>UserCreationNotifier</code> s&#8217;occupe uniquement de la notification suite à la
+création. <code>TokenGenerator</code>, comment son nom l&#8217;indique, génère des tokens. Il
+s&#8217;agit d&#8217;une classe très réutilisable, pouvant servir dans de nombreux cas.</p>
+
+<h2>Only one reason to change</h2>
+
+<p>Robert C. Martin décrit une responsabilité comme une raison de changer. Une
+classe ou un module doit avoir seulement une raison de changer. Si l&#8217;on prend
+la première version de la classe <code>User</code>, celle-ci devra changer si l&#8217;on décide
+de générer des token différemment, ou encore si l&#8217;on change les notifications à
+envoyer, ou si l&#8217;on change le type de persistance des données. Bref, cette
+classe a définitivement plus d&#8217;une raison de changer.</p>
+
+<p>Si l&#8217;on prend la proposition de refactoring en y pensant en terme de raison de
+changement. La classe <code>User</code> changera uniquement si l&#8217;on décide de changer les
+données à sauvegarder. La classe <code>UserCreator</code> changera si l&#8217;on modifie le
+processus de création d&#8217;un utilisateur et <code>UserCreationNotifier</code> changera en
+fonction des notifications que l&#8217;on veut effectuer lors de la création d&#8217;un
+utilisateur. Enfin, <code>TokenGenerator</code> change si l&#8217;on souhaite changer la
+manière de générer des tokens.</p>
+
+<p>Il faut bien garder en tête que c&#8217;est la responsabilité qui doit avoir une
+raison de changer et non le code. On peut imaginer dix mille raisons de
+changer de code dans une classe, par exemple, changer le nom d&#8217;une fonction ou
+d&#8217;une variable, mais ces changements sont acceptables. Tandis que, si l&#8217;on change
+la responsabilité de la classe, on change sa raison d&#8217;être et il faut que ça
+soit justifié.</p>
+
+<h2>Personifier la classe pour éviter les violations</h2>
+
+<p>Un des moyens pouvant être utilisés pour déterminer si une classe à plus d&#8217;une
+responsabilité peut être de la personnifier et de lui demande quelles sont ces
+responsabilités. Un petit exemple de dialogue :</p>
+
+<p>Vous &ndash; Bonjour, madame <code>User</code>, que faites-vous dans la vie?<br/>
+La classe &ndash; Je m&#8217;occupe de la présidence des données ET de la notification ET du changement des tokens.</p>
+
+<p>Le mot clé est &ldquo;ET&rdquo;. S&#8217;il y en a un dans la réponse à la question que vous avez
+posé à la classe, c&#8217;est qu&#8217;elle à trop de responsabilités.</p>
+
+<h2>Conclusion</h2>
+
+<p>Le Single Responsability Principe est un concept très important à comprendre.
+Ceci dit, il faut l&#8217;utiliser avec du bon sens. Il y a une limite au bénéfice du
+principe et il faut faire attention à ne pas tomber dans l&#8217;excès.</p>
+
+<p>Chacun des principes se renforce mutuellement. Si l&#8217;on suit celui-ci, il sera
+plus facile d&#8217;en utiliser un autre. Cependant, parfois, ils peuvent être
+mutuellement exclusifs. Il n&#8217;existe pas de règle magique et il faut faire
+preuve de bon sens. Avec le temps et l&#8217;expérience, tout cela devient plus
+naturel.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Allumer une LED lors de la réception d'un email avec Raspberry Pi]]></title>
@@ -804,7 +1111,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#x67;&#117;&#x69;&#x72;&#x65;&#x63;&#46;&#99;&#x6f;&#114;&#98;&#101;&#x6c;&#64;&#103;&#109;&#x61;&#105;&#108;&#46;&#99;&#x6f;&#109;">&#103;&#117;&#x69;&#x72;&#x65;&#99;&#x2e;&#99;&#111;&#x72;&#x62;&#x65;&#108;&#64;&#x67;&#109;&#x61;&#x69;&#x6c;&#46;&#99;&#x6f;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#x61;&#x69;&#108;&#x74;&#x6f;&#58;&#x67;&#117;&#105;&#x72;&#x65;&#99;&#46;&#99;&#111;&#114;&#x62;&#x65;&#108;&#x40;&#x67;&#109;&#x61;&#105;&#108;&#x2e;&#99;&#x6f;&#109;">&#103;&#117;&#x69;&#114;&#101;&#99;&#x2e;&#99;&#111;&#x72;&#98;&#x65;&#108;&#x40;&#103;&#109;&#x61;&#105;&#x6c;&#46;&#x63;&#111;&#x6d;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
