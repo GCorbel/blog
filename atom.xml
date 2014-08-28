@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2014-08-25T04:51:01-04:00</updated>
+  <updated>2014-08-28T06:23:00-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -12,6 +12,456 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Open/Closed Principle]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2014/08/25/open-slash-closed-principle/"/>
+    <updated>2014-08-25T04:52:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2014/08/25/open-slash-closed-principle</id>
+    <content type="html"><![CDATA[<p>Le principe d&#8217;ouverture/fermeture, où OCP, permet de créer un code plus clair et
+plus facilement modifiable. Dans cet article, nous allons voir dans quels cas il
+peut être utilisé et quels en sont les bénéfices. OCP fait partie des principes
+SOLID, qu&#8217;il faut absolument connaitre pour devenir un meilleur programmeur.</p>
+
+<!-- more -->
+
+
+<h2>Introduction</h2>
+
+<p>L&#8217;Open/Closed Principle est le O des principes SOLID. Il a été
+introduit par <a href="http://fr.wikipedia.org/wiki/Bertrand_Meyer">Bertrand Meyer</a> (un français). Si l&#8217;on suit ce principe, un élément
+dans un programme doit être &ldquo;Ouvert pour l&#8217;extension, mais fermé pour la
+modification&rdquo;. On doit donc pouvoir ajouter des fonctionnalités à une classe,
+un module, une fonction, etc. sans pour autant la modifier.</p>
+
+<p>Cet article est piloté par l&#8217;exemple, beaucoup de code et peu de blabla. Il
+est écrit en Ruby, mais est utilisable dans n&#8217;importe quel autre langage.</p>
+
+<p>L&#8217;article est le deuxième d&#8217;une série concernant les principes SOLID. Le
+premier porte sur <a href="http://gcorbel.github.io/blog/blog/2014/07/27/single-responsability-principle/">SRP</a>.
+Dans cet article, vous trouverez des références au SRP. Si ce n&#8217;est pas déjà
+fait, je vous conseille de lire le premier article avant celui-ci.</p>
+
+<h2>Exemple 1</h2>
+
+<p>Sans plus attendre, voici un premier exemple de code ne respectant pas OCP :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UserSubscription</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span>
+</span><span class='line'>    <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>    <span class="no">TwitterNotifier</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">notify</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TwitterNotifier</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">notify</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;Notify Twitter&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">UserSubscription</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">call</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Comme on peut le voir, la classe <code>TwitterNotifier</code> est instanciée dans la
+méthode <code>#call</code> de <code>UserSubscription</code>. Si l&#8217;on souhaite ne plus envoyer de
+notifications via Twitter, mais via Facebook, il va falloir rouvrir la classe
+<code>UserSubscription</code> et remplacer la classe appelée.</p>
+
+<p>Voici un exemple faisant la même chose, mais suivant le principe.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UserSubscription</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">notifier</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>    <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TwitterNotifier</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">notify</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;Notify Twitter&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">UserSubscription</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="no">TwitterNotifier</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>L&#8217;appel de <code>TwitterNotifier.new</code> se fait à un niveau supérieur et il est
+possible de changer le comportement de <code>UserSubscription</code> sans changer son
+implémentation.</p>
+
+<h2>Exemple 2</h2>
+
+<p>Si un changement au programme est demandé pour que la notification soit
+différente selon le type d&#8217;utilisateur, sans suivre OCP, nous pouvons écrire
+ceci :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UserSubscription</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">notifier</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>    <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">admin?</span>
+</span><span class='line'>      <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Admin Message&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">elsif</span> <span class="vi">@user</span><span class="o">.</span><span class="n">editor?</span>
+</span><span class='line'>      <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Editor Message&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Other Message&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TwitterNotifier</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="n">text</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">UserSubscription</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="no">TwitterNotifier</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>À chaque nouveau type d&#8217;utilisateur, il va falloir rouvrir la classe
+<code>UserSubscription</code>. Il est plus facile de modifier la classe comme ceci :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UserSubscription</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">notifier</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>    <span class="n">notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">notification_text</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TwitterNotifier</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="n">text</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">UserSubscription</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="no">TwitterNotifier</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La responsabilité du choix du message à afficher a été reportée à la classe
+de l&#8217;objet <code>@user</code>. En plus du fait de rendre cette fonction plus adaptable, cette
+modification suit le Single Responsability Principle. Ce n&#8217;est pas à la classe
+s&#8217;occupant du processus d&#8217;inscription de savoir quel message affiché à
+l&#8217;utilisateur.</p>
+
+<h2>Exemple 3</h2>
+
+<p>Plutôt que de faire une seule notification, nous allons modifier le code pour
+en envoyer plusieurs. Encore une fois, voici le code qui ne suit pas OCP :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UserSubscription</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>    <span class="c1"># @user = user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span>
+</span><span class='line'>    <span class="c1"># @user.save</span>
+</span><span class='line'>    <span class="no">TwitterNotifier</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">notification_text</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">FacebookNotifier</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">AdminNotifier</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">send_email</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TwitterNotifier</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="n">text</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">UserSubscription</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">call</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Dans ce cas, à chaque fois que l&#8217;on souhaite ajouter un type de notification,
+il faut rouvrir la classe <code>UserSubscription</code>. Voici la version corrigée :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UserSubscription</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>    <span class="c1"># @user = user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">observers</span><span class="p">)</span>
+</span><span class='line'>    <span class="c1"># @user.save</span>
+</span><span class='line'>    <span class="n">observers</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">observer</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">observer</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TwitterNotifier</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="n">user</span><span class="o">.</span><span class="n">notification_text</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">observers</span> <span class="o">=</span> <span class="o">[</span><span class="no">TwitterNotifier</span><span class="o">.</span><span class="n">new</span><span class="p">,</span> <span class="no">FacebookNotifier</span><span class="o">.</span><span class="n">new</span><span class="p">,</span> <span class="no">AdminNotifier</span><span class="o">.</span><span class="n">new</span><span class="o">]</span>
+</span><span class='line'><span class="no">UserSubscription</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">observers</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Dans cette version, un nombre indéfini de méthodes est appelé après la création
+de l&#8217;utilisateur. Il est facile d&#8217;ajouter un comportement en modifiant la
+classe de plus haut niveau. De plus, la méthode appelée est toujours la même,
+<code>call</code>. Cela permet d&#8217;ajouter n&#8217;importe quel type de traitement après la
+création, pas seulement les notifications.</p>
+
+<p>Dans le cas où nous souhaitons effectuer des traitements particuliers si une
+notification échoue, il est possible d&#8217;extraire les observateurs dans une
+classe indépendante comme ceci :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UserSubscriptionObservers</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">observers</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@observers</span> <span class="o">=</span> <span class="n">observers</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@observers</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">observer</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">observer</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">UserSubscription</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">observer</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>    <span class="n">observer</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TwitterNotifier</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="n">user</span><span class="o">.</span><span class="n">notification_text</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">observers</span> <span class="o">=</span> <span class="o">[</span><span class="no">TwitterNotifier</span><span class="o">.</span><span class="n">new</span><span class="p">,</span> <span class="no">FacebookNotifier</span><span class="o">.</span><span class="n">new</span><span class="p">,</span> <span class="no">AdminNotifier</span><span class="o">.</span><span class="n">new</span><span class="o">]</span>
+</span><span class='line'><span class="n">composite_observer</span> <span class="o">=</span> <span class="no">UserSubscriptionObservers</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">observers</span><span class="p">)</span>
+</span><span class='line'><span class="no">UserSubscription</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">composite_observer</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Cet exemple est un peu plus complexe, mais permet une meilleure gestion de la file.</p>
+
+<h2>Avantages</h2>
+
+<p>Plusieurs avantages sont à noter. Le premier, et le plus évident, est la rapidité
+de réaction au changement. Il va être plus facile d&#8217;ajouter des comportements
+lors l&#8217;exécution d&#8217;une fonction.</p>
+
+<p>Comme souvent, l&#8217;utilisation des bonnes pratiques simplifie les tests. Dans un
+test, il est possible de passer un tableau vide comme observers.</p>
+
+<p>Les principes SOLID se renforcent mutuellement. Une bonne utilisation d&#8217;OCP est
+une technique qui encourage l&#8217;application du SRP. Utiliser l&#8217;ensemble de ces techniques
+permet de faire un code plus clair et plus résistant aux changements.</p>
+
+<h2>Inconvénients</h2>
+
+<p>Malheursement, il existe au moins un inconvénient à OCP. Les comportements sont
+toujours remis au niveau supérieur. Ceci rend complexe le plus au niveau,
+principalement le controller. Il est possible d&#8217;ajouter des fichiers de
+configuration, mais l&#8217;implémentation est plus compliquée.</p>
+
+<h2>Quand utiliser OCP?</h2>
+
+<p>Comme toujours dans l&#8217;utilisation de Design Patterns, il n&#8217;y a pas de règle
+exacte pour l&#8217;application d&#8217;OCP. Le choix se fera selon les cas d&#8217;utilisation et
+le bon sens. Il y a, cependant, quelques indications que l&#8217;on peut
+suivre :</p>
+
+<ul>
+<li>Il est impossible d&#8217;anticiper tous les changements. Ne faites pas de
+code inutilement complexe.</li>
+<li>Lorsque l&#8217;on connait une application ou un client, on sait quels sont les
+éléments qui vont changer. Ce sont ceux-ci qu&#8217;il faut cibler.</li>
+<li>Si l&#8217;on a changé une classe, il faut se demander si ce n&#8217;est pas l&#8217;occasion
+d&#8217;appliquer OCP.</li>
+</ul>
+
+
+<h2>Conclusion</h2>
+
+<p>J&#8217;espère que cet article vous sera utile, et que vous avez appris un nouveau
+principe ou que vous avez eu un bon rafraichissement. J&#8217;écrirais, bientôt, des
+articles sur les autres principes SOLID.</p>
+
+<p>Si vous avez des commentaires sur le fond ou la forme de l&#8217;article, n&#8217;hésitez
+pas à m&#8217;en faire part.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Single Responsability Principle]]></title>
@@ -1111,7 +1561,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#x61;&#105;&#108;&#x74;&#111;&#x3a;&#103;&#117;&#x69;&#114;&#x65;&#99;&#46;&#99;&#111;&#114;&#x62;&#101;&#108;&#64;&#x67;&#109;&#x61;&#105;&#x6c;&#x2e;&#99;&#111;&#109;">&#103;&#117;&#x69;&#x72;&#x65;&#99;&#x2e;&#99;&#111;&#x72;&#98;&#101;&#x6c;&#64;&#x67;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x67;&#x75;&#x69;&#114;&#x65;&#99;&#46;&#x63;&#x6f;&#x72;&#x62;&#101;&#x6c;&#64;&#x67;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#111;&#x6d;">&#103;&#x75;&#105;&#114;&#x65;&#x63;&#x2e;&#x63;&#111;&#x72;&#98;&#101;&#108;&#x40;&#x67;&#x6d;&#97;&#105;&#108;&#46;&#x63;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
