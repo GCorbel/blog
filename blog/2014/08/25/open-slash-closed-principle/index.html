@@ -361,11 +361,11 @@ en envoyer plusieurs. Encore une fois, voici le code qui ne suit pas OCP :</p>
 <span class='line-number'>20</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UserSubscription</span>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-</span><span class='line'>    <span class="c1"># @user = user</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">call</span>
-</span><span class='line'>    <span class="c1"># @user.save</span>
+</span><span class='line'>    <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
 </span><span class='line'>    <span class="no">TwitterNotifier</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">notification_text</span><span class="p">)</span>
 </span><span class='line'>    <span class="no">FacebookNotifier</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
 </span><span class='line'>    <span class="no">AdminNotifier</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">send_email</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
@@ -408,11 +408,11 @@ il faut rouvrir la classe <code>UserSubscription</code>. Voici la version corrig
 <span class='line-number'>21</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UserSubscription</span>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-</span><span class='line'>    <span class="c1"># @user = user</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">observers</span><span class="p">)</span>
-</span><span class='line'>    <span class="c1"># @user.save</span>
+</span><span class='line'>    <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
 </span><span class='line'>    <span class="n">observers</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">observer</span><span class="o">|</span>
 </span><span class='line'>      <span class="n">observer</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
 </span><span class='line'>    <span class="k">end</span>

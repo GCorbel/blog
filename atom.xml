@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2014-08-28T06:23:00-04:00</updated>
+  <updated>2014-08-29T17:28:54-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -267,11 +267,11 @@ en envoyer plusieurs. Encore une fois, voici le code qui ne suit pas OCP :</p>
 <span class='line-number'>20</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UserSubscription</span>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-</span><span class='line'>    <span class="c1"># @user = user</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">call</span>
-</span><span class='line'>    <span class="c1"># @user.save</span>
+</span><span class='line'>    <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
 </span><span class='line'>    <span class="no">TwitterNotifier</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">notification_text</span><span class="p">)</span>
 </span><span class='line'>    <span class="no">FacebookNotifier</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
 </span><span class='line'>    <span class="no">AdminNotifier</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">send_email</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
@@ -314,11 +314,11 @@ il faut rouvrir la classe <code>UserSubscription</code>. Voici la version corrig
 <span class='line-number'>21</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UserSubscription</span>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-</span><span class='line'>    <span class="c1"># @user = user</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">observers</span><span class="p">)</span>
-</span><span class='line'>    <span class="c1"># @user.save</span>
+</span><span class='line'>    <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
 </span><span class='line'>    <span class="n">observers</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">observer</span><span class="o">|</span>
 </span><span class='line'>      <span class="n">observer</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
 </span><span class='line'>    <span class="k">end</span>
@@ -1561,7 +1561,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x67;&#x75;&#x69;&#114;&#x65;&#99;&#46;&#x63;&#x6f;&#x72;&#x62;&#101;&#x6c;&#64;&#x67;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#111;&#x6d;">&#103;&#x75;&#105;&#114;&#x65;&#x63;&#x2e;&#x63;&#111;&#x72;&#98;&#101;&#108;&#x40;&#x67;&#x6d;&#97;&#105;&#108;&#46;&#x63;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#x6f;&#x3a;&#x67;&#x75;&#x69;&#x72;&#x65;&#99;&#46;&#99;&#x6f;&#x72;&#98;&#101;&#108;&#x40;&#x67;&#x6d;&#97;&#x69;&#108;&#46;&#x63;&#111;&#x6d;">&#x67;&#x75;&#105;&#114;&#101;&#x63;&#46;&#x63;&#111;&#x72;&#x62;&#101;&#108;&#x40;&#103;&#109;&#97;&#x69;&#108;&#46;&#99;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
