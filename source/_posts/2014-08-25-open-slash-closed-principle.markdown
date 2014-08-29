@@ -156,11 +156,11 @@ en envoyer plusieurs. Encore une fois, voici le code qui ne suit pas OCP :
 ```ruby
 class UserSubscription
   def initialize(user)
-    # @user = user
+    @user = user
   end
 
   def call
-    # @user.save
+    @user.save
     TwitterNotifier.new.notify(@user.notification_text)
     FacebookNotifier.new.add_message(@user)
     AdminNotifier.new.send_email(@user.email)
@@ -182,11 +182,11 @@ il faut rouvrir la classe `UserSubscription`. Voici la version corrigée :
 ```ruby
 class UserSubscription
   def initialize(user)
-    # @user = user
+    @user = user
   end
 
   def call(observers)
-    # @user.save
+    @user.save
     observers.each do |observer|
       observer.call(@user)
     end
