@@ -9,7 +9,7 @@ categories:
 Le principe d'ouverture/fermeture, où OCP, permet de créer un code plus clair et
 plus facilement modifiable. Dans cet article, nous allons voir dans quels cas il
 peut être utilisé et quels en sont les bénéfices. OCP fait partie des principes
-SOLID, qu'il faut absolument connaitre pour devenir un meilleur programmeur.
+SOLID, qu'il faut absolument connaître pour devenir un meilleur programmeur.
 <!-- more -->
 
 ## Introduction
@@ -254,7 +254,7 @@ Cet exemple est un peu plus complexe, mais permet une meilleure gestion de la fi
 
 Plusieurs avantages sont à noter. Le premier, et le plus évident, est la rapidité
 de réaction au changement. Il va être plus facile d'ajouter des comportements
-lors l'exécution d'une fonction.
+lors de l'exécution d'une fonction.
 
 Comme souvent, l'utilisation des bonnes pratiques simplifie les tests. Dans un
 test, il est possible de passer un tableau vide comme observers.
@@ -265,7 +265,7 @@ permet de faire un code plus clair et plus résistant aux changements.
 
 ## Inconvénients
 
-Malheursement, il existe au moins un inconvénient à OCP. Les comportements sont
+Malheurseument, il existe au moins un inconvénient à OCP. Les comportements sont
 toujours remis au niveau supérieur. Ceci rend complexe le plus au niveau,
 principalement le controller. Il est possible d'ajouter des fichiers de
 configuration, mais l'implémentation est plus compliquée.
@@ -279,7 +279,7 @@ suivre :
 
  - Il est impossible d'anticiper tous les changements. Ne faites pas de
 code inutilement complexe.
- - Lorsque l'on connait une application ou un client, on sait quels sont les
+ - Lorsque l'on connaît une application ou un client, on sait quels sont les
 éléments qui vont changer. Ce sont ceux-ci qu'il faut cibler.
  - Si l'on a changé une classe, il faut se demander si ce n'est pas l'occasion
 d'appliquer OCP.
@@ -287,7 +287,7 @@ d'appliquer OCP.
 ## Conclusion
 
 J'espère que cet article vous sera utile, et que vous avez appris un nouveau
-principe ou que vous avez eu un bon rafraichissement. J'écrirais, bientôt, des
+principe ou que vous avez eu un bon rafraîchissement. J'écrirais, bientôt, des
 articles sur les autres principes SOLID.
 
 Si vous avez des commentaires sur le fond ou la forme de l'article, n'hésitez
