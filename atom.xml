@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2014-08-29T17:28:54-04:00</updated>
+  <updated>2014-09-01T09:09:38-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -21,7 +21,7 @@
     <content type="html"><![CDATA[<p>Le principe d&#8217;ouverture/fermeture, où OCP, permet de créer un code plus clair et
 plus facilement modifiable. Dans cet article, nous allons voir dans quels cas il
 peut être utilisé et quels en sont les bénéfices. OCP fait partie des principes
-SOLID, qu&#8217;il faut absolument connaitre pour devenir un meilleur programmeur.</p>
+SOLID, qu&#8217;il faut absolument connaître pour devenir un meilleur programmeur.</p>
 
 <!-- more -->
 
@@ -419,7 +419,7 @@ classe indépendante comme ceci :</p>
 
 <p>Plusieurs avantages sont à noter. Le premier, et le plus évident, est la rapidité
 de réaction au changement. Il va être plus facile d&#8217;ajouter des comportements
-lors l&#8217;exécution d&#8217;une fonction.</p>
+lors de l&#8217;exécution d&#8217;une fonction.</p>
 
 <p>Comme souvent, l&#8217;utilisation des bonnes pratiques simplifie les tests. Dans un
 test, il est possible de passer un tableau vide comme observers.</p>
@@ -430,7 +430,7 @@ permet de faire un code plus clair et plus résistant aux changements.</p>
 
 <h2>Inconvénients</h2>
 
-<p>Malheursement, il existe au moins un inconvénient à OCP. Les comportements sont
+<p>Malheurseument, il existe au moins un inconvénient à OCP. Les comportements sont
 toujours remis au niveau supérieur. Ceci rend complexe le plus au niveau,
 principalement le controller. Il est possible d&#8217;ajouter des fichiers de
 configuration, mais l&#8217;implémentation est plus compliquée.</p>
@@ -445,7 +445,7 @@ suivre :</p>
 <ul>
 <li>Il est impossible d&#8217;anticiper tous les changements. Ne faites pas de
 code inutilement complexe.</li>
-<li>Lorsque l&#8217;on connait une application ou un client, on sait quels sont les
+<li>Lorsque l&#8217;on connaît une application ou un client, on sait quels sont les
 éléments qui vont changer. Ce sont ceux-ci qu&#8217;il faut cibler.</li>
 <li>Si l&#8217;on a changé une classe, il faut se demander si ce n&#8217;est pas l&#8217;occasion
 d&#8217;appliquer OCP.</li>
@@ -455,7 +455,7 @@ d&#8217;appliquer OCP.</li>
 <h2>Conclusion</h2>
 
 <p>J&#8217;espère que cet article vous sera utile, et que vous avez appris un nouveau
-principe ou que vous avez eu un bon rafraichissement. J&#8217;écrirais, bientôt, des
+principe ou que vous avez eu un bon rafraîchissement. J&#8217;écrirais, bientôt, des
 articles sur les autres principes SOLID.</p>
 
 <p>Si vous avez des commentaires sur le fond ou la forme de l&#8217;article, n&#8217;hésitez
@@ -1561,7 +1561,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#x6f;&#x3a;&#x67;&#x75;&#x69;&#x72;&#x65;&#99;&#46;&#99;&#x6f;&#x72;&#98;&#101;&#108;&#x40;&#x67;&#x6d;&#97;&#x69;&#108;&#46;&#x63;&#111;&#x6d;">&#x67;&#x75;&#105;&#114;&#101;&#x63;&#46;&#x63;&#111;&#x72;&#x62;&#101;&#108;&#x40;&#103;&#109;&#97;&#x69;&#108;&#46;&#99;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#111;&#58;&#103;&#117;&#x69;&#x72;&#x65;&#99;&#46;&#x63;&#111;&#114;&#98;&#101;&#x6c;&#64;&#103;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;">&#x67;&#117;&#x69;&#x72;&#101;&#99;&#x2e;&#99;&#111;&#114;&#x62;&#x65;&#x6c;&#x40;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
