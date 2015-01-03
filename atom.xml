@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2014-09-01T09:09:38-04:00</updated>
+  <updated>2015-01-03T13:20:38-05:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -12,6 +12,112 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Reconstruire un modèle 3D à partir d'objets réels]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2015/01/03/reconstruire-un-modele-3d-a-partir-dobjets-reels/"/>
+    <updated>2015-01-03T07:59:00-05:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2015/01/03/reconstruire-un-modele-3d-a-partir-dobjets-reels</id>
+    <content type="html"><![CDATA[<p>La reconstitution d&#8217;objets 3d basée sur des images permet de créer des modèles
+3d d&#8217;objets réels. Ce processus qui peut paraître complexe est en fait rendu
+très simple grâce aux outils que nous allons voir dans cet article.</p>
+
+<!-- more -->
+
+
+<h2>Introduction</h2>
+
+<p>À la base, mon objectif était de faire la cartographie 3d avec mon drone en
+suivant les étapes indiquées
+<a href="http://copter.ardupilot.com/wiki/common-3d-mapping/">ici</a>. La cartographie 3D
+utilise la technique de reconstruction 3d à partir d&#8217;images (image based 3d
+reconstruction). C&#8217;est cette technique que je vous propose d&#8217;approfondir dans
+cet article.</p>
+
+<h2>Reconstitution 3d à partir d&#8217;image vs Scanner 3d</h2>
+
+<p>Il existe <a href="http://fr.wikipedia.org/wiki/Scanner_tridimensionnel">plusieurs types de scanneurs 3d</a>. Ceux-ci produisent
+généralement des modèles de meilleure qualité que ceux obtenus en utilisant des images. Ceci
+est dû au fait qu&#8217;ils utilisent différents types de données comme des lasers ou
+des sonars en plus des images. La raison pour laquelle j&#8217;ai tout de même
+préféré utiliser la reconstitution 3d à partir d&#8217;image est tout simplement le
+prix. En effet, un scanneur 3d coûte entre 300$ et 100000$ ou plus. Bien qu&#8217;il
+soit possible d&#8217;en avoir à prix réduit si l&#8217;on est prêt à faire <a href="http://3dprintingindustry.com/2014/08/05/make-3dollar-3d-scanner/">un peu de bricolage</a>,
+j&#8217;ai choisi de rester dans la simplicité pour le moment.</p>
+
+<h2>Le principe</h2>
+
+<p>Le principe est à la fois simple et compliqué. Un algorithme complexe va
+trouver des points similaires entre les différentes images et ainsi pouvoir
+les replacer dans un environnement. Par triangulation, l&#8217;algorithme est capable
+de reconstituer un nuage de point représentant l&#8217;objet. Il va ensuite
+reconstituer la surface puis appliquer une texture avec les images.</p>
+
+<p><img src="http://www.ismailsirma.com/wp-content/uploads/2014/12/3-sparse-reconstruction.jpg" alt="Visual SFM" /></p>
+
+<h2>Logiciels de reconstitution 3d à partir d&#8217;images</h2>
+
+<p>Il existe plusieurs logiciels de ce type et j&#8217;en ai essayé quelques-uns :</p>
+
+<ul>
+<li><a href="http://ccwu.me/vsfm/">VisualSFM</a> et <a href="http://www.di.ens.fr/cmvs/">CMVS</a> : Deux produits open source. Je n&#8217;ai malheureusement pas
+eu le rendu souhaité;</li>
+<li><a href="http://www.agisoft.com/">Agisoft Photoscan</a> : Logiciel payant très simple d&#8217;utilisation donnant un
+résultat satisfaisant;</li>
+<li><a href="http://www.trnio.com/">Trnio</a> : Application iPhone très simple, mais un rendu limité;</li>
+<li><a href="http://www.123dapp.com/catch">Autodesk 123d catch</a> : Application web et mobile (iPhone et Androïd);</li>
+</ul>
+
+
+<p>Selon mon expérience, j&#8217;ai eu les meilleurs résultats avec 123d catch.
+De plus, tous les calculs se font sur leurs
+serveurs, il n&#8217;y a donc pas besoin de bloquer un PC pendant une heure, car le
+taux d&#8217;utilisation du CPU est élevé, contrairement à VisualSFM ou Photoscan.
+Enfin, Autodesk possède une gamme d&#8217;outils très complète dans le domaine. 123d
+catch est un outil à la fois simple et puissant.</p>
+
+<p>Toutefois, je n&#8217;exclus pas encore Trnio. Jan-Michael Tressler, le PDG de Trnio,
+m&#8217;assure que le rendu va être amélioré prochainement. Je fais d&#8217;ailleur parti
+des beta-testeurs de l&#8217;application.</p>
+
+<p>Pour ce qui est de VisualSFM, je pense que le fait d&#8217;avoir une carte graphique
+NVidia Cuda peut aider comme indiquer sur leur site.</p>
+
+<h2>Comment faire?</h2>
+
+<p>J&#8217;ai choisi de télécharger l&#8217;application iPhone de 123d catch étant donné que
+cela évite les problèmes qu&#8217;il peut y avoir avec les différences entres les
+appareils photo. Si Autodesk a fait fonctionner leur application avec un
+iPhone, ça devrait fonctionner avec le mien.</p>
+
+<p>Il faut ensuite placer un objet et en faire le tour. L&#8217;application va vous dire
+comment vous placer pour prendre vos photos. L&#8217;application va ensuite vous
+permettre d&#8217;uploader vos images puis va passer par plusieurs phases avant
+d&#8217;avoir un modèle. Environ une demi-heure plus tard, vous aurez une
+notification indiquant que le traitement et fini. Vous pouvez ensuite
+visualiser et publier votre modèle.</p>
+
+<p>Il est très important de faire attention à l&#8217;éclairage. Le choix du type
+d&#8217;objet est également important. Il est nécessaire que l&#8217;objet ait des détails
+sur lesquels le logiciel peut se fier pour faire son traitement. Il faut éviter
+les objets avec trop de trous et de creux.</p>
+
+<h2>Exemple</h2>
+
+<p>Voici <a href="http://www.123dapp.com/catch/2014-10-18-23-34-9/2949812">un exemple de modélisation</a>:</p>
+
+<p><a href="http://www.123dapp.com/catch/2014-10-18-23-34-9/2949812"><img src="http://sherpapreview-standard.s3-website-us-east-1.amazonaws.com/Preview/2014/10/13__15_12_58/IMG_3168.JPG32aece52-5720-11e4-8e14-22000b250b09Large.jpg" alt="Modélisation 3d" /></a></p>
+
+<p>123d propose de télécharger le modèle sous 3 formats, obj, 3dp ou stl. À vous
+de voir selon vos besoins.</p>
+
+<h2>Conclusion</h2>
+
+<p>Et voilà! Nous avons maintenant un modèle 3d d&#8217;un objet réel. Dans le prochain
+article, je vous présenterais une méthode simple pour intégrer le modèle 3d
+dans une scène créée avec Unity afin d&#8217;utiliser Oculus Rift.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Open/Closed Principle]]></title>
@@ -1561,7 +1667,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#111;&#58;&#103;&#117;&#x69;&#x72;&#x65;&#99;&#46;&#x63;&#111;&#114;&#98;&#101;&#x6c;&#64;&#103;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;">&#x67;&#117;&#x69;&#x72;&#101;&#99;&#x2e;&#99;&#111;&#114;&#x62;&#x65;&#x6c;&#x40;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#x67;&#117;&#105;&#x72;&#101;&#x63;&#46;&#99;&#111;&#x72;&#98;&#101;&#x6c;&#x40;&#103;&#109;&#97;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;">&#x67;&#117;&#x69;&#x72;&#x65;&#99;&#x2e;&#x63;&#111;&#x72;&#x62;&#x65;&#x6c;&#64;&#x67;&#109;&#x61;&#x69;&#108;&#x2e;&#99;&#x6f;&#x6d;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
