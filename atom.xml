@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2015-01-03T13:20:38-05:00</updated>
+  <updated>2015-01-20T07:07:25-05:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -12,6 +12,305 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Utiliser ActiveRecord sans Rails]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2015/01/20/utiliser-activerecord-sans-rails/"/>
+    <updated>2015-01-20T04:19:00-05:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2015/01/20/utiliser-activerecord-sans-rails</id>
+    <content type="html"><![CDATA[<p>ActiveRecord est l&#8217;une des premières classes que l&#8217;on apprend à utiliser avec
+Rails. Dans la vie d&#8217;un Rubyste, il est possible que l&#8217;on souhaite l&#8217;utiliser
+sans Rails pour l&#8217;exécuter dans un programme en ligne de commande
+ou dans une application utilisant Sinatra par exemple. Nous allons voir comment
+faire en quelques lignes.</p>
+
+<!-- more -->
+
+
+<p>Cet article est piloté par l&#8217;erreur. Je vais commencer par utiliser
+ActiveRecord comme je l&#8217;aurais fait avec Rails. Je vais ensuite implémenter le
+code en fonction des erreurs obtenues.</p>
+
+<h2>Code</h2>
+
+<p>Sans plus attendre, voici une classe permettant de créer le modèle, insérer
+un enregistrement et de les lister :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s1">&#39;Guirec Corbel&#39;</span><span class="p">,</span> <span class="ss">age</span><span class="p">:</span> <span class="mi">29</span><span class="p">)</span>
+</span><span class='line'><span class="nb">p</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Évidemment, Ruby nous envoi l&#8217;exception <code>uninitialized constant ActiveRecord (NameError)</code>. Pour corriger l&#8217;erreur, il suffit d&#8217;inclure le fichier <code>active_record</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_record&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s1">&#39;Guirec Corbel&#39;</span><span class="p">,</span> <span class="ss">age</span><span class="p">:</span> <span class="mi">29</span><span class="p">)</span>
+</span><span class='line'><span class="nb">p</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>L&#8217;exception suivante inscrit le message <code>No connection pool for User (ActiveRecord::ConnectionNotEstablished)</code>. Il est nécessaire d&#8217;établir une nouvelle base de données.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_record&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">establish_connection</span><span class="p">(</span><span class="ss">adapter</span><span class="p">:</span> <span class="s1">&#39;sqlite3&#39;</span><span class="p">,</span> <span class="ss">database</span><span class="p">:</span> <span class="s1">&#39;dbfile.sqlite3&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s1">&#39;Guirec Corbel&#39;</span><span class="p">,</span> <span class="ss">age</span><span class="p">:</span> <span class="mi">29</span><span class="p">)</span>
+</span><span class='line'><span class="nb">p</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Cette fois, l&#8217;erreur provient de SQLite et indique que la table <code>users</code> n&#8217;existe pas. Comme avec Rails, il est possible de faire une migration.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_record&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:name</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:age</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">establish_connection</span><span class="p">(</span><span class="ss">adapter</span><span class="p">:</span> <span class="s1">&#39;sqlite3&#39;</span><span class="p">,</span> <span class="ss">database</span><span class="p">:</span> <span class="s1">&#39;dbfile.sqlite3&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="no">CreateUsers</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">change</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s1">&#39;Guirec Corbel&#39;</span><span class="p">,</span> <span class="ss">age</span><span class="p">:</span> <span class="mi">29</span><span class="p">)</span>
+</span><span class='line'><span class="nb">p</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ça marche! Et non, ça ne marche pas tout à fait. La première exécution retourne
+bien l&#8217;enregistrement, mais la seconde retourne une erreur provenant de SQLite
+indiquant que la table existe déjà. Il est nécessaire de créer la table
+uniquement si elle n&#8217;existe pas encore. Il est possible de le faire en
+utilisant la fonction <code>#table_exists?</code> de la classe <code>User</code>.</p>
+
+<p>Voici donc le résultat final :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_record&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:name</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:age</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">establish_connection</span><span class="p">(</span><span class="ss">adapter</span><span class="p">:</span> <span class="s1">&#39;sqlite3&#39;</span><span class="p">,</span> <span class="ss">database</span><span class="p">:</span> <span class="s1">&#39;dbfile.sqlite3&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="no">CreateUsers</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">change</span> <span class="k">unless</span> <span class="no">User</span><span class="o">.</span><span class="n">table_exists?</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">p</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusion</h2>
+
+<p>Toutes les informations contenues dans cet article peuvent être trouvées <a href="https://github.com/rails/rails/tree/master/activerecord">sur le Github de rails</a>. Comme dirait Avdi Grimm, Happy Hacking!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Inclure un objet réel dans un environnement 3d et le voir avec Oculus]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2015/01/18/inclure-un-objet-reel-dans-un-envrionnement-3d-et-le-voir-avec-oculus/"/>
+    <updated>2015-01-18T19:34:00-05:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2015/01/18/inclure-un-objet-reel-dans-un-envrionnement-3d-et-le-voir-avec-oculus</id>
+    <content type="html"><![CDATA[<p>Grâce à Unity 3d, il est possible de créer une scène, d&#8217;y intégrer le module
+Oculus et d&#8217;importer n&#8217;importe quel modèle 3d en quelques minutes. Dans cet
+article, nous allons voir comment insérer un objet réel dans un tel
+environnement.</p>
+
+<!-- more -->
+
+
+<h2>Introduction</h2>
+
+<p>Unity 3d est un outil simple pour créer des environnements 3d,
+même sans avoir de formation en modélisation. Oculus fournit un package nous
+permettant de nous immerger dans un monde virtuel créé avec Unity. En moins de 10 minutes, il
+est possible d&#8217;intégrer Oculus dans un tel univers et d&#8217;y inclure un objet
+réel. J&#8217;ai choisi de présenter la marche à suivre de manière détaillée et
+d&#8217;essayer de faire en sorte que l&#8217;article soit le plus compréhensible possible.</p>
+
+<h2>Installation et téléchargements</h2>
+
+<p>Il existe une version d&#8217;Unity 3d pour Mac OS X et Windows. Malheureusement, il
+n&#8217;existe pas de version pour Linux. Pour ma part, j&#8217;ai dû quitter mon OS préféré et aller
+sur Windows. Il est possible de télécharger l&#8217;application
+<a href="http://Unity3d.com/Unity/download">ici</a>. Le package d&#8217;intégration d&#8217;Oculus est
+disponible <a href="https://developer.oculus.com/downloads/">ici</a>. Faites attention à
+bien télécharger le fichier &ldquo;Unity 4 Integration&rdquo;. L&#8217;installation se fait comme
+n&#8217;importe quel autre logiciel.</p>
+
+<h2>Création de la scène</h2>
+
+<p>La marche à suivre pour cette étape et la suivante est disponible <a href="https://www.youtube.com/watch?v=7kuQYcIYPvQ">sur Youtube</a>, en anglais.</p>
+
+<p>Il est possible de créer un environnement à partir de zéro. À des fins de test,
+on peut également télécharger un modèle existant grâce à l&#8217;Asset Store d&#8217;Unity
+en quelques étapes faciles. Pour cela, il faut lancer l&#8217;Asset Store.</p>
+
+<p><img src="http://img4.hostingpics.net/pics/46705220150118204656UnityUntitledNewUnityProject1PCMacLinuxStandalone.png" alt="Asset Store" /></p>
+
+<p>Il existe des modèles gratuits comme &ldquo;Bootcamp&rdquo; que l&#8217;on peut trouver en
+cliquant sur &ldquo;Complete Projects&rdquo; et cliquer sur &ldquo;Bootcamp&rdquo;.</p>
+
+<p><img src="http://img4.hostingpics.net/pics/48129520150118204919.png" alt="Bootcamp" /></p>
+
+<p>Une fois la page descriptive ouverte, il est possible de télécharger le projet
+et de l&#8217;importer.</p>
+
+<p><img src="http://img4.hostingpics.net/pics/47543920150118205034Importingpackage.png" alt="Import Bootcamp" /></p>
+
+<p>Après un moment, vous pouvez voir que la structure du projet à été créée.</p>
+
+<p><img src="http://img4.hostingpics.net/pics/79352520150118205551UnityBootcampunityNewUnityProject1PCMacLinuxStandalone.png" alt="Asset Explorer" /></p>
+
+<p>Vous pouvez alors cliquer sur &ldquo;Bootcamp&rdquo; pour le lancer. Et voilà, la scène
+virtuelle est prête. Vous pouvez lancer le jeu en cliquant sur le bouton play
+dans le menu du haut.</p>
+
+<h2>Intégration d&#8217;Oculus</h2>
+
+<p>Pour ajouter le module Oculus au monde créé précédemment, il suffit de
+décompresser le package téléchargé sur le site d&#8217;Oculus puis faire un Drag &amp;
+Drop du fichier &ldquo;OculusUnityIntegration.Unitypackage&rdquo;.</p>
+
+<p><img src="http://img4.hostingpics.net/pics/34186720150118213256UnityBootcampunityNewUnityProject1PCMacLinuxStandalone.png" alt="Intégration Oculus" /></p>
+
+<p>Cet écran vous sera affiché :</p>
+
+<p><img src="http://img4.hostingpics.net/pics/62659120150118213345Importingpackage.png" alt="Importation Oculus" /></p>
+
+<p>Il suffit de cliquer sur &ldquo;import&rdquo; et d&#8217;attendre quelques secondes.</p>
+
+<p>Le répertoire OVR sera alors créé.</p>
+
+<p><img src="http://img4.hostingpics.net/pics/92238420150118213701UnityBootcampunityNewUnityProject1PCMacLinuxStandalone.png" alt="Asset Explorer" /></p>
+
+<p>Naviguez dans &ldquo;OVR/Prefabs&rdquo;, vous verrez alors le fichier &ldquo;OVRPlayerController&rdquo;.
+Un simple Drag &amp; Drop du navigateur vers la scène suffit pour l&#8217;ajouter au
+projet. Vous pouvez positionner la caméra comme bon vous semble. La position
+choisie correspondra à votre position de départ lors du lancement du jeu.</p>
+
+<p>Pour plus d&#8217;aisance, vous pouvez supprimer le soldat mis en place dans
+Bootcamp en faisant un clic droit sur &ldquo;Soldier_Locomation&rdquo; et choisir
+&ldquo;Delete&rdquo;.</p>
+
+<p>Vous pouvez d&#8217;ores et déjà lancer le jeu et utiliser Oculus!</p>
+
+<h2>Import d&#8217;un objet réel</h2>
+
+<p>L&#8217;étape d&#8217;intégration d&#8217;un modèle 3d se fait de manière tout aussi simple. J&#8217;ai
+choisi d&#8217;importer le modèle créé dans <a href="http://gcorbel.github.io/blog/blog/2015/01/03/reconstruire-un-modele-3d-a-partir-dobjets-reels/">l&#8217;article précédent</a>.
+Il s&#8217;agit de la table basse de mon salon reconstituée grâce à des photos. Je
+suis allé télécharger le modèle en format .obj sur <a href="http://www.123dapp.com/catch">123D catch</a>. Pour l&#8217;intégrer, il faut faire un clic
+droit sur l&#8217;explorateur d&#8217;assets et cliquer sur &ldquo;Show in Explorer&rdquo;.</p>
+
+<p><img src="http://img11.hostingpics.net/pics/664926unnamed1.png" alt="Show in Explorer" /></p>
+
+<p>Vous pouvez ensuite placer les fichiers dans le répertoire. Unity détectera les
+nouveaux fichiers. Vous pouvez ensuite trouver votre fichier obj dans
+l&#8217;explorateur et faire à nouveau un Drag &amp; Drop ce qui ajoutera le modèle 3d
+dans l&#8217;environnement. Vous pouvez ensuite redimensionner l&#8217;objet pour lui
+donner l&#8217;aspect souhaité. Voici donc ma table basse dans l&#8217;environnement :</p>
+
+<p><img src="http://img4.hostingpics.net/pics/797068image841.png" alt="Résultat de l'intégration" /></p>
+
+<p>Finalement, vous pouvez générer l&#8217;application pour la partager.</p>
+
+<h2>Conclusion</h2>
+
+<p>Quand j&#8217;ai acheté mes lunettes Oculus, je ne pensais pas être capable de faire
+de telles créations. Heureusement, Unity nous simplifie grandement la vie et nous
+donne un résultat impressionnant en quelques étapes simples.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Reconstruire un modèle 3D à partir d'objets réels]]></title>
@@ -1667,7 +1966,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#x67;&#117;&#105;&#x72;&#101;&#x63;&#46;&#99;&#111;&#x72;&#98;&#101;&#x6c;&#x40;&#103;&#109;&#97;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;">&#x67;&#117;&#x69;&#x72;&#x65;&#99;&#x2e;&#x63;&#111;&#x72;&#x62;&#x65;&#x6c;&#64;&#x67;&#109;&#x61;&#x69;&#108;&#x2e;&#99;&#x6f;&#x6d;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#x69;&#108;&#x74;&#x6f;&#58;&#103;&#117;&#x69;&#x72;&#x65;&#99;&#x2e;&#x63;&#111;&#x72;&#98;&#101;&#x6c;&#x40;&#x67;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#111;&#x6d;">&#x67;&#117;&#105;&#114;&#101;&#x63;&#46;&#x63;&#111;&#114;&#98;&#x65;&#108;&#64;&#103;&#x6d;&#x61;&#105;&#108;&#x2e;&#x63;&#x6f;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>

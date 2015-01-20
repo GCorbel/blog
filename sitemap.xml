@@ -77,12 +77,22 @@
         <lastmod>2015-01-03T13:19:59-05:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://GCorbel.github.io/blog/blog/2015/01/18/inclure-un-objet-reel-dans-un-envrionnement-3d-et-le-voir-avec-oculus/
+        </loc>
+        <lastmod>2015-01-20T06:33:31-05:00</lastmod>
+    </url>
+    <url>
+        <loc>http://GCorbel.github.io/blog/blog/2015/01/20/utiliser-activerecord-sans-rails/</loc>
+        <lastmod>2015-01-20T05:35:38-05:00</lastmod>
+    </url>
+    <url>
         <loc>http://GCorbel.github.io/blog/</loc>
-        <lastmod>2015-01-03T13:19:59-05:00</lastmod>
+        <lastmod>2015-01-20T06:33:31-05:00</lastmod>
     </url>
     <url>
         <loc>http://GCorbel.github.io/blog/blog/archives/</loc>
-        <lastmod>2015-01-03T13:19:59-05:00</lastmod>
+        <lastmod>2015-01-20T06:33:31-05:00</lastmod>
     </url>
     <url>
         <loc>http://GCorbel.github.io/blog/robots.txt</loc>
