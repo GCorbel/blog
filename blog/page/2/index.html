@@ -9,7 +9,7 @@
   <meta name="author" content="Guirec Corbel">
 
   
-  <meta name="description" content="Suite à mon article et ma vidéo sur Sbire, je poursuis dans ma lancée pour expliquer comment j&#8217;ai modifier le projet PyLeapMouse pour coupler &hellip;">
+  <meta name="description" content="Aujourd&#8217;hui, j&#8217;avais envie de mettre des chiffres sur un fait que je pensais avéré. J&#8217;ai voulu faire un comparitif simple entre l&# &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,6 +82,89 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/blog/2014/03/29/benchmark-entre-digitalocean-et-heroku/">Benchmark entre digitalocean et heroku</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-29T14:10:00-04:00" pubdate data-updated="true">29 mars 2014</time>
+        
+           | <a href="/blog/blog/2014/03/29/benchmark-entre-digitalocean-et-heroku/#disqus_thread"
+             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2014/03/29/benchmark-entre-digitalocean-et-heroku/">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Aujourd&#8217;hui, j&#8217;avais envie de mettre des chiffres sur un fait que je pensais avéré. J&#8217;ai voulu faire un comparitif simple entre l&#8217;offre gratuite d&#8217;Heroku et celle la plus populaire de Digital Ocean.</p>
+
+<h2>L&#8217;application</h2>
+
+<p>L&#8217;application utilisée dans ce cas est une application Ruby on Rails standard utilisant Rails 3.2.17, Ruby 2.1.0 et Unicorn 4.8.2.</p>
+
+<h2>Les outils mesures</h2>
+
+<p>Pour mesurer les performences du serveur, j&#8217;ai utilisé <a href="http://newrelic.com/">New Relic</a>. Il s&#8217;agit d&#8217;un excellent utilitaire qui indique en détail les performences d&#8217;une application ainsi les différents points sensibles.</p>
+
+<p>J&#8217;ai également utilisé <a href="http://loadimpact.com/">Load Impact</a>, un outil au fonctionnement assez simple. Il suffit d&#8217;enregistrer un scénario pour pouvoir le rejouer en simulant un certain nombre de visiteurs. Load Impact fait en sorte d&#8217;augmenter peu à peu le nombre de visiteurs sur le site comme on peu le voir sur cette image :</p>
+
+<p><img src="http://img11.hostingpics.net/pics/628030Slection004.png"></p>
+
+<p>Grâce à cet outil, j&#8217;ai pu créer des scénarios et les jouers en simulant 50 visiteurs. L&#8217;application comporte 3 types d&#8217;utilisateurs, j&#8217;ai donc créé un scénario dans chacun de ces cas.</p>
+
+<h2>Les chiffres</h2>
+
+<h3>DigitalOcean</h3>
+
+<p>J&#8217;ai utilisé l&#8217;offre à 10$ par mois, la plus populaire,  de Digital Ocean pour effectuer ce test et voici le résultat :</p>
+
+<p><img src="http://img11.hostingpics.net/pics/410612Slection007.png"></p>
+
+<p>Comme on peut le voir, le temps de réponse est de moins de 800ms. Le temps de traitement est partagé entre Ruby et la base de données. Je crois qu&#8217;il s&#8217;agit d&#8217;un comportement normal et d&#8217;un bon temps de réponse.</p>
+
+<h3>Heroku</h3>
+
+<p>J&#8217;ai répété exactement le même test avec Heroku et voici le résultat :</p>
+
+<p><img src="http://img11.hostingpics.net/pics/502656Slection006.png"></p>
+
+<p>On voit clairement qu&#8217;Heroku est le grand perdant du duel. Je me doutais déjà du résultat, mais je ne pensais pas que la différence serait aussi probante. Le temps de réponse est supérieur à 25 secondes. La majeure partie du temps est prise dans la queue de traitement. On peut également voir qu&#8217;Heroku a eu du mal à se remettre du test sur ce graphique :</p>
+
+<p><img src="http://img11.hostingpics.net/pics/804402Slection005.png"></p>
+
+<p>Avant 10h, il s&#8217;agit du trafic normal. La pointe verte, entre 10h et 10h30 représente le pic lors du test effectué. On peut voir qu&#8217;après cette pointe, tous les temps sont très longs et la situation n&#8217;estpas revenue à la normale.</p>
+
+<h2>Conclusion</h2>
+
+<p>De part cet exemple, on peut voir assez clairement que DigitalOcean est plus rapide qu&#8217;Heroku.</p>
+
+<p>Les résultats obtenus ici <strong>ne montrent pas définitivement qu&#8217;Heroku est moins efficace que DigitalOcean</strong>. Premièrement, je suis loin d&#8217;avoir fait des tests exhaustifs. Pour aller plus loin, il serait nécessaire de faire des essais avec les offres payantes d&#8217;Heroku ainsi qu&#8217;en essayant d&#8217;autres scénarios et cas d&#8217;utilisation. De plus, Heroku reste génial comme environnement de développement et de test.</p>
+
+<p>Comme d&#8217;habitude, je ne prétend pas détenir la vérité. Si vous avez d&#8217;autres arguments permettant de confirmer ou d&#8217;infirmer ma conclusion, s&#8217;il vous plaît, laissez vos commentaires.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -369,6 +452,10 @@ le blog.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/blog/2015/01/20/exploration-avec-pry/">Exploration avec pry</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/blog/2015/01/20/utiliser-activerecord-sans-rails/">Utiliser activerecord sans rails</a>
       </li>
     
@@ -382,10 +469,6 @@ le blog.</p>
     
       <li class="post">
         <a href="/blog/blog/2014/08/25/open-slash-closed-principle/">Open/closed principle</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/blog/2014/07/27/single-responsability-principle/">Single responsability principle</a>
       </li>
     
   </ul>

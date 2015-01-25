@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2015-01-20T07:07:25-05:00</updated>
+  <updated>2015-01-25T17:40:21-05:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -12,6 +12,565 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Exploration avec Pry]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2015/01/20/exploration-avec-pry/"/>
+    <updated>2015-01-20T20:54:00-05:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2015/01/20/exploration-avec-pry</id>
+    <content type="html"><![CDATA[<p>Les IDE traditionnels possèdent généralement des outils avec une interface
+graphique pour déboguer. Pry, quant à lui, offre les mêmes possibilités en
+utilisant des lignes de commande. Pry est un REPL (Read-Eval-Print Loop) qui
+permet de naviguer dans le code afin d&#8217;expliquer un bogue ou de comprendre le
+fonctionnement interne d&#8217;une Gem. Nous allons voir comment faire dans cet article.</p>
+
+<!-- more -->
+
+
+<p>Pry offre énormément de possibilités, comme éditer le code ou voir la
+documentation de fonctions. Pour afficher la liste des commandes disponibles,
+vous pouvez exécuter la fonction <code>help</code> dans Pry et il est possible d&#8217;exécuter
+chaque commande avec l&#8217;argument <code>--help</code> pour plus de détails.</p>
+
+<p>Cet article n&#8217;a pas pour but d&#8217;expliquer le fonctionnement interne de Pry ou
+d&#8217;explorer toutes les commandes, mais se concentre uniquement sur la navigation.</p>
+
+<h2>Exemple de code</h2>
+
+<p>Voici un premier code d&#8217;exemple permettant de jouer avec Pry :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Cat</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">say</span>
+</span><span class='line'>    <span class="s2">&quot;Miaou&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">eat</span>
+</span><span class='line'>    <span class="s2">&quot;MiamMiam&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">debug</span>
+</span><span class='line'>    <span class="nb">require</span> <span class="s1">&#39;pry&#39;</span><span class="p">;</span> <span class="nb">binding</span><span class="o">.</span><span class="n">pry</span>
+</span><span class='line'>    <span class="n">say</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Cat</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Tom&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">debug</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Affichage des variables</h2>
+
+<p>À l&#8217;exécution du programme, Pry s&#8217;arrête à la ligne suivant <code>require 'pry'; binding.pry</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">14</span><span class="p">:</span> <span class="k">def</span> <span class="nf">debug</span>
+</span><span class='line'><span class="mi">15</span><span class="p">:</span>   <span class="nb">require</span> <span class="s1">&#39;pry&#39;</span><span class="p">;</span> <span class="nb">binding</span><span class="o">.</span><span class="n">pry</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">16</span><span class="p">:</span>   <span class="n">say</span>
+</span><span class='line'><span class="mi">17</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La commande <code>ls</code>, très similaire à celle de Linux pour explorer les fichiers et
+dossiers, nous offre la possibilité d&#8217;explorer les objets que contexte dans
+lequel nous nous trouvons.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="n">ls</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="no">Cat</span><span class="c1">#methods: debug  eat  say</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="n">instance</span> <span class="ss">variables</span><span class="p">:</span> <span class="vi">@name</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="ss">locals</span><span class="p">:</span> <span class="n">_</span>  <span class="n">__</span>  <span class="n">_dir_</span>  <span class="n">_ex_</span>  <span class="n">_file_</span>  <span class="n">_in_</span>  <span class="n">_out_</span>  <span class="n">_pry_</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Il est possible de lister uniquement les méthodes avec l&#8217;argument -m.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="n">ls</span> <span class="o">-</span><span class="n">m</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="no">Cat</span><span class="c1">#methods: debug  eat  say</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>L&#8217;argument <code>-i</code> permet de lister les variables d&#8217;instances.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="n">ls</span> <span class="o">-</span><span class="n">i</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="n">instance</span> <span class="ss">variables</span><span class="p">:</span> <span class="vi">@name</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>-G</code>, correspondant à la fonction grep,  permet de rechercher dans les noms. <code>ls
+-G d</code> permet de chercher toutes les méthodes ou les variables contenant un &ldquo;d&rdquo;
+comme ici :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="n">ls</span> <span class="o">-</span><span class="n">G</span> <span class="n">d</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="no">Cat</span><span class="c1">#methods: debug</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="n">instance</span> <span class="ss">variables</span><span class="p">:</span> <span class="vi">@name</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="ss">locals</span><span class="p">:</span> <span class="n">_dir_</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Il est possible de lister les méthodes d&#8217;une variable en la spécifiant à la
+commande. Tous ces éléments peuvent être combinés. Il est donc possible de
+regarder toutes les méthodes contenant &ldquo;cap&rdquo; dans la variable <code>@name</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="n">ls</span> <span class="o">-</span><span class="n">m</span> <span class="o">-</span><span class="n">G</span> <span class="n">cap</span> <span class="vi">@name</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="nb">String</span><span class="c1">#methods: capitalize  capitalize!  shellescape</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La commande cd permet de changer le contexte afin d&#8217;explorer une variable.</p>
+
+<pre><code> &gt; p self
+=&gt; main
+ &gt; p @name
+=&gt; "Tom"
+ &gt; cd @name
+ &gt; p self
+=&gt; "Tom"
+ &gt; ls -G encod
+=&gt; String#methods: encode  encode!  encoding  force_encoding  valid_encoding?
+ &gt; cd ..
+ &gt; p self
+=&gt; main
+</code></pre>
+
+<h2>Navigation dans le code</h2>
+
+<p>Grâce à <a href="https://github.com/deivid-rodriguez/pry-byebug">pry-byebug</a>, il est possible d&#8217;exécuter pas à pas un programme. Avec
+quelques commandes, je vais tenter de comprendre comment ActiveRecord communique
+avec la base de données pour lister des enregistrements. Voici un exemple de
+code, tiré de <a href="http://gcorbel.github.io/blog/blog/2015/01/20/utiliser-activerecord-sans-rails/">mon dernier article sur ActiveRecord</a>, qui donne un point de départ à l&#8217;inspection :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_record&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:name</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:age</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">establish_connection</span><span class="p">(</span><span class="ss">adapter</span><span class="p">:</span> <span class="s1">&#39;sqlite3&#39;</span><span class="p">,</span> <span class="ss">database</span><span class="p">:</span> <span class="s1">&#39;dbfile.sqlite3&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="no">CreateUsers</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">change</span> <span class="k">unless</span> <span class="no">User</span><span class="o">.</span><span class="n">table_exists?</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;pry&#39;</span><span class="p">;</span> <span class="nb">binding</span><span class="o">.</span><span class="n">pry</span>
+</span><span class='line'><span class="no">User</span><span class="o">.</span><span class="n">all</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>À l&#8217;exécution du programme, nous avons cet affichage :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/tmp/</span><span class="nb">test</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">21</span> <span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">16</span><span class="p">:</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">establish_connection</span><span class="p">(</span><span class="ss">adapter</span><span class="p">:</span> <span class="s1">&#39;sqlite3&#39;</span><span class="p">,</span> <span class="ss">database</span><span class="p">:</span> <span class="s1">&#39;dbfile.sqlite3&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">17</span><span class="p">:</span> <span class="no">CreateUsers</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">change</span> <span class="k">unless</span> <span class="no">User</span><span class="o">.</span><span class="n">table_exists?</span>
+</span><span class='line'>    <span class="mi">18</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">19</span><span class="p">:</span> <span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="ss">age</span><span class="p">:</span> <span class="mi">20</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">20</span><span class="p">:</span> <span class="nb">require</span> <span class="s1">&#39;pry&#39;</span><span class="p">;</span> <span class="nb">binding</span><span class="o">.</span><span class="n">pry</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">21</span><span class="p">:</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>À partir de là, il est possible de continuer l&#8217;exécution en entrant dans la méthode <code>User#all</code> en utilisant la commande <code>step</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="n">step</span>
+</span><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">scoping</span><span class="o">/</span><span class="n">named</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">25</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Scoping</span><span class="o">::</span><span class="ss">Named</span><span class="p">:</span><span class="ss">:ClassMethods</span><span class="c1">#all:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">24</span><span class="p">:</span> <span class="k">def</span> <span class="nf">all</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">25</span><span class="p">:</span>   <span class="k">if</span> <span class="n">current_scope</span>
+</span><span class='line'>    <span class="mi">26</span><span class="p">:</span>     <span class="n">current_scope</span><span class="o">.</span><span class="n">clone</span>
+</span><span class='line'>    <span class="mi">27</span><span class="p">:</span>   <span class="k">else</span>
+</span><span class='line'>    <span class="mi">28</span><span class="p">:</span>     <span class="n">default_scoped</span>
+</span><span class='line'>    <span class="mi">29</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">30</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La méthode est maintenant affichée. Pour continuer l&#8217;exécution en restant dans
+la même méthode, il est possible d&#8217;utiliser la commande <code>next</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="k">next</span>
+</span><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">scoping</span><span class="o">/</span><span class="n">named</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">28</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Scoping</span><span class="o">::</span><span class="ss">Named</span><span class="p">:</span><span class="ss">:ClassMethods</span><span class="c1">#all:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">24</span><span class="p">:</span> <span class="k">def</span> <span class="nf">all</span>
+</span><span class='line'>    <span class="mi">25</span><span class="p">:</span>   <span class="k">if</span> <span class="n">current_scope</span>
+</span><span class='line'>    <span class="mi">26</span><span class="p">:</span>     <span class="n">current_scope</span><span class="o">.</span><span class="n">clone</span>
+</span><span class='line'>    <span class="mi">27</span><span class="p">:</span>   <span class="k">else</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">28</span><span class="p">:</span>     <span class="n">default_scoped</span>
+</span><span class='line'>    <span class="mi">29</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">30</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Afin d&#8217;aller plus en profondeur et voir le fonctionnement interne d&#8217;ActiveRecord, j&#8217;ai tout simplement exécuté plusieurs fois la commande <code>step</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="n">step</span>
+</span><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">scoping</span><span class="o">/</span><span class="n">named</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">33</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Scoping</span><span class="o">::</span><span class="ss">Named</span><span class="p">:</span><span class="ss">:ClassMethods</span><span class="c1">#default_scoped:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">32</span><span class="p">:</span> <span class="k">def</span> <span class="nf">default_scoped</span> <span class="c1"># :nodoc:</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">33</span><span class="p">:</span>   <span class="n">relation</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">build_default_scope</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">34</span><span class="p">:</span> <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'> <span class="o">&gt;</span> <span class="n">step</span>
+</span><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">253</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Core</span><span class="o">::</span><span class="no">ClassMethods</span><span class="c1">#relation:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">252</span><span class="p">:</span> <span class="k">def</span> <span class="nf">relation</span> <span class="c1">#:nodoc:</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">253</span><span class="p">:</span>   <span class="n">relation</span> <span class="o">=</span> <span class="no">Relation</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">arel_table</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">254</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">255</span><span class="p">:</span>   <span class="k">if</span> <span class="n">finder_needs_type_condition?</span>
+</span><span class='line'>    <span class="mi">256</span><span class="p">:</span>     <span class="n">relation</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">type_condition</span><span class="p">)</span><span class="o">.</span><span class="n">create_with</span><span class="p">(</span><span class="n">inheritance_column</span><span class="o">.</span><span class="n">to_sym</span> <span class="o">=&gt;</span> <span class="n">sti_name</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">257</span><span class="p">:</span>   <span class="k">else</span>
+</span><span class='line'>    <span class="mi">258</span><span class="p">:</span>     <span class="n">relation</span>
+</span><span class='line'>    <span class="mi">259</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">260</span><span class="p">:</span> <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'> <span class="o">&gt;</span> <span class="n">step</span>
+</span><span class='line'>    <span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">relation</span><span class="o">/</span><span class="n">delegation</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">106</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Delegation</span><span class="o">::</span><span class="no">ClassMethods</span><span class="c1">#create:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">105</span><span class="p">:</span> <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">106</span><span class="p">:</span>   <span class="n">relation_class_for</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">107</span><span class="p">:</span> <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'> <span class="o">&gt;</span> <span class="n">step</span>
+</span><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">237</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Core</span><span class="o">::</span><span class="no">ClassMethods</span><span class="c1">#arel_table:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">236</span><span class="p">:</span> <span class="k">def</span> <span class="nf">arel_table</span> <span class="c1"># :nodoc:</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">237</span><span class="p">:</span>   <span class="vi">@arel_table</span> <span class="o">||=</span> <span class="ss">Arel</span><span class="p">:</span><span class="ss">:Table</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">arel_engine</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">238</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La commande <code>finish</code> permet de continuer l&#8217;exécution jusqu&#8217;a ce qu&#8217;il y ait un changement
+de fenêtre. Malheureusement, je la trouve très peu utile et elle me perd dans le
+code plutôt qu&#8217;elle ne m&#8217;aide.</p>
+
+<p>La navigation avec Pry nous a donc permis de comprendre qu&#8217;ActiveRecord utilise
+Arel. Pour reprendre l&#8217;exécution normale du programme, il est possible
+d&#8217;utiliser la commande <code>continue</code>.</p>
+
+<p>Toutes les commandes de navigations possèdent des alias. Il est possible de uniquement le premier caractère pour exécuter la commande et utiliser <code>s</code>, <code>n</code>, <code>f</code> et <code>c</code>.</p>
+
+<h2>Réafficher la position actuelle</h2>
+
+<p>L&#8217;affichage peut rapidement devenir chargé. Pour revoir la position actuelle du curseur, il est possible d&#8217;exécuter la commande <code>whereami</code>.</p>
+
+<h2>Répititions des commandes</h2>
+
+<p>Afin de répéter la commande précédemment utilisée en appuyant sur la touche &ldquo;Entrée&rdquo;, il est possible d&#8217;ajouter, dans le fichier <code>~/.pryrc</code>, ce code :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">Pry</span><span class="p">:</span><span class="ss">:Commands</span><span class="o">.</span><span class="n">command</span> <span class="sr">/^$/</span><span class="p">,</span> <span class="s2">&quot;repeat last command&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">_pry_</span><span class="o">.</span><span class="n">run_command</span> <span class="no">Pry</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">to_a</span><span class="o">.</span><span class="n">last</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Cet ajout va permettre de rendre beaucoup plus agréable la navigation.</p>
+
+<h2>Breakpoints</h2>
+
+<p>Pry nous offre la possibilité d&#8217;ajouter des points d&#8217;arrêts. Il est possible
+d&#8217;arrêter l&#8217;exécution en spécifiant un fichier et une ligne.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="k">break</span> <span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">scoping</span><span class="o">/</span><span class="n">named</span><span class="o">.</span><span class="n">rb</span><span class="p">:</span><span class="mi">33</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>En exécutant la fonction <code>continue</code>, le programme s&#8217;arrête donc à la ligne spécifiée.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">scoping</span><span class="o">/</span><span class="n">named</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">33</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Scoping</span><span class="o">::</span><span class="ss">Named</span><span class="p">:</span><span class="ss">:ClassMethods</span><span class="c1">#default_scoped:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">32</span><span class="p">:</span> <span class="k">def</span> <span class="nf">default_scoped</span> <span class="c1"># :nodoc:</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">33</span><span class="p">:</span>   <span class="n">relation</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">build_default_scope</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">34</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Dans ce cas, il se peut que l&#8217;on souhaite voir le comportement de la méthode
+<code>merge</code> qui est appelée à la variable retournée par la méthode <code>relation</code>.
+Premièrement, il est nécessaire de savoir de quels classe ou module fait la
+méthode <code>merge</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="n">ls</span> <span class="n">relation</span> <span class="o">-</span><span class="n">G</span> <span class="n">merge</span>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:SpawnMethods</span><span class="c1">#methods: merge  merge!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>À partir de là, il est possible de placer un point d&#8217;arrêt directement sur cette méthode.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="k">break</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:SpawnMethods</span><span class="c1">#merge</span>
+</span><span class='line'><span class="no">Breakpoint</span> <span class="mi">3</span><span class="p">:</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:SpawnMethods</span><span class="c1">#merge (Enabled) :</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">29</span><span class="p">:</span> <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span class='line'><span class="mi">30</span><span class="p">:</span>   <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="nb">Array</span><span class="p">)</span>
+</span><span class='line'><span class="mi">31</span><span class="p">:</span>     <span class="nb">to_a</span> <span class="o">&amp;</span> <span class="n">other</span>
+</span><span class='line'><span class="mi">32</span><span class="p">:</span>   <span class="k">elsif</span> <span class="n">other</span>
+</span><span class='line'><span class="mi">33</span><span class="p">:</span>     <span class="n">spawn</span><span class="o">.</span><span class="n">merge!</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span class='line'><span class="mi">34</span><span class="p">:</span>   <span class="k">else</span>
+</span><span class='line'><span class="mi">35</span><span class="p">:</span>     <span class="nb">self</span>
+</span><span class='line'><span class="mi">36</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'><span class="mi">37</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>À la prochaine exécution, pry s&#8217;arrêtera au début de l&#8217;exécution de cette méthode.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="n">continue</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Breakpoint</span> <span class="mi">2</span><span class="o">.</span> <span class="no">First</span> <span class="n">hit</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">relation</span><span class="o">/</span><span class="n">spawn_methods</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">29</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:SpawnMethods</span><span class="c1">#merge:</span>
+</span><span class='line'>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">29</span><span class="p">:</span> <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">30</span><span class="p">:</span>   <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="nb">Array</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">31</span><span class="p">:</span>     <span class="nb">to_a</span> <span class="o">&amp;</span> <span class="n">other</span>
+</span><span class='line'>    <span class="mi">32</span><span class="p">:</span>   <span class="k">elsif</span> <span class="n">other</span>
+</span><span class='line'>    <span class="mi">33</span><span class="p">:</span>     <span class="n">spawn</span><span class="o">.</span><span class="n">merge!</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">34</span><span class="p">:</span>   <span class="k">else</span>
+</span><span class='line'>    <span class="mi">35</span><span class="p">:</span>     <span class="nb">self</span>
+</span><span class='line'>    <span class="mi">36</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">37</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Il est possible de lister les points d&#8217;arrêts définis grâce à la commande <code>breaks</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="n">breaks</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#  Enabled  At</span>
+</span><span class='line'><span class="o">---------------</span>
+</span><span class='line'><span class="mi">1</span>  <span class="no">Yes</span>      <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:SpawnMethods</span><span class="c1">#merge</span>
+</span><span class='line'><span class="mi">2</span>  <span class="no">Yes</span>      <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="mi">237</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Il est également possible de désactiver temporairement un point d&#8217;arrêt.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="k">break</span> <span class="o">--</span><span class="n">disable</span> <span class="mi">1</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#  Enabled  At</span>
+</span><span class='line'><span class="o">---------------</span>
+</span><span class='line'><span class="mi">1</span>  <span class="no">No</span>       <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:SpawnMethods</span><span class="c1">#merge</span>
+</span><span class='line'><span class="mi">2</span>  <span class="no">Yes</span>      <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="mi">237</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On peut les désactiver tous.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="k">break</span> <span class="o">--</span><span class="n">disable</span><span class="o">-</span><span class="n">all</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#  Enabled  At</span>
+</span><span class='line'><span class="o">---------------</span>
+</span><span class='line'><span class="mi">1</span>  <span class="no">No</span>       <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:SpawnMethods</span><span class="c1">#merge</span>
+</span><span class='line'><span class="mi">2</span>  <span class="no">No</span>       <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="mi">237</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>De la même manière, il est possible de supprimer un ou plusieurs points d&#8217;arrêts.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="k">break</span> <span class="o">--</span><span class="n">delete</span><span class="o">-</span><span class="n">all</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">No</span> <span class="n">breakpoints</span> <span class="n">defined</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Il est existe d&#8217;autres possibilités fournies par Pry à ce niveau, comme l&#8217;arrêt
+suivant des conditions. Je vous invite à consulter la documentation pour en
+savoir plus.</p>
+
+<h2>Conclusion</h2>
+
+<p>Pry est un outil essentiel dans le développement avec Ruby et devient plus
+puissant que les outils fournis par des IDE quand on sait l&#8217;utiliser des
+manières efficaces. Dans les prochains articles, je vais utiliser ces techniques
+pour comprendre le fonctionnement de Rails.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Utiliser ActiveRecord sans Rails]]></title>
@@ -1966,7 +2525,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#x69;&#108;&#x74;&#x6f;&#58;&#103;&#117;&#x69;&#x72;&#x65;&#99;&#x2e;&#x63;&#111;&#x72;&#98;&#101;&#x6c;&#x40;&#x67;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#111;&#x6d;">&#x67;&#117;&#105;&#114;&#101;&#x63;&#46;&#x63;&#111;&#114;&#98;&#x65;&#108;&#64;&#103;&#x6d;&#x61;&#105;&#108;&#x2e;&#x63;&#x6f;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#x67;&#x75;&#105;&#x72;&#x65;&#x63;&#x2e;&#99;&#111;&#x72;&#98;&#101;&#108;&#64;&#103;&#x6d;&#97;&#105;&#x6c;&#46;&#x63;&#x6f;&#109;">&#x67;&#x75;&#x69;&#x72;&#101;&#99;&#46;&#x63;&#x6f;&#x72;&#x62;&#101;&#x6c;&#x40;&#103;&#x6d;&#x61;&#x69;&#x6c;&#x2e;&#x63;&#111;&#x6d;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
