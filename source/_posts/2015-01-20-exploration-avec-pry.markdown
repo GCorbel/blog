@@ -54,10 +54,10 @@ Cat.new('Tom').debug
 À l'exécution du programme, Pry s'arrête à la ligne suivant `require 'pry'; binding.pry`.
 
 ```
-    14: def debug
-    15:   require 'pry'; binding.pry
- => 16:   say
-    17: end
+        14: def debug
+        15:   require 'pry'; binding.pry
+     => 16:   say
+        17: end
 ```
 
 La commande `ls`, très similaire à celle de Linux pour explorer les fichiers et
@@ -107,6 +107,7 @@ regarder toutes les méthodes contenant "cap" dans la variable `@name`.
 
 La commande cd permet de changer le contexte afin d'explorer une variable.
 
+```
      > p self
     => main
      > p @name
@@ -119,6 +120,7 @@ La commande cd permet de changer le contexte afin d'explorer une variable.
      > cd ..
      > p self
     => main
+```
 
 ## Navigation dans le code
 
@@ -233,13 +235,13 @@ From: /home/dougui/.rbenv/versions/2.1.5/lib/ruby/gems/2.1.0/gems/activerecord-4
     238: end
 ```
 
-La commande `finish` permet de continuer l'exécution jusqu'a ce qu'il y ait un changement
-de fenêtre. Malheureusement, je la trouve très peu utile et elle me perd dans le
-code plutôt qu'elle ne m'aide.
-
 La navigation avec Pry nous a donc permis de comprendre qu'ActiveRecord utilise
 Arel. Pour reprendre l'exécution normale du programme, il est possible
 d'utiliser la commande `continue`.
+
+La commande `finish` permet de continuer l'exécution jusqu'a ce qu'il y ait un changement
+de fenêtre. Malheureusement, je la trouve très peu utile et elle me perd dans le
+code plutôt qu'elle ne m'aide.
 
 Toutes les commandes de navigations possèdent des alias. Il est possible de uniquement le premier caractère pour exécuter la commande et utiliser `s`, `n`, `f` et `c`.
 
@@ -375,6 +377,6 @@ savoir plus.
 ## Conclusion
 
 Pry est un outil essentiel dans le développement avec Ruby et devient plus
-puissant que les outils fournis par des IDE quand on sait l'utiliser des
-manières efficaces. Dans les prochains articles, je vais utiliser ces techniques
+puissant que les outils fournis par des IDE quand on sait l'utiliser de
+manière efficace. Dans les prochains articles, je vais utiliser ces techniques
 pour comprendre le fonctionnement de Rails.
