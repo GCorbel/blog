@@ -1,0 +1,652 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Comment ActiveRecord reconnait la structure d'une table d'un modèle - Guirec Corbel</title>
+  <meta name="author" content="Guirec Corbel">
+
+  
+  <meta name="description" content="ActiveRecord est probablement un des Gem qui impressionne le plus quand on
+commence avec Rails. Comme par magie, ActiveRecord est capable de &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://GCorbel.github.io/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele">
+  <link href="/blog/favicon.png" rel="icon">
+  <link href="/blog/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/blog/atom.xml" rel="alternate" title="Guirec Corbel" type="application/atom+xml">
+  <script src="/blog/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/blog/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="/blog/stylesheets/rve-styles.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-42784059-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <a href="https://github.com/gcorbel/blog">
+    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png" alt="Suivez moi sur GitHub">
+  </a>
+  <h1><a href="/blog/">Guirec Corbel</a></h1>
+  
+    <h2>Mon blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/blog/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:GCorbel.github.io/blog" />
+    <input class="search" type="text" name="q" results="0" placeholder="Rechercher"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/blog/">Blog</a></li>
+  <li><a href="/blog/blog/archives">Archives</a></li>
+  <li><a href="/blog-en">English version</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Comment activerecord reconnait la structure d'une table d'un modèle</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-25T20:06:00-05:00" pubdate data-updated="true">25 janvier 2015</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://GCorbel.github.io/blog">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>ActiveRecord est probablement un des Gem qui impressionne le plus quand on
+commence avec Rails. Comme par magie, ActiveRecord est capable de comprendre
+seul quelle table est utilisée pour un modèle. Quand on connait Rails, on
+comprend qu&#8217;il n&#8217;y a aucune magie. Dans cet article, je vais démystifier
+ActiveRecord grâce à Pry.</p>
+
+<!-- more -->
+
+
+<p>Dans cet article, j&#8217;utilise la version 4.2 d&#8217;ActiveRecord.</p>
+
+<p>Avant de commencer, il est important de comprendre comment explorer avec Pry. Je vous invite à lire <a href="http://gcorbel.github.io/blog/blog/2015/01/20/exploration-avec-pry/">sur le sujet</a> car ce sont ces techniques que je vais utiliser ici.</p>
+
+<h2>Point de départ</h2>
+
+<p>Comme code de départ, je vais prendre celui de <a href="http://gcorbel.github.io/blog/blog/2015/01/20/utiliser-activerecord-sans-rails/">mon article sur ActiveRecord sans Rails</a> légèrement modifié :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_record&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:name</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:age</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">establish_connection</span><span class="p">(</span><span class="ss">adapter</span><span class="p">:</span> <span class="s1">&#39;sqlite3&#39;</span><span class="p">,</span> <span class="ss">database</span><span class="p">:</span> <span class="s1">&#39;dbfile.sqlite3&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="no">CreateUsers</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">change</span> <span class="k">unless</span> <span class="no">User</span><span class="o">.</span><span class="n">table_exists?</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;pry&#39;</span><span class="p">;</span> <span class="nb">binding</span><span class="o">.</span><span class="n">pry</span>
+</span><span class='line'><span class="nb">p</span> <span class="no">User</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">c</span><span class="o">|</span> <span class="o">[</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">type</span><span class="o">]</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>À l&#8217;exécution du programme, nous avons la liste des noms de colonnes avec les
+types associés. ActiveRecord à donc trouver la structure de la table.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="ss">:integer</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="ss">:string</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="s2">&quot;age&quot;</span><span class="p">,</span> <span class="ss">:integer</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="s2">&quot;created_at&quot;</span><span class="p">,</span> <span class="ss">:datetime</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="s2">&quot;updated_at&quot;</span><span class="p">,</span> <span class="ss">:datetime</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Grâce à Pry, il est possible d&#8217;entrer dans la fonction <code>User#columns</code>. Voici
+cette méthode :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="n">main</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">step</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">attributes</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">91</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Attributes</span><span class="o">::</span><span class="no">ClassMethods</span><span class="c1">#columns:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">90</span><span class="p">:</span> <span class="k">def</span> <span class="nf">columns</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">91</span><span class="p">:</span>   <span class="vi">@columns</span> <span class="o">||=</span> <span class="n">add_user_provided_columns</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">schema_cache</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="n">table_name</span><span class="p">))</span>
+</span><span class='line'>    <span class="mi">92</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Explorons donc certaines variables ou méthodes qui sont utilisées.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="no">User</span><span class="p">):</span><span class="mi">1</span><span class="o">&gt;</span> <span class="vi">@columns</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="kp">nil</span>
+</span><span class='line'><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="no">User</span><span class="p">):</span><span class="mi">1</span><span class="o">&gt;</span> <span class="n">table_name</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="s2">&quot;users&quot;</span>
+</span><span class='line'><span class="o">[</span><span class="mi">3</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="no">User</span><span class="p">):</span><span class="mi">1</span><span class="o">&gt;</span> <span class="n">connection</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="c1">#&lt;ActiveRecord::ConnectionAdapters::SQLite3Adapter:0x007ff3a3c9cc20</span>
+</span><span class='line'> <span class="vi">@active</span><span class="o">=</span><span class="kp">nil</span><span class="p">,</span>
+</span><span class='line'> <span class="vi">@config</span><span class="o">=</span><span class="p">{</span><span class="ss">:adapter</span><span class="o">=&gt;</span><span class="s2">&quot;sqlite3&quot;</span><span class="p">,</span> <span class="ss">:database</span><span class="o">=&gt;</span><span class="s2">&quot;dbfile.sqlite3&quot;</span><span class="p">},</span>
+</span><span class='line'> <span class="c1">#...</span>
+</span><span class='line'><span class="o">[</span><span class="mi">4</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="no">User</span><span class="p">):</span><span class="mi">1</span><span class="o">&gt;</span> <span class="n">ls</span> <span class="o">-</span><span class="n">G</span> <span class="n">table_name</span>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:ModelSchema</span><span class="o">::</span><span class="no">ClassMethods</span><span class="c1">#methods: full_table_name_prefix  full_table_name_suffix  quoted_table_name  reset_table_name  table_name  table_name=</span>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">methods</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">pluralize_table_names</span>   <span class="n">pluralize_table_names?</span>        <span class="n">schema_migrations_table_name</span><span class="o">=</span>  <span class="n">table_name_prefix</span>   <span class="n">table_name_prefix?</span>  <span class="n">table_name_suffix</span><span class="o">=</span>
+</span><span class='line'>  <span class="n">pluralize_table_names</span><span class="o">=</span>  <span class="n">schema_migrations_table_name</span>  <span class="n">schema_migrations_table_name?</span>  <span class="n">table_name_prefix</span><span class="o">=</span>  <span class="n">table_name_suffix</span>   <span class="n">table_name_suffix?</span>
+</span><span class='line'><span class="n">instance</span> <span class="ss">variables</span><span class="p">:</span>
+</span><span class='line'>  <span class="vi">@arel_engine</span>  <span class="vi">@attribute_methods_generated</span>  <span class="vi">@column_names</span>  <span class="vi">@columns</span>       <span class="vi">@content_columns</span>     <span class="vi">@generated_association_methods</span>  <span class="vi">@parent_name</span>        <span class="vi">@relation</span>                 <span class="vi">@sequence_name</span>
+</span><span class='line'>  <span class="vi">@arel_table</span>   <span class="vi">@attributes_builder</span>           <span class="vi">@column_types</span>  <span class="vi">@columns_hash</span>  <span class="vi">@default_attributes</span>  <span class="vi">@generated_attribute_methods</span>    <span class="vi">@quoted_table_name</span>  <span class="vi">@relation_delegate_cache</span>  <span class="vi">@table_name</span>
+</span><span class='line'><span class="k">class</span> <span class="ss">variables</span><span class="p">:</span>
+</span><span class='line'>  <span class="vc">@@configurations</span>    <span class="vc">@@dump_schema_after_migration</span>  <span class="vc">@@maintain_test_schema</span>     <span class="vc">@@raise_in_transactional_callbacks</span>  <span class="vc">@@time_zone_aware_attributes</span>
+</span><span class='line'>  <span class="vc">@@default_timezone</span>  <span class="vc">@@logger</span>                       <span class="vc">@@primary_key_prefix_type</span>  <span class="vc">@@schema_format</span>                     <span class="vc">@@timestamped_migrations</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Plusieurs éléments sont intéressants ici. Premièrement, les colonnes ne sont pas
+encore connues par la classe étant donné que la variable <code>@columns</code> est nulle.
+<code>table_name</code> est une méthode retournant la variable <code>@table_name</code> qui contient
+déjà le nom de la table, &ldquo;users&rdquo; dans ce cas. <code>connection.schema_cache</code> semble contenir diverses
+informations sur la base de données.</p>
+
+<p>Avant d&#8217;exécuter <code>connection.schema_cache.columns(table_name)</code>, <code>schema_cache</code>
+ne contient pas les informations sur la structure de la table &ldquo;users&rdquo; tandis
+qu&#8217;elles sont présentes par la suite.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="no">User</span><span class="p">):</span><span class="mi">1</span><span class="o">&gt;</span> <span class="n">connection</span><span class="o">.</span><span class="n">schema_cache</span><span class="o">.</span><span class="n">instance_variable_get</span><span class="p">(</span><span class="s1">&#39;@columns&#39;</span><span class="p">)</span><span class="o">[</span><span class="s1">&#39;users&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="kp">nil</span>
+</span><span class='line'><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="no">User</span><span class="p">):</span><span class="mi">1</span><span class="o">&gt;</span> <span class="n">connection</span><span class="o">.</span><span class="n">schema_cache</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># ...</span>
+</span><span class='line'><span class="o">[</span><span class="mi">3</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="no">User</span><span class="p">):</span><span class="mi">1</span><span class="o">&gt;</span> <span class="n">connection</span><span class="o">.</span><span class="n">schema_cache</span><span class="o">.</span><span class="n">instance_variable_get</span><span class="p">(</span><span class="s1">&#39;@columns&#39;</span><span class="p">)</span><span class="o">[</span><span class="s1">&#39;users&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="o">[</span><span class="c1">#&lt;ActiveRecord::ConnectionAdapters::Column:0x007fadc7cec288</span>
+</span><span class='line'><span class="c1">#...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Les informations sont donc stockées dans un cache et ne sont cherchées qu&#8217;une
+fois si le cache n&#8217;est pas vidé.</p>
+
+<p>Pour aller plus loin, il est nécessaire de comprendre comment fonctionne la
+méthode de recherche des colonnes.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="no">User</span><span class="p">):</span><span class="mi">1</span><span class="o">&gt;</span> <span class="k">break</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:ConnectionAdapters</span><span class="o">::</span><span class="no">SchemaCache</span><span class="c1">#columns                                                                                                                                                          [7/1892]</span>
+</span><span class='line'><span class="no">Breakpoint</span> <span class="mi">1</span><span class="p">:</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:ConnectionAdapters</span><span class="o">::</span><span class="no">SchemaCache</span><span class="c1">#columns (Enabled) :</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">42</span><span class="p">:</span> <span class="k">def</span> <span class="nf">columns</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+</span><span class='line'><span class="mi">43</span><span class="p">:</span>   <span class="vi">@columns</span><span class="o">[</span><span class="n">table_name</span><span class="o">]</span> <span class="o">||=</span> <span class="n">connection</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+</span><span class='line'><span class="mi">44</span><span class="p">:</span> <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="no">User</span><span class="p">):</span><span class="mi">1</span><span class="o">&gt;</span> <span class="n">continue</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Breakpoint</span> <span class="mi">1</span><span class="o">.</span> <span class="no">First</span> <span class="n">hit</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">connection_adapters</span><span class="o">/</span><span class="n">schema_cache</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">42</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:ConnectionAdapters</span><span class="o">::</span><span class="no">SchemaCache</span><span class="c1">#columns:</span>
+</span><span class='line'>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">42</span><span class="p">:</span> <span class="k">def</span> <span class="nf">columns</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">43</span><span class="p">:</span>   <span class="vi">@columns</span><span class="o">[</span><span class="n">table_name</span><span class="o">]</span> <span class="o">||=</span> <span class="n">connection</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">44</span><span class="p">:</span> <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="c1">#&lt;ActiveRecord::ConnectionAdapters::SchemaCache&gt;)&gt; step</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">connection_adapters</span><span class="o">/</span><span class="n">schema_cache</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">43</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:ConnectionAdapters</span><span class="o">::</span><span class="no">SchemaCache</span><span class="c1">#columns:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">42</span><span class="p">:</span> <span class="k">def</span> <span class="nf">columns</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">43</span><span class="p">:</span>   <span class="vi">@columns</span><span class="o">[</span><span class="n">table_name</span><span class="o">]</span> <span class="o">||=</span> <span class="n">connection</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">44</span><span class="p">:</span> <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="c1">#&lt;ActiveRecord::ConnectionAdapters::SchemaCache&gt;)&gt; step</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">connection_adapters</span><span class="o">/</span><span class="n">sqlite3_adapter</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">389</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:ConnectionAdapters</span><span class="o">::</span><span class="no">SQLite3Adapter</span><span class="c1">#columns:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">388</span><span class="p">:</span> <span class="k">def</span> <span class="nf">columns</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span> <span class="c1">#:nodoc:</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">389</span><span class="p">:</span>   <span class="n">table_structure</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">field</span><span class="o">|</span>
+</span><span class='line'>    <span class="mi">390</span><span class="p">:</span>     <span class="k">case</span> <span class="n">field</span><span class="o">[</span><span class="s2">&quot;dflt_value&quot;</span><span class="o">]</span>
+</span><span class='line'>    <span class="mi">391</span><span class="p">:</span>     <span class="k">when</span> <span class="sr">/^null$/i</span>
+</span><span class='line'>    <span class="mi">392</span><span class="p">:</span>       <span class="n">field</span><span class="o">[</span><span class="s2">&quot;dflt_value&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>    <span class="mi">393</span><span class="p">:</span>     <span class="k">when</span> <span class="sr">/^&#39;(.*)&#39;$/m</span>
+</span><span class='line'>    <span class="mi">394</span><span class="p">:</span>       <span class="n">field</span><span class="o">[</span><span class="s2">&quot;dflt_value&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="vg">$1</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">395</span><span class="p">:</span>     <span class="k">when</span> <span class="sr">/^&quot;(.*)&quot;$/m</span>
+</span><span class='line'>    <span class="mi">396</span><span class="p">:</span>       <span class="n">field</span><span class="o">[</span><span class="s2">&quot;dflt_value&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="vg">$1</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="s1">&#39;&quot;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">397</span><span class="p">:</span>     <span class="k">end</span>
+</span><span class='line'>    <span class="mi">398</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">399</span><span class="p">:</span>     <span class="n">sql_type</span> <span class="o">=</span> <span class="n">field</span><span class="o">[</span><span class="s1">&#39;type&#39;</span><span class="o">]</span>
+</span><span class='line'>    <span class="mi">400</span><span class="p">:</span>     <span class="n">cast_type</span> <span class="o">=</span> <span class="n">lookup_cast_type</span><span class="p">(</span><span class="n">sql_type</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">401</span><span class="p">:</span>     <span class="n">new_column</span><span class="p">(</span><span class="n">field</span><span class="o">[</span><span class="s1">&#39;name&#39;</span><span class="o">]</span><span class="p">,</span> <span class="n">field</span><span class="o">[</span><span class="s1">&#39;dflt_value&#39;</span><span class="o">]</span><span class="p">,</span> <span class="n">cast_type</span><span class="p">,</span> <span class="n">sql_type</span><span class="p">,</span> <span class="n">field</span><span class="o">[</span><span class="s1">&#39;notnull&#39;</span><span class="o">].</span><span class="n">to_i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">402</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">403</span><span class="p">:</span> <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="c1">#&lt;ActiveRecord::ConnectionAdapters::SQLite3Adapter&gt;)&gt; step</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">connection_adapters</span><span class="o">/</span><span class="n">sqlite3_adapter</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">516</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:ConnectionAdapters</span><span class="o">::</span><span class="no">SQLite3Adapter</span><span class="c1">#table_structure:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">515</span><span class="p">:</span> <span class="k">def</span> <span class="nf">table_structure</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">516</span><span class="p">:</span>   <span class="n">structure</span> <span class="o">=</span> <span class="n">exec_query</span><span class="p">(</span><span class="s2">&quot;PRAGMA table_info(</span><span class="si">#{</span><span class="n">quote_table_name</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="s1">&#39;SCHEMA&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_hash</span>
+</span><span class='line'>    <span class="mi">517</span><span class="p">:</span>   <span class="k">raise</span><span class="p">(</span><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:StatementInvalid</span><span class="p">,</span> <span class="s2">&quot;Could not find table &#39;</span><span class="si">#{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">structure</span><span class="o">.</span><span class="n">empty?</span>
+</span><span class='line'>    <span class="mi">518</span><span class="p">:</span>   <span class="n">structure</span>
+</span><span class='line'>    <span class="mi">519</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nous voilà à une fonction des plus intéressante. ActiveRecord execute la requête <code>PRAGMA table_info("users")</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="mi">3</span><span class="o">]</span> <span class="n">pry</span><span class="p">(</span><span class="c1">#&lt;ActiveRecord::ConnectionAdapters::SQLite3Adapter&gt;)&gt; exec_query(&quot;PRAGMA table_info(#{quote_table_name(table_name)})&quot;, &#39;SCHEMA&#39;).to_hash</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="o">[</span><span class="p">{</span><span class="s2">&quot;cid&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;INTEGER&quot;</span><span class="p">,</span> <span class="s2">&quot;notnull&quot;</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;dflt_value&quot;</span><span class="o">=&gt;</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;pk&quot;</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">},</span>
+</span><span class='line'> <span class="p">{</span><span class="s2">&quot;cid&quot;</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;varchar&quot;</span><span class="p">,</span> <span class="s2">&quot;notnull&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;dflt_value&quot;</span><span class="o">=&gt;</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;pk&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">},</span>
+</span><span class='line'> <span class="p">{</span><span class="s2">&quot;cid&quot;</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;age&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span> <span class="s2">&quot;notnull&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;dflt_value&quot;</span><span class="o">=&gt;</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;pk&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">},</span>
+</span><span class='line'> <span class="p">{</span><span class="s2">&quot;cid&quot;</span><span class="o">=&gt;</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;created_at&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;datetime&quot;</span><span class="p">,</span> <span class="s2">&quot;notnull&quot;</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;dflt_value&quot;</span><span class="o">=&gt;</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;pk&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">},</span>
+</span><span class='line'> <span class="p">{</span><span class="s2">&quot;cid&quot;</span><span class="o">=&gt;</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;updated_at&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;datetime&quot;</span><span class="p">,</span> <span class="s2">&quot;notnull&quot;</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;dflt_value&quot;</span><span class="o">=&gt;</span><span class="kp">nil</span><span class="p">,</span> <span class="s2">&quot;pk&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">}</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Avec SQLite, cette requête renvoie les informations sur la table et c&#8217;est à
+partir de ces informations qu&#8217;ActiveRecord reconstitut les données.</p>
+
+<p>Cette requête fonctionne pour SQLite mais il en existe une similaire pour
+Postgres.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#activerecord/lib/active_record/connection_adapters/postgresql_adapter.rb:12</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">column_definitions</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span> <span class="c1"># :nodoc:</span>
+</span><span class='line'>  <span class="n">exec_query</span><span class="p">(</span><span class="o">&lt;&lt;-</span><span class="no">end_sql</span><span class="p">,</span> <span class="s1">&#39;SCHEMA&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rows</span>
+</span><span class='line'><span class="sh">      SELECT a.attname, format_type(a.atttypid, a.atttypmod),</span>
+</span><span class='line'><span class="sh">             pg_get_expr(d.adbin, d.adrelid), a.attnotnull, a.atttypid, a.atttypmod</span>
+</span><span class='line'><span class="sh">        FROM pg_attribute a LEFT JOIN pg_attrdef d</span>
+</span><span class='line'><span class="sh">          ON a.attrelid = d.adrelid AND a.attnum = d.adnum</span>
+</span><span class='line'><span class="sh">       WHERE a.attrelid = &#39;#{quote_table_name(table_name)}&#39;::regclass</span>
+</span><span class='line'><span class="sh">         AND a.attnum &gt; 0 AND NOT a.attisdropped</span>
+</span><span class='line'><span class="sh">       ORDER BY a.attnum</span>
+</span><span class='line'><span class="no">  end_sql</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Il en est de même pour MySql.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#activerecord/lib/active_record/connection_adapters/abstract_mysql_adapter.rb:464</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">columns</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span><span class="c1">#:nodoc:</span>
+</span><span class='line'>  <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;SHOW FULL FIELDS FROM </span><span class="si">#{</span><span class="n">quote_table_name</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="n">execute_and_free</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="s1">&#39;SCHEMA&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">result</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">each_hash</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">field</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">field_name</span> <span class="o">=</span> <span class="n">set_field_encoding</span><span class="p">(</span><span class="n">field</span><span class="o">[</span><span class="ss">:Field</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">sql_type</span> <span class="o">=</span> <span class="n">field</span><span class="o">[</span><span class="ss">:Type</span><span class="o">]</span>
+</span><span class='line'>      <span class="n">cast_type</span> <span class="o">=</span> <span class="n">lookup_cast_type</span><span class="p">(</span><span class="n">sql_type</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">new_column</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">field</span><span class="o">[</span><span class="ss">:Default</span><span class="o">]</span><span class="p">,</span> <span class="n">cast_type</span><span class="p">,</span> <span class="n">sql_type</span><span class="p">,</span> <span class="n">field</span><span class="o">[</span><span class="ss">:Null</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;YES&quot;</span><span class="p">,</span> <span class="n">field</span><span class="o">[</span><span class="ss">:Collation</span><span class="o">]</span><span class="p">,</span> <span class="n">field</span><span class="o">[</span><span class="ss">:Extra</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusion</h2>
+
+<p>Je pense que cette brève inspection nous suffit pour comprendre ce qu&#8217;il se
+passe sous le capot. Le fonctionnement est assez simple et serait
+facile à reproduire pour d&#8217;autres cas d&#8217;utilisation. Pry nous a permis, en
+quelques minutes, de comprendre le code et de passer au travers l&#8217;apparente
+magie de Rails.</p>
+
+<p>Si vous voulez avoir d&#8217;autres explications sur le fonctionnement de Rails,
+dites-le-moi et je ferais un processus similaire pour essayer de comprendre.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Ajouté par <span class="fn">Guirec Corbel</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-25T20:06:00-05:00" pubdate data-updated="true">25 janvier 2015</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="/blog//twitter.com/share" class="twitter-share-button" data-url="http://GCorbel.github.io/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/" data-via="GuirecCorbel" data-counturl="http://GCorbel.github.io/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/blog/2015/01/20/exploration-avec-pry/" title="Previous Post: Exploration avec Pry">&laquo; Exploration avec Pry</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Derniers articles</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/">Comment activerecord reconnait la structure d'une table d'un modèle</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2015/01/20/exploration-avec-pry/">Exploration avec pry</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2015/01/20/utiliser-activerecord-sans-rails/">Utiliser activerecord sans rails</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2015/01/18/inclure-un-objet-reel-dans-un-envrionnement-3d-et-le-voir-avec-oculus/">Inclure un objet réel dans un environnement 3d et le voir avec oculus</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2015/01/03/reconstruire-un-modele-3d-a-partir-dobjets-reels/">Reconstruire un modèle 3d à partir d'objets réels</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/GCorbel">@GCorbel</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/blog/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'GCorbel',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/blog/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Guirec Corbel -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'guireccorbel';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://GCorbel.github.io/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/';
+        var disqus_url = 'http://GCorbel.github.io/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
