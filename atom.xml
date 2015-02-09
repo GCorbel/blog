@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2015-01-26T04:30:01-05:00</updated>
+  <updated>2015-02-09T06:02:35-05:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -12,6 +12,192 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Conserver les changements de valeurs grâce à ActiveModel::Dirty]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2015/02/07/conserver-les-changements-de-valeurs-grace-a-activemodel-dirty/"/>
+    <updated>2015-02-07T16:54:00-05:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2015/02/07/conserver-les-changements-de-valeurs-grace-a-activemodel-dirty</id>
+    <content type="html"><![CDATA[<p>Dans cet article, je vous propose d&#8217;observer le comportement
+d&#8217;ActiveModel::Dirty et d&#8217;en comprendre le fonctionnement en consultant le code
+source. ActiveModel::Dirty est l&#8217;un des modules méconnus de Rails. Celui-ci
+conserve l&#8217;historique des changements apportés aux attributs d&#8217;un objet et de
+revenir en arrière si besoin.</p>
+
+<!--more-->
+
+
+<p>Tout d&#8217;abord, voici un exemple de classe à laquelle ActiveModel::Dirty est inclus :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_model&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">User</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:Dirty</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">attr_accessor</span> <span class="ss">:name</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">define_attribute_methods</span> <span class="ss">:name</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Rien de bien particulier ici, mis à part l&#8217;appel de la fonction
+<code>define_attribute_methods</code>. Cette méthode doit être appelée à chaque fois que des
+<a href="http://api.rubyonrails.org/classes/ActiveModel/AttributeMethods/ClassMethods.html">préfix, suffixe ou affixe</a>
+sont utilisés avec, en argument, les attributs correspondants. En effet, comme
+nous allons le voir, lors de l&#8217;inclusion de <code>ActiveModel::Dirty</code>, plusieurs
+préfixe et suffixe sont créés.</p>
+
+<h2>Les bases</h2>
+
+<p>Comme indiqué ci-haut, <code>ActiveModel::Dirty</code> permet de vérifier si des valeurs d&#8217;un objet ont changés.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># instanciation de la classe</span>
+</span><span class='line'><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'><span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;GCorbel&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># vérification du statut initial</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">user</span><span class="o">.</span><span class="n">changed?</span> <span class="c1"># false</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">user</span><span class="o">.</span><span class="n">name_changed?</span> <span class="c1"># false</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># signalisation d&#39;un changement</span>
+</span><span class='line'><span class="n">user</span><span class="o">.</span><span class="n">name_will_change!</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># modification des valeurs</span>
+</span><span class='line'><span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Guirec Corbel&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># vérification du statut après changement</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">user</span><span class="o">.</span><span class="n">changed?</span> <span class="c1"># true</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">user</span><span class="o">.</span><span class="n">name_changed?</span> <span class="c1"># true</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">user</span><span class="o">.</span><span class="n">name_changed?</span><span class="p">(</span><span class="ss">from</span><span class="p">:</span> <span class="s1">&#39;GCorbel&#39;</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">&#39;Guirec Corbel&#39;</span><span class="p">)</span> <span class="c1"># true</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">user</span><span class="o">.</span><span class="n">changed</span> <span class="c1"># [&quot;name&quot;]</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">user</span><span class="o">.</span><span class="n">changes</span> <span class="c1"># {&quot;name&quot;=&gt;[&quot;GCorbel&quot;, &quot;Guirec Corbel&quot;]}</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">user</span><span class="o">.</span><span class="n">name_was</span> <span class="c1"># &quot;GCorbel&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Dans cet exemple, un nouvel objet est instancié et la valeur de <code>name</code> est
+renseignée. Initialement, aucun changement n&#8217;est indiqué. Il est nécessaire de
+spécifier que l&#8217;attribut va changer en utilisant la méthode
+<code>name_will_change!</code>. Suite à cet appel, nous pouvons demander si l&#8217;objet à
+subit un changement grâce à la méthode <code>changed?</code>. <code>name_changed?</code> permet
+d&#8217;afficher l&#8217;information spécifique à l&#8217;attribut <code>name</code>. Il est également
+possible de vérifier l&#8217;état précédent et suivant des valeurs en ajoutant les
+arguments <code>from</code> et <code>to</code> à <code>name_changed?</code>. Enfin, il est possible de voir
+quelles valeurs on changés grâce à <code>changed</code>, quels ont été les changements grâce
+à <code>changes</code> et quel était la dernière valeur grâce à <code>name_was</code>.</p>
+
+<h2>Afficher les dernières valeurs</h2>
+
+<p>Il est possible de vider la liste des changements grâce à la fonction <code>changes_applied</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">user</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:changes_applied</span><span class="p">)</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">user</span><span class="o">.</span><span class="n">changes</span> <span class="c1"># {}</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">user</span><span class="o">.</span><span class="n">previous_changes</span> <span class="c1"># {&quot;name&quot;=&gt;[&quot;GCorbel&quot;, &quot;Guirec Corbel&quot;]}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La fonction <code>change_applied</code> est une méthode privée. Il est donc nécessaire
+d&#8217;utiliser <code>send</code> pour effectuer l&#8217;appel. Comme on peut le voir dans
+l&#8217;exemple, <code>changes</code> renvoi maintenant un Hash vide. Cependant, les
+changements sont encore conservés, comme on peut le voir lors de l&#8217;appel de
+<code>previous_changes</code>.</p>
+
+<p>Afin de vider complètement l&#8217;historique des changements, il est possible
+d&#8217;appeler la fonction <code>clear_changes_information</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">user</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:clear_changes_information</span><span class="p">)</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">user</span><span class="o">.</span><span class="n">changes</span> <span class="c1"># {}</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">user</span><span class="o">.</span><span class="n">previous_changes</span> <span class="c1"># {}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Revenir en arrière</h2>
+
+<p>Comme on peut s&#8217;y attendre, le module offre la possibilité de revenir en
+arrière, et ceux grâce à la fonction <code>restore_attributes</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Guirec Corbel&quot;</span>
+</span><span class='line'><span class="n">user</span><span class="o">.</span><span class="n">name_will_change!</span>
+</span><span class='line'><span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Guirec&quot;</span>
+</span><span class='line'><span class="n">user</span><span class="o">.</span><span class="n">restore_attributes</span> <span class="c1"># restore les anciennes valeurs</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="c1"># &quot;Guirec Corbel&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Fonctionnement</h2>
+
+<p>Le <a href="https://github.com/rails/rails/blob/6f8d9bd6da6349d3d179f2e72db5bc7044a8e5c1/activemodel/lib/active_model/dirty.rb">code du module</a>
+est assez simple. Lors de l&#8217;appel de <code>name_will_change!</code>, la fonction est exécutée
+<code>attribute_will_change</code>. Cette fonction enregistre la valeur
+courante dans le hash <code>changed_attributes</code>. Cet appel doit être effectué avant
+le changement de valeur. Dans le cas contraire, l&#8217;information serait perdue par
+la suite.</p>
+
+<p>Les autres fonctions sont uniquement des traitements faits sur le hash, comme la fonction <a href="https://github.com/rails/rails/blob/6f8d9bd6da6349d3d179f2e72db5bc7044a8e5c1/activemodel/lib/active_model/dirty.rb#L126-L128">#changed?</a>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">changed?</span>
+</span><span class='line'>  <span class="n">changed_attributes</span><span class="o">.</span><span class="n">present?</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusion</h2>
+
+<p>Et voilà! Tout en restant simple, ce module peut être utile dans certains cas.
+Il est notamment utilisé par ActiveRecord pour conserver toutes les
+modifications faites aux modèles. Nous étudirons le comportement d&#8217;ActiveRecord
+dans un prochain article.</p>
+
+<p>Comme souvent, en prenant quelques minutes pour lire le code source, on se rend
+compte que le fonctionnement est simple. À nouveau, la magie de Rails est
+démystifiée.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Comment ActiveRecord reconnait la structure d'une table d'un modèle]]></title>
@@ -2916,7 +3102,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#x3a;&#103;&#x75;&#105;&#114;&#101;&#x63;&#x2e;&#x63;&#x6f;&#114;&#98;&#x65;&#x6c;&#64;&#x67;&#x6d;&#97;&#105;&#x6c;&#46;&#99;&#x6f;&#109;">&#x67;&#x75;&#x69;&#114;&#101;&#x63;&#x2e;&#x63;&#x6f;&#114;&#98;&#x65;&#108;&#x40;&#103;&#x6d;&#97;&#105;&#108;&#x2e;&#99;&#111;&#x6d;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#111;&#x3a;&#x67;&#x75;&#105;&#x72;&#x65;&#x63;&#46;&#x63;&#x6f;&#114;&#98;&#x65;&#108;&#64;&#103;&#x6d;&#97;&#105;&#108;&#x2e;&#x63;&#x6f;&#x6d;">&#103;&#117;&#x69;&#x72;&#x65;&#99;&#x2e;&#99;&#111;&#x72;&#x62;&#x65;&#108;&#64;&#x67;&#x6d;&#x61;&#105;&#108;&#46;&#99;&#111;&#x6d;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
