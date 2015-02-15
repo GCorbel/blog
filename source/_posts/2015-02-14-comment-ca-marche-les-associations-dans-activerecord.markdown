@@ -12,6 +12,7 @@ son utilisation soit simple, l'implémentation est assez compliquée. Je vous
 propose d'explorer le fonctionnement en observant le code exécuté à l'appel de
 l'association `belongs_to` afin de comprendre le mécanisme complexe.
 
+<!--more-->
 
 Dans cet article, je vais utiliser [Pry pour explorer](http://gcorbel.github.io/blog/blog/2015/01/20/exploration-avec-pry/).
 Je vous conseille de suivre l'exécution du code tout en lisant l'article. Cela
