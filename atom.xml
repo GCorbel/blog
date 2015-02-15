@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2015-02-09T06:02:35-05:00</updated>
+  <updated>2015-02-15T14:19:30-05:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -12,6 +12,916 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Comment ça marche : Les associations dans ActiveRecord]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2015/02/14/comment-ca-marche-les-associations-dans-activerecord/"/>
+    <updated>2015-02-14T11:33:00-05:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2015/02/14/comment-ca-marche-les-associations-dans-activerecord</id>
+    <content type="html"><![CDATA[<p>Les associations sont une part importante d&#8217;ActiveRecord. Il s&#8217;agit d&#8217;éléments
+que l&#8217;on utilise dans les premières phases d&#8217;apprentissage de Rails. Bien que
+son utilisation soit simple, l&#8217;implémentation est assez compliquée. Je vous
+propose d&#8217;explorer le fonctionnement en observant le code exécuté à l&#8217;appel de
+l&#8217;association <code>belongs_to</code> afin de comprendre le mécanisme complexe.</p>
+
+<p>Dans cet article, je vais utiliser <a href="http://gcorbel.github.io/blog/blog/2015/01/20/exploration-avec-pry/">Pry pour explorer</a>.
+Je vous conseille de suivre l&#8217;exécution du code tout en lisant l&#8217;article. Cela
+vous permettra d&#8217;avoir accès aux détails à votre guise. J&#8217;utilise la version la
+plus récente lors de l&#8217;écriture de cette article, le 15 février 2015. La
+version de Rails à la date de votre lecture peut être différente. Vous devez
+spécifier le commit &ldquo;6a7ac40dab&rdquo; si vous faite un clone de Rails et
+<a href="https://github.com/rails/rails/tree/6a7ac40dabf4a8948418c61f307ffe52ddcb48f2">ce lien</a>
+pour explorer sur Github.</p>
+
+<p>Comme point de départ, je vous propose de reprendre <a href="https://github.com/rails/rails/blob/master/guides/bug_report_templates/active_record_master.rb">le code servant à créer des issues</a> dans ActiveRecord légèrement modifié.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">unless</span> <span class="no">File</span><span class="o">.</span><span class="n">exist?</span><span class="p">(</span><span class="s1">&#39;Gemfile&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="no">File</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Gemfile&#39;</span><span class="p">,</span> <span class="o">&lt;&lt;-</span><span class="no">GEMFILE</span><span class="p">)</span>
+</span><span class='line'><span class="sh">    source &#39;https://rubygems.org&#39;</span>
+</span><span class='line'><span class="sh">    gem &#39;rails&#39;, github: &#39;rails/rails&#39;, ref: &#39;6a7ac40dab&#39;</span>
+</span><span class='line'><span class="sh">    gem &#39;arel&#39;, github: &#39;rails/arel&#39;</span>
+</span><span class='line'><span class="sh">    gem &#39;sqlite3&#39;</span>
+</span><span class='line'><span class="sh">    gem &#39;pry-byebug&#39;</span>
+</span><span class='line'><span class="no">  GEMFILE</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">system</span> <span class="s1">&#39;bundle&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;bundler&#39;</span>
+</span><span class='line'><span class="no">Bundler</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="ss">:default</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_record&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;logger&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># This connection will do for database-independent bug reports.</span>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">establish_connection</span><span class="p">(</span><span class="ss">adapter</span><span class="p">:</span> <span class="s1">&#39;sqlite3&#39;</span><span class="p">,</span> <span class="ss">database</span><span class="p">:</span> <span class="s1">&#39;:memory:&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="no">Logger</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">STDOUT</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Schema</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">create_table</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">force</span><span class="p">:</span> <span class="kp">true</span>  <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">create_table</span> <span class="ss">:comments</span><span class="p">,</span> <span class="ss">force</span><span class="p">:</span> <span class="kp">true</span>  <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:post_id</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;pry&#39;</span><span class="p">;</span> <span class="nb">binding</span><span class="o">.</span><span class="n">pry</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:comments</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Comment</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:post</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">BugTest</span> <span class="o">&lt;</span> <span class="ss">Minitest</span><span class="p">:</span><span class="ss">:Test</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">test_association_stuff</span>
+</span><span class='line'>    <span class="n">post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">create!</span>
+</span><span class='line'>    <span class="n">post</span><span class="o">.</span><span class="n">comments</span> <span class="o">&lt;&lt;</span> <span class="no">Comment</span><span class="o">.</span><span class="n">create!</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">post</span><span class="o">.</span><span class="n">comments</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Au lancement du programme, Pry stop l&#8217;exécution. Nous pouvons ainsi entrer dans
+le code d&#8217;ActiveRecord par le module <code>ActiveRecord::Associations</code>. Plus de 1000 lignes de
+commentaires sont disponibles pour expliquer les utilisations possibles de la
+méthode.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">698</span><span class="n">afe1173c6</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">1265</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="no">ClassMethods</span><span class="c1">#has_many:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">1264</span><span class="p">:</span> <span class="k">def</span> <span class="nf">has_many</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">scope</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{},</span> <span class="o">&amp;</span><span class="n">extension</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">1265</span><span class="p">:</span>   <span class="n">reflection</span> <span class="o">=</span> <span class="ss">Builder</span><span class="p">:</span><span class="ss">:HasMany</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">1266</span><span class="p">:</span>   <span class="no">Reflection</span><span class="o">.</span><span class="n">add_reflection</span> <span class="nb">self</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">1267</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Cette méthode de seulement deux lignes peut paraître simple mais la complexité
+est cachée dans la méthode <code>build</code>, de classe
+<code>ActiveRecord::Associations::Builder::HasMany</code>. Tout les arguments lui sont
+transmis avec, en plus, <code>self</code>, correspondant à la classe du modèle, <code>Post</code> dans
+notre cas.</p>
+
+<p>La classe <code>ActiveRecord::Associations::Builder::HasMany</code> fournit des
+informations basiques sur l&#8217;association, c&#8217;est-à-dire son nom et les options
+disponibles.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">ActiveRecord::Associations::Builder</span>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">HasMany</span> <span class="o">&lt;</span> <span class="no">CollectionAssociation</span> <span class="c1">#:nodoc:</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">macro</span>
+</span><span class='line'>      <span class="ss">:has_many</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">valid_options</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">super</span> <span class="o">+</span> <span class="o">[</span><span class="ss">:primary_key</span><span class="p">,</span> <span class="ss">:dependent</span><span class="p">,</span> <span class="ss">:as</span><span class="p">,</span> <span class="ss">:through</span><span class="p">,</span> <span class="ss">:source</span><span class="p">,</span> <span class="ss">:source_type</span><span class="p">,</span> <span class="ss">:inverse_of</span><span class="p">,</span> <span class="ss">:counter_cache</span><span class="p">,</span> <span class="ss">:join_table</span><span class="p">,</span> <span class="ss">:foreign_type</span><span class="o">]</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">valid_dependent_options</span>
+</span><span class='line'>      <span class="o">[</span><span class="ss">:destroy</span><span class="p">,</span> <span class="ss">:delete_all</span><span class="p">,</span> <span class="ss">:nullify</span><span class="p">,</span> <span class="ss">:restrict_with_error</span><span class="p">,</span> <span class="ss">:restrict_with_exception</span><span class="o">]</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Les informations fournies sont utiles pour les classes parentes. En effet, la
+classe hérite de
+<code>ActiveRecord::Associations::Builder::CollectionAssociation::CollectionAssociation</code>,
+qui hérite de <code>ActiveRecord::Associations::Builder::Association</code>.</p>
+
+<p>Le coeur du traitement se trouve dans la méthode <code>build</code> de la classe
+<code>ActiveRecord::Associations::Builder::Association</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">6</span><span class="n">a7ac40dabf4</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">builder</span><span class="o">/</span><span class="n">association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">22</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="ss">Builder</span><span class="p">:</span><span class="ss">:Association</span><span class="o">.</span><span class="n">build</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">21</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">build</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">22</span><span class="p">:</span>   <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">dangerous_attribute_method?</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">23</span><span class="p">:</span>     <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">&quot;You tried to define an association named </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> on the model </span><span class="si">#{</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, but &quot;</span> <span class="p">\</span>
+</span><span class='line'>    <span class="mi">24</span><span class="p">:</span>                          <span class="s2">&quot;this will conflict with a method </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> already defined by Active Record. &quot;</span> <span class="p">\</span>
+</span><span class='line'>    <span class="mi">25</span><span class="p">:</span>                          <span class="s2">&quot;Please choose a different association name.&quot;</span>
+</span><span class='line'>    <span class="mi">26</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">27</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">28</span><span class="p">:</span>   <span class="n">extension</span> <span class="o">=</span> <span class="n">define_extensions</span> <span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span>
+</span><span class='line'>    <span class="mi">29</span><span class="p">:</span>   <span class="n">reflection</span> <span class="o">=</span> <span class="n">create_reflection</span> <span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">extension</span>
+</span><span class='line'>    <span class="mi">30</span><span class="p">:</span>   <span class="n">define_accessors</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">31</span><span class="p">:</span>   <span class="n">define_callbacks</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">32</span><span class="p">:</span>   <span class="n">define_validations</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">33</span><span class="p">:</span>   <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">34</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Pour la suite des explications, je vais passer en revue la méthode <code>build</code> ligne
+par ligne. Commençons par la première.</p>
+
+<p>La première fonction appelée, <code>model.dangerous_attribute_method?</code> vérifie si le
+nom de l&#8217;association n&#8217;est pas une fonction existante dans ActiveRecord, par
+exemple, il n&#8217;est possible de créer une association comme <code>belongs_to :save</code>.
+Le nom de l&#8217;association ne peut également pas être similaire à une méthode
+relative aux IDs, <code>belongs_to :id</code> par exemple.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">6</span><span class="n">a7ac40dabf4</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">builder</span><span class="o">/</span><span class="n">association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">22</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="ss">Builder</span><span class="p">:</span><span class="ss">:Association</span><span class="o">.</span><span class="n">build</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">21</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">build</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">22</span><span class="p">:</span>   <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">dangerous_attribute_method?</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">23</span><span class="p">:</span>     <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">&quot;You tried to define an association named </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> on the model </span><span class="si">#{</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, but &quot;</span> <span class="p">\</span>
+</span><span class='line'>    <span class="mi">24</span><span class="p">:</span>                          <span class="s2">&quot;this will conflict with a method </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> already defined by Active Record. &quot;</span> <span class="p">\</span>
+</span><span class='line'>    <span class="mi">25</span><span class="p">:</span>                          <span class="s2">&quot;Please choose a different association name.&quot;</span>
+</span><span class='line'>    <span class="mi">26</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">27</span><span class="p">:</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">28</span><span class="p">:</span>   <span class="n">extension</span> <span class="o">=</span> <span class="n">define_extensions</span> <span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span>
+</span><span class='line'>    <span class="mi">29</span><span class="p">:</span>   <span class="n">reflection</span> <span class="o">=</span> <span class="n">create_reflection</span> <span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">extension</span>
+</span><span class='line'>    <span class="mi">30</span><span class="p">:</span>   <span class="n">define_accessors</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">31</span><span class="p">:</span>   <span class="n">define_callbacks</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">32</span><span class="p">:</span>   <span class="n">define_validations</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">33</span><span class="p">:</span>   <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">34</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Comme on peut le voir, <code>build</code> accepte un block qui est transmis à
+<code>define_extensions</code>. Le block est passé depuis la définition de l&#8217;association
+comme celui-ci :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">has_many</span> <span class="ss">:comments</span> <span class="k">do</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">recents</span>
+</span><span class='line'>      <span class="n">where</span><span class="p">(</span><span class="s2">&quot;created_at &gt; ?&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="o">.</span><span class="n">days</span><span class="o">.</span><span class="n">ago</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Il sera donc possible d&#8217;utiliser l&#8217;association comme ainsi :
+<code>post.comments.recents</code>. Pour plus de détails dans la
+<a href="http://guides.rubyonrails.org/association_basics.html#association-extensions">doc officiel</a>.</p>
+
+<p>Les extensions sont définies comme suit :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">6</span><span class="n">a7ac40dabf4</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">builder</span><span class="o">/</span><span class="n">collection_association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">25</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="ss">Builder</span><span class="p">:</span><span class="ss">:CollectionAssociation</span><span class="o">.</span><span class="n">define_extensions</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">24</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">define_extensions</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">25</span><span class="p">:</span>   <span class="k">if</span> <span class="nb">block_given?</span>
+</span><span class='line'>    <span class="mi">26</span><span class="p">:</span>     <span class="n">extension_module_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">demodulize</span><span class="si">}#{</span><span class="nb">name</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">camelize</span><span class="si">}</span><span class="s2">AssociationExtension&quot;</span>
+</span><span class='line'>    <span class="mi">27</span><span class="p">:</span>     <span class="n">extension</span> <span class="o">=</span> <span class="no">Module</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">&amp;</span><span class="no">Proc</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">28</span><span class="p">:</span>     <span class="n">model</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">const_set</span><span class="p">(</span><span class="n">extension_module_name</span><span class="p">,</span> <span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">29</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">30</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La fonction créer un module avec le block qui est fourni. Comme
+son nom l&#8217;indique, <code>extension_module_name</code> contient le nom du module. Celui-ci
+est composé du nom du modèle et de celui de l&#8217;association. Dans l&#8217;exemple, nous
+obtenons &ldquo;PostCommentsAssociationExtension&rdquo;. Le nouveau module créé grâce à
+<code>Module.new(&amp;Proc.new)</code>. Celui-ci est ensuite ajouté au code de l&#8217;application
+afin d&#8217;être inclus par la suite. Ce module a pour but de recevoir les méthodes
+qui vont être créées par la suite. Je trouve que c&#8217;est un moyen très astucieux
+pour isoler ces méthodes.</p>
+
+<p>Nous pouvons donc passer à la suite.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">6</span><span class="n">a7ac40dabf4</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">builder</span><span class="o">/</span><span class="n">association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">22</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="ss">Builder</span><span class="p">:</span><span class="ss">:Association</span><span class="o">.</span><span class="n">build</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">21</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">build</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">22</span><span class="p">:</span>   <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">dangerous_attribute_method?</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">23</span><span class="p">:</span>     <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">&quot;You tried to define an association named </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> on the model </span><span class="si">#{</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, but &quot;</span> <span class="p">\</span>
+</span><span class='line'>    <span class="mi">24</span><span class="p">:</span>                          <span class="s2">&quot;this will conflict with a method </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> already defined by Active Record. &quot;</span> <span class="p">\</span>
+</span><span class='line'>    <span class="mi">25</span><span class="p">:</span>                          <span class="s2">&quot;Please choose a different association name.&quot;</span>
+</span><span class='line'>    <span class="mi">26</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">27</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">28</span><span class="p">:</span>   <span class="n">extension</span> <span class="o">=</span> <span class="n">define_extensions</span> <span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">29</span><span class="p">:</span>   <span class="n">reflection</span> <span class="o">=</span> <span class="n">create_reflection</span> <span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">extension</span>
+</span><span class='line'>    <span class="mi">30</span><span class="p">:</span>   <span class="n">define_accessors</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">31</span><span class="p">:</span>   <span class="n">define_callbacks</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">32</span><span class="p">:</span>   <span class="n">define_validations</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">33</span><span class="p">:</span>   <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">34</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Je pense que la méthode <code>create_reflection</code> est la plus compliquée. Celle-ci
+a pour but de créer un objet qui va contenir les informations relatives à l&#8217;association.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">698</span><span class="n">afe1173c6</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">builder</span><span class="o">/</span><span class="n">association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">37</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="ss">Builder</span><span class="p">:</span><span class="ss">:Association</span><span class="o">.</span><span class="n">create_reflection</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">36</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_reflection</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">37</span><span class="p">:</span>   <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">&quot;association names must be a Symbol&quot;</span> <span class="k">unless</span> <span class="nb">name</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="no">Symbol</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">38</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">39</span><span class="p">:</span>   <span class="k">if</span> <span class="n">scope</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Hash</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">40</span><span class="p">:</span>     <span class="n">options</span> <span class="o">=</span> <span class="n">scope</span>
+</span><span class='line'>    <span class="mi">41</span><span class="p">:</span>     <span class="n">scope</span>   <span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>    <span class="mi">42</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">43</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">44</span><span class="p">:</span>   <span class="n">validate_options</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">45</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">46</span><span class="p">:</span>   <span class="n">scope</span> <span class="o">=</span> <span class="n">build_scope</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">47</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">48</span><span class="p">:</span>   <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Reflection</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">macro</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">49</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La première ligne renvoi une erreur si l&#8217;on essai de créer une collection avec
+autre chose qu&#8217;un <code>Symbol</code>.</p>
+
+<p>Par la suite, on remplace les options par le scope
+si c&#8217;est un <code>Hash</code>. Cette partie semble être uniquement un hack. Si <code>scope</code> est
+un <code>Hash</code>, c&#8217;est qu&#8217;il s&#8217;agit des options. Lors de la création de
+l&#8217;association, il n&#8217;est pas spécifié quel argument représente le scope ou les
+options. Il est donc nécessaire de faire ce petit tour de passe-passe pour
+les distinguer.</p>
+
+<p><code>validate_options</code> permet de s&#8217;assurer que les options passées à l&#8217;association
+sont valides. On ne peut donc pas faire une association comme <code>has_many
+:comments, something_invalid: :test</code>. Une erreur sera retournée.</p>
+
+<p>Comme son nom l&#8217;indique, build_scope construit le scope.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">698</span><span class="n">afe1173c6</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">builder</span><span class="o">/</span><span class="n">association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">52</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="ss">Builder</span><span class="p">:</span><span class="ss">:Association</span><span class="o">.</span><span class="n">build_scope</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">51</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">build_scope</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">extension</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">52</span><span class="p">:</span>   <span class="n">new_scope</span> <span class="o">=</span> <span class="n">scope</span>
+</span><span class='line'>    <span class="mi">53</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">54</span><span class="p">:</span>   <span class="k">if</span> <span class="n">scope</span> <span class="o">&amp;&amp;</span> <span class="n">scope</span><span class="o">.</span><span class="n">arity</span> <span class="o">==</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="mi">55</span><span class="p">:</span>     <span class="n">new_scope</span> <span class="o">=</span> <span class="nb">proc</span> <span class="p">{</span> <span class="n">instance_exec</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scope</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>    <span class="mi">56</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">57</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">58</span><span class="p">:</span>   <span class="k">if</span> <span class="n">extension</span>
+</span><span class='line'>    <span class="mi">59</span><span class="p">:</span>     <span class="n">new_scope</span> <span class="o">=</span> <span class="n">wrap_scope</span> <span class="n">new_scope</span><span class="p">,</span> <span class="n">extension</span>
+</span><span class='line'>    <span class="mi">60</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">61</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">62</span><span class="p">:</span>   <span class="n">new_scope</span>
+</span><span class='line'>    <span class="mi">63</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Par défaut, le scope est gradé tel quel. S&#8217;il y a un scope et que celui-ci ne
+possède par d&#8217;argument, il est transformé pour être exécuté par l&#8217;instance
+plutôt que la classe.</p>
+
+<p>S&#8217;il y a une extension, celle-ci est &ldquo;wrapper&rdquo; comme ceci :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">698</span><span class="n">afe1173c6</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">builder</span><span class="o">/</span><span class="n">collection_association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">72</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="ss">Builder</span><span class="p">:</span><span class="ss">:CollectionAssociation</span><span class="o">.</span><span class="n">wrap_scope</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">71</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">wrap_scope</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">mod</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">72</span><span class="p">:</span>   <span class="k">if</span> <span class="n">scope</span>
+</span><span class='line'>    <span class="mi">73</span><span class="p">:</span>     <span class="nb">proc</span> <span class="p">{</span> <span class="o">|</span><span class="n">owner</span><span class="o">|</span> <span class="n">instance_exec</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">scope</span><span class="p">)</span><span class="o">.</span><span class="n">extending</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>    <span class="mi">74</span><span class="p">:</span>   <span class="k">else</span>
+</span><span class='line'>    <span class="mi">75</span><span class="p">:</span>     <span class="nb">proc</span> <span class="p">{</span> <span class="n">extending</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>    <span class="mi">76</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">77</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Grâce à cette méthode, le module créé précédemment est inclus lors de l&#8217;appel de
+la méthode. Cette partie est plutôt complexe et demanderait un article au
+complet. Je vais donc laisser cette partie pour le moment.</p>
+
+<p>Après cet interlude, revenons à l&#8217;exécution de <code>create_reflection</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">698</span><span class="n">afe1173c6</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">builder</span><span class="o">/</span><span class="n">association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">48</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="ss">Builder</span><span class="p">:</span><span class="ss">:Association</span><span class="o">.</span><span class="n">create_reflection</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">36</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_reflection</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">37</span><span class="p">:</span>   <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">&quot;association names must be a Symbol&quot;</span> <span class="k">unless</span> <span class="nb">name</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="no">Symbol</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">38</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">39</span><span class="p">:</span>   <span class="k">if</span> <span class="n">scope</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Hash</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">40</span><span class="p">:</span>     <span class="n">options</span> <span class="o">=</span> <span class="n">scope</span>
+</span><span class='line'>    <span class="mi">41</span><span class="p">:</span>     <span class="n">scope</span>   <span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>    <span class="mi">42</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">43</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">44</span><span class="p">:</span>   <span class="n">validate_options</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">45</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">46</span><span class="p">:</span>   <span class="n">scope</span> <span class="o">=</span> <span class="n">build_scope</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">47</span><span class="p">:</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">48</span><span class="p">:</span>   <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Reflection</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">macro</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">49</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La macro (<code>:has_many</code>), celui de l&#8217;association (<code>:comments</code>), le scope, les
+options et le modèle sont passés à <code>ActiveRecord::Reflection#create</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">698</span><span class="n">afe1173c6</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">reflection</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">17</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Reflection</span><span class="o">.</span><span class="n">create</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">16</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create</span><span class="p">(</span><span class="n">macro</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">ar</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">17</span><span class="p">:</span>   <span class="n">klass</span> <span class="o">=</span> <span class="k">case</span> <span class="n">macro</span>
+</span><span class='line'>    <span class="mi">18</span><span class="p">:</span>           <span class="k">when</span> <span class="ss">:composed_of</span>
+</span><span class='line'>    <span class="mi">19</span><span class="p">:</span>             <span class="no">AggregateReflection</span>
+</span><span class='line'>    <span class="mi">20</span><span class="p">:</span>           <span class="k">when</span> <span class="ss">:has_many</span>
+</span><span class='line'>    <span class="mi">21</span><span class="p">:</span>             <span class="no">HasManyReflection</span>
+</span><span class='line'>    <span class="mi">22</span><span class="p">:</span>           <span class="k">when</span> <span class="ss">:has_one</span>
+</span><span class='line'>    <span class="mi">23</span><span class="p">:</span>             <span class="no">HasOneReflection</span>
+</span><span class='line'>    <span class="mi">24</span><span class="p">:</span>           <span class="k">when</span> <span class="ss">:belongs_to</span>
+</span><span class='line'>    <span class="mi">25</span><span class="p">:</span>             <span class="no">BelongsToReflection</span>
+</span><span class='line'>    <span class="mi">26</span><span class="p">:</span>           <span class="k">else</span>
+</span><span class='line'>    <span class="mi">27</span><span class="p">:</span>             <span class="k">raise</span> <span class="s2">&quot;Unsupported Macro: </span><span class="si">#{</span><span class="n">macro</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="mi">28</span><span class="p">:</span>           <span class="k">end</span>
+</span><span class='line'>    <span class="mi">29</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">30</span><span class="p">:</span>   <span class="n">reflection</span> <span class="o">=</span> <span class="n">klass</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">ar</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">31</span><span class="p">:</span>   <span class="n">options</span><span class="o">[</span><span class="ss">:through</span><span class="o">]</span> <span class="p">?</span> <span class="no">ThroughReflection</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">reflection</span><span class="p">)</span> <span class="p">:</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">32</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Premièrement, on trouve la classe correspondant à la macro, <code>HasManyReflection</code>
+dans notre cas. Par la suite, cette classe est instanciée, avec le nom de
+l&#8217;association, le scope, les options et le modèle. Les informations seront
+passées à l&#8217;objet créé. <code>HasManyReflection</code> est un objet représentant
+l&#8217;association. Les informations y sont stockées afin d&#8217;y être utilisées dans votre
+code ou dans des gems. Pour accéder à la liste des reflections du modèle, il
+est possible de faire <code>Post.reflect_on_all_associations</code>. Vous obtiendrez ce
+résultat :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="c1">#&lt;ActiveRecord::Reflection::HasManyReflection:0x007fc8898aeba8</span>
+</span><span class='line'> <span class="vi">@active_record</span><span class="o">=</span><span class="no">Post</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">integer</span><span class="p">),</span>
+</span><span class='line'> <span class="vi">@association_scope_cache</span><span class="o">=</span><span class="p">{},</span>
+</span><span class='line'> <span class="vi">@automatic_inverse_of</span><span class="o">=</span><span class="kp">nil</span><span class="p">,</span>
+</span><span class='line'> <span class="vi">@constructable</span><span class="o">=</span><span class="kp">true</span><span class="p">,</span>
+</span><span class='line'> <span class="vi">@foreign_type</span><span class="o">=</span><span class="s2">&quot;comments_type&quot;</span><span class="p">,</span>
+</span><span class='line'> <span class="vi">@klass</span><span class="o">=</span><span class="kp">nil</span><span class="p">,</span>
+</span><span class='line'> <span class="vi">@name</span><span class="o">=</span><span class="ss">:comments</span><span class="p">,</span>
+</span><span class='line'> <span class="vi">@options</span><span class="o">=</span><span class="p">{},</span>
+</span><span class='line'> <span class="vi">@plural_name</span><span class="o">=</span><span class="s2">&quot;comments&quot;</span><span class="p">,</span>
+</span><span class='line'> <span class="vi">@scope</span><span class="o">=</span><span class="c1">#&lt;Proc:0x007fc8896b4230@/home/dougui/.rbenv/versions/2.1.5/lib/ruby/gems/2.1.0/bundler/gems/rails-698afe1173c6/activerecord/lib/active_record/associations/builder/collection_association.rb:75&gt;,</span>
+</span><span class='line'> <span class="vi">@scope_lock</span><span class="o">=</span><span class="c1">#&lt;Mutex:0x007fc88844c368&gt;,</span>
+</span><span class='line'> <span class="vi">@type</span><span class="o">=</span><span class="kp">nil</span><span class="o">&gt;]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On peut comprendre aisément l&#8217;utilité d&#8217;une telle liste.</p>
+
+<p>À la fin de l&#8217;exécution, nous nous retrouvons dans la méthode <code>build</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">698</span><span class="n">afe1173c6</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">builder</span><span class="o">/</span><span class="n">association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">30</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="ss">Builder</span><span class="p">:</span><span class="ss">:Association</span><span class="o">.</span><span class="n">build</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">21</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">build</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">22</span><span class="p">:</span>   <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">dangerous_attribute_method?</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">23</span><span class="p">:</span>     <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">&quot;You tried to define an association named </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> on the model </span><span class="si">#{</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, but &quot;</span> <span class="p">\</span>
+</span><span class='line'>    <span class="mi">24</span><span class="p">:</span>                          <span class="s2">&quot;this will conflict with a method </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> already defined by Active Record. &quot;</span> <span class="p">\</span>
+</span><span class='line'>    <span class="mi">25</span><span class="p">:</span>                          <span class="s2">&quot;Please choose a different association name.&quot;</span>
+</span><span class='line'>    <span class="mi">26</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">27</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">28</span><span class="p">:</span>   <span class="n">extension</span> <span class="o">=</span> <span class="n">define_extensions</span> <span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span>
+</span><span class='line'>    <span class="mi">29</span><span class="p">:</span>   <span class="n">reflection</span> <span class="o">=</span> <span class="n">create_reflection</span> <span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">extension</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">30</span><span class="p">:</span>   <span class="n">define_accessors</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">31</span><span class="p">:</span>   <span class="n">define_callbacks</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">32</span><span class="p">:</span>   <span class="n">define_validations</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">33</span><span class="p">:</span>   <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">34</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Voici une fonction des plus intéressante. Grâce à la magie de la
+métaprogrammation avec Ruby, cette fonction va définir les accesseurs.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">698</span><span class="n">afe1173c6</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">builder</span><span class="o">/</span><span class="n">association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">102</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="ss">Builder</span><span class="p">:</span><span class="ss">:Association</span><span class="o">.</span><span class="n">define_accessors</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">101</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">define_accessors</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">reflection</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">102</span><span class="p">:</span>   <span class="n">mixin</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generated_association_methods</span>
+</span><span class='line'>    <span class="mi">103</span><span class="p">:</span>   <span class="nb">name</span> <span class="o">=</span> <span class="n">reflection</span><span class="o">.</span><span class="n">name</span>
+</span><span class='line'>    <span class="mi">104</span><span class="p">:</span>   <span class="n">define_readers</span><span class="p">(</span><span class="n">mixin</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">105</span><span class="p">:</span>   <span class="n">define_writers</span><span class="p">(</span><span class="n">mixin</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">106</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Comme nous pouvons le voir, le modèle est passé en argument ainsi que
+<code>reflection</code> contenant toutes les informations sur l&#8217;association.</p>
+
+<p>Voici la première fonction appelée.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">698</span><span class="n">afe1173c6</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">199</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Core</span><span class="o">::</span><span class="no">ClassMethods</span><span class="c1">#generated_association_methods:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">194</span><span class="p">:</span> <span class="k">def</span> <span class="nf">generated_association_methods</span>
+</span><span class='line'>    <span class="mi">195</span><span class="p">:</span>   <span class="vi">@generated_association_methods</span> <span class="o">||=</span> <span class="k">begin</span>
+</span><span class='line'>    <span class="mi">196</span><span class="p">:</span>     <span class="n">mod</span> <span class="o">=</span> <span class="nb">const_set</span><span class="p">(</span><span class="ss">:GeneratedAssociationMethods</span><span class="p">,</span> <span class="no">Module</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">197</span><span class="p">:</span>     <span class="kp">include</span> <span class="n">mod</span>
+</span><span class='line'>    <span class="mi">198</span><span class="p">:</span>     <span class="n">mod</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">199</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">200</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Comme on peut le voir, un nouveau module <code>GeneratedAssociationMethods</code> est créé
+puis inclus. Ce nouveau module est ensuite retourné pour une utilisation
+ultérieure.</p>
+
+<p>Si l&#8217;on continue l&#8217;exécution de <code>define_accessors</code>, on trouve l&#8217;appel de
+<code>define_readers</code> et <code>define_writers</code>. Ces deux méthodes reçoivent, comme
+argument, le nouveau module ainsi que le nom de l&#8217;association. Voici la
+première :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">698</span><span class="n">afe1173c6</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">builder</span><span class="o">/</span><span class="n">collection_association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">52</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="ss">Builder</span><span class="p">:</span><span class="ss">:CollectionAssociation</span><span class="o">.</span><span class="n">define_readers</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">51</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">define_readers</span><span class="p">(</span><span class="n">mixin</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">52</span><span class="p">:</span>   <span class="k">super</span>
+</span><span class='line'>    <span class="mi">53</span><span class="p">:</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">54</span><span class="p">:</span>   <span class="n">mixin</span><span class="o">.</span><span class="n">class_eval</span> <span class="o">&lt;&lt;-</span> <span class="no">CODE</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">,</span> <span class="bp">__LINE__</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="mi">55</span><span class="p">:</span>     <span class="k">def</span> <span class="c1">#{name.to_s.singularize}_ids</span>
+</span><span class='line'>    <span class="mi">56</span><span class="p">:</span>       <span class="n">association</span><span class="p">(:</span><span class="c1">#{name}).ids_reader</span>
+</span><span class='line'>    <span class="mi">57</span><span class="p">:</span>     <span class="k">end</span>
+</span><span class='line'>    <span class="mi">58</span><span class="p">:</span>   <span class="no">CODE</span>
+</span><span class='line'>    <span class="mi">59</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Et voici la méthode de la classe parente :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">6</span><span class="n">a7ac40dabf4</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">builder</span><span class="o">/</span><span class="n">association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">109</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="ss">Builder</span><span class="p">:</span><span class="ss">:Association</span><span class="o">.</span><span class="n">define_readers</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">108</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">define_readers</span><span class="p">(</span><span class="n">mixin</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">109</span><span class="p">:</span>   <span class="n">mixin</span><span class="o">.</span><span class="n">class_eval</span> <span class="o">&lt;&lt;-</span> <span class="no">CODE</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">,</span> <span class="bp">__LINE__</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="mi">110</span><span class="p">:</span>     <span class="k">def</span> <span class="c1">#{name}(*args)</span>
+</span><span class='line'>    <span class="mi">111</span><span class="p">:</span>       <span class="n">association</span><span class="p">(:</span><span class="c1">#{name}).reader(*args)</span>
+</span><span class='line'>    <span class="mi">112</span><span class="p">:</span>     <span class="k">end</span>
+</span><span class='line'>    <span class="mi">113</span><span class="p">:</span>   <span class="no">CODE</span>
+</span><span class='line'>    <span class="mi">114</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>J&#8217;aime beaucoup ces méthodes. Elles définissent des fonctions dans
+le module créé plus tôt. Cela revient à écrire :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">GeneratedAssociationMethods</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">comments</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">association</span><span class="p">(</span><span class="ss">:comments</span><span class="p">)</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Comme le module a été inclus à la classe du modèle, la fonction est disponible
+pour celui-ci. Il est donc possible de faire un appel comme <code>post.comments</code>.
+Cela revient à écrire <code>post.association(:comments).reader</code>.</p>
+
+<p>Vous avez probablement remaqué ceci <code>&lt;&lt;-CODE, __FILE__, __LINE__ + 1</code>. Ce code
+permet de spécifier une ligne et un fichier au code généré. Il est donc
+possible def faire ceci :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="o">&gt;</span> <span class="no">Post</span><span class="o">.</span><span class="n">instance_method</span><span class="p">(</span><span class="ss">:comments</span><span class="p">)</span><span class="o">.</span><span class="n">source_location</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="o">[</span><span class="s2">&quot;/home/dougui/.rbenv/versions/2.1.5/lib/ruby/gems/2.1.0/bundler/gems/rails-698afe1173c6/activerecord/lib/active_record/associations/builder/association.rb&quot;</span><span class="p">,</span> <span class="mi">110</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La méthode <code>define_writers</code> suit exactement le même principe.</p>
+
+<p>Nous revoici donc à la méthode <code>build</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">6</span><span class="n">a7ac40dabf4</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">builder</span><span class="o">/</span><span class="n">association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">31</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="ss">Builder</span><span class="p">:</span><span class="ss">:Association</span><span class="o">.</span><span class="n">build</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">21</span><span class="p">:</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">build</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">22</span><span class="p">:</span>   <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">dangerous_attribute_method?</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">23</span><span class="p">:</span>     <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">&quot;You tried to define an association named </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> on the model </span><span class="si">#{</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, but &quot;</span> <span class="p">\</span>
+</span><span class='line'>    <span class="mi">24</span><span class="p">:</span>                          <span class="s2">&quot;this will conflict with a method </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> already defined by Active Record. &quot;</span> <span class="p">\</span>
+</span><span class='line'>    <span class="mi">25</span><span class="p">:</span>                          <span class="s2">&quot;Please choose a different association name.&quot;</span>
+</span><span class='line'>    <span class="mi">26</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">27</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">28</span><span class="p">:</span>   <span class="n">extension</span> <span class="o">=</span> <span class="n">define_extensions</span> <span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span>
+</span><span class='line'>    <span class="mi">29</span><span class="p">:</span>   <span class="n">reflection</span> <span class="o">=</span> <span class="n">create_reflection</span> <span class="n">model</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">extension</span>
+</span><span class='line'>    <span class="mi">30</span><span class="p">:</span>   <span class="n">define_accessors</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">31</span><span class="p">:</span>   <span class="n">define_callbacks</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">32</span><span class="p">:</span>   <span class="n">define_validations</span> <span class="n">model</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">33</span><span class="p">:</span>   <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">34</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Les méthodes <code>define_callbacks</code> et <code>define_validations</code> ont des noms qui parlent
+d&#8217;eux même. Chacune de ces méthodes mérite un article à elle même. Je ne
+m&#8217;éterniserais donc pas sur le sujet.</p>
+
+<p>Nous pouvons donc revenir à la méthode supérieure.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">6</span><span class="n">a7ac40dabf4</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">1264</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="no">ClassMethods</span><span class="c1">#has_many:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">1264</span><span class="p">:</span> <span class="k">def</span> <span class="nf">has_many</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">scope</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{},</span> <span class="o">&amp;</span><span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">1265</span><span class="p">:</span>   <span class="n">reflection</span> <span class="o">=</span> <span class="ss">Builder</span><span class="p">:</span><span class="ss">:HasMany</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">extension</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">1266</span><span class="p">:</span>   <span class="no">Reflection</span><span class="o">.</span><span class="n">add_reflection</span> <span class="nb">self</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">reflection</span>
+</span><span class='line'>    <span class="mi">1267</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La prochaine méthode est simplement un ajout de <code>reflection</code> à la liste connu des reflections.</p>
+
+<p>Nous avons maintenant compris comment ActiveRecord construisait l&#8217;association,
+mais pas la méthode utilisée pour rechercher les enregistrements. Pour ce
+faire, je vais explorer <code>post.comments</code>.</p>
+
+<p>Comme prévu, la première méthode est la suivante :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">110</span><span class="p">:</span> <span class="k">def</span> <span class="c1">#{name}(*args)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">111</span><span class="p">:</span>   <span class="n">association</span><span class="p">(:</span><span class="c1">#{name}).reader(*args)</span>
+</span><span class='line'><span class="mi">112</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Il s&#8217;agit de celle qui a été créée ci-haut. L&#8217;association est ensuite cherchée
+dans le cache et la méthode <code>reader</code> lui est appliquée.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/home/</span><span class="n">dougui</span><span class="o">/.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bundler</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">rails</span><span class="o">-</span><span class="mi">6</span><span class="n">a7ac40dabf4</span><span class="o">/</span><span class="n">activerecord</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_record</span><span class="o">/</span><span class="n">associations</span><span class="o">/</span><span class="n">collection_association</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">30</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Associations</span><span class="o">::</span><span class="no">CollectionAssociation</span><span class="c1">#reader:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="mi">29</span><span class="p">:</span> <span class="k">def</span> <span class="nf">reader</span><span class="p">(</span><span class="n">force_reload</span> <span class="o">=</span> <span class="kp">false</span><span class="p">)</span>
+</span><span class='line'> <span class="o">=&gt;</span> <span class="mi">30</span><span class="p">:</span>   <span class="k">if</span> <span class="n">force_reload</span>
+</span><span class='line'>    <span class="mi">31</span><span class="p">:</span>     <span class="n">klass</span><span class="o">.</span><span class="n">uncached</span> <span class="p">{</span> <span class="n">reload</span> <span class="p">}</span>
+</span><span class='line'>    <span class="mi">32</span><span class="p">:</span>   <span class="k">elsif</span> <span class="n">stale_target?</span>
+</span><span class='line'>    <span class="mi">33</span><span class="p">:</span>     <span class="n">reload</span>
+</span><span class='line'>    <span class="mi">34</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">35</span><span class="p">:</span>
+</span><span class='line'>    <span class="mi">36</span><span class="p">:</span>   <span class="k">if</span> <span class="n">owner</span><span class="o">.</span><span class="n">new_record?</span>
+</span><span class='line'>    <span class="mi">37</span><span class="p">:</span>     <span class="c1"># Cache the proxy separately before the owner has an id</span>
+</span><span class='line'>    <span class="mi">38</span><span class="p">:</span>     <span class="c1"># or else a post-save proxy will still lack the id</span>
+</span><span class='line'>    <span class="mi">39</span><span class="p">:</span>     <span class="vi">@new_record_proxy</span> <span class="o">||=</span> <span class="no">CollectionProxy</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">40</span><span class="p">:</span>   <span class="k">else</span>
+</span><span class='line'>    <span class="mi">41</span><span class="p">:</span>     <span class="vi">@proxy</span> <span class="o">||=</span> <span class="no">CollectionProxy</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>    <span class="mi">42</span><span class="p">:</span>   <span class="k">end</span>
+</span><span class='line'>    <span class="mi">43</span><span class="p">:</span> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Si le rechargement n&#8217;est pas forcé ou si le modèle n&#8217;est pas &ldquo;vicié&rdquo;, le modèle
+n&#8217;est pas rechargé. Je me suis cassé les dents sur la méthode <code>stale_target?</code>.
+Je vous invite à lire <a href="https://github.com/rails/rails/issues/18633#event-234692317">cette issue</a>
+pour plus de détails. Le proxy est également mémorisé. La classe
+<code>CollectionProxy</code> hérite de <code>ActiveRecord::Relation</code> qui est chargée de la
+relation avec la base de données. L&#8217;interface se fait grâce à Arel, mais je
+pense réserver les explications pour un prochain article.</p>
+
+<p>Si l&#8217;on fait <code>post.comments.class.name</code> on peut voir que c&#8217;est bien la classe
+<code>ActiveRecord::Associations::CollectionProxy</code> qui est utilisée.</p>
+
+<h2>Conclusion</h2>
+
+<p>Explorer le code de Rails est un exercice assez difficile, mais toujours très
+intéressant. Cette partie est probablement l&#8217;une des plus complexes de Rails.
+L&#8217;exploration permet de comprendre Rails, de mieux l&#8217;utiliser de s&#8217;en inspirer
+si l&#8217;on souhaite recréer un code similaire.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Conserver les changements de valeurs grâce à ActiveModel::Dirty]]></title>
@@ -3102,7 +4012,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#111;&#x3a;&#x67;&#x75;&#105;&#x72;&#x65;&#x63;&#46;&#x63;&#x6f;&#114;&#98;&#x65;&#108;&#64;&#103;&#x6d;&#97;&#105;&#108;&#x2e;&#x63;&#x6f;&#x6d;">&#103;&#117;&#x69;&#x72;&#x65;&#99;&#x2e;&#99;&#111;&#x72;&#x62;&#x65;&#108;&#64;&#x67;&#x6d;&#x61;&#105;&#108;&#46;&#99;&#111;&#x6d;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#x69;&#108;&#x74;&#111;&#x3a;&#103;&#117;&#x69;&#114;&#101;&#99;&#46;&#x63;&#x6f;&#114;&#x62;&#x65;&#x6c;&#64;&#103;&#109;&#97;&#x69;&#108;&#46;&#99;&#111;&#x6d;">&#103;&#117;&#x69;&#x72;&#x65;&#99;&#46;&#99;&#111;&#114;&#x62;&#101;&#108;&#64;&#103;&#x6d;&#x61;&#x69;&#x6c;&#46;&#99;&#x6f;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
