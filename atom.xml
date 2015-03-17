@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2015-02-15T14:21:25-05:00</updated>
+  <updated>2015-03-17T19:01:48-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -12,6 +12,213 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Comment ça marche : Le coeur d'ActiveRecord]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/"/>
+    <updated>2015-03-03T16:55:00-05:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord</id>
+    <content type="html"><![CDATA[<p>Il y a quelque temps, je me suis lancé dans la lecture du code source de
+Rails. Mon but étant de mieux comprendre son mécanisme et, peut-être, de
+devenir un contributeur. J&#8217;ai choisi de commencer par ActiveRecord étant donné
+que je trouve que c&#8217;est le module le plus &ldquo;magique&rdquo; de Rails. J&#8217;ai donc voulu
+comprendre mieux cette magie apparente. Dans cet article, je vais tenter de
+comprendre et d&#8217;expliquer ce qu&#8217;il se cache derrière <code>ActiveRecord::Base</code> ainsi
+que le noyau d&#8217;ActiveRecord.</p>
+
+<p>Comme dans les articles précédents, je vais utiliser <a href="http://gcorbel.github.io/blog/blog/2015/01/20/exploration-avec-pry/">Pry pour
+explorer</a>. Je vous conseille fortement de lire le code en même temps que l&#8217;article.</p>
+
+<p>Pour commencer, je vais reprendre
+<a href="https://github.com/rails/rails/blob/master/guides/bug_report_templates/active_record_master.rb">le code servant à créer des issues</a>
+dans ActiveRecord en y plaçant un breakpoint afin de pouvoir étudier le
+comportement du modèle.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">unless</span> <span class="no">File</span><span class="o">.</span><span class="n">exist?</span><span class="p">(</span><span class="s1">&#39;Gemfile&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="no">File</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Gemfile&#39;</span><span class="p">,</span> <span class="o">&lt;&lt;-</span><span class="no">GEMFILE</span><span class="p">)</span>
+</span><span class='line'><span class="sh">    source &#39;https://rubygems.org&#39;</span>
+</span><span class='line'><span class="sh">    gem &#39;rails&#39;, github: &#39;rails/rails&#39;, ref: &#39;6a7ac40dab&#39;</span>
+</span><span class='line'><span class="sh">    gem &#39;arel&#39;, github: &#39;rails/arel&#39;</span>
+</span><span class='line'><span class="sh">    gem &#39;sqlite3&#39;</span>
+</span><span class='line'><span class="sh">    gem &#39;pry-byebug&#39;</span>
+</span><span class='line'><span class="no">  GEMFILE</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">system</span> <span class="s1">&#39;bundle&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;bundler&#39;</span>
+</span><span class='line'><span class="no">Bundler</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="ss">:default</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_record&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;logger&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># This connection will do for database-independent bug reports.</span>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">establish_connection</span><span class="p">(</span><span class="ss">adapter</span><span class="p">:</span> <span class="s1">&#39;sqlite3&#39;</span><span class="p">,</span> <span class="ss">database</span><span class="p">:</span> <span class="s1">&#39;:memory:&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="no">Logger</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">STDOUT</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Schema</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">create_table</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">force</span><span class="p">:</span> <span class="kp">true</span>  <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">create_table</span> <span class="ss">:comments</span><span class="p">,</span> <span class="ss">force</span><span class="p">:</span> <span class="kp">true</span>  <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:post_id</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;pry&#39;</span><span class="p">;</span> <span class="nb">binding</span><span class="o">.</span><span class="n">pry</span>
+</span><span class='line'><span class="nb">puts</span> <span class="s1">&#39;Just a line to make pry stop&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ActiveRecord</h2>
+
+<p>Commençons par le commencement. Lorsque l&#8217;on charge la gem <code>activerecord</code>, le fichier
+<a href="https://github.com/rails/rails/blob/master/activerecord/lib/active_record.rb">activerecord.rb</a> est inclus.
+Comme on peut le voir en lisant le code, celui-ci commence par chargé ses
+dépendances.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_support&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_support/rails&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_model&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;arel&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_record/version&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_record/attribute_set&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On comprend donc que <code>ActiveRecord</code> dépend d&#8217;<code>ActiveSupport</code>, <code>ActiveModel</code> et
+<code>Arel</code>. <code>ActiveSupport</code> est un module fournissant des fonctions utiles dans les
+autres modules de Rails. <code>ActiveModel</code> contient les informations spécifiques au
+modèle du design pattern <code>MVC</code> sans contenir les informations relatives à la
+base de données. <code>Arel</code>, quant à lui, permet de créer des requêtes SQL en Ruby.</p>
+
+<p>Les premières lignes du module sont les suivantes :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="kp">extend</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:Autoload</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">autoload</span> <span class="ss">:Attribute</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Plutôt que de faire un <code>require</code>, <code>ActiveRecord</code> utilise le <code>autoload</code>
+d&#8217;<code>ActiveSupport</code>. <code>ActiveSupport</code> permet de déterminer le nom du fichier à
+charger en incluant le nom du module. Si l&#8217;on appelle <code>autoload :Concern</code> depuis
+le module <code>ActiveSupport</code>, &ldquo;active_support/concern&rdquo; est déterminé. Cette chaîne
+de caractère est ensuite envoyée à la fonction
+<a href="http://ruby-doc.org/core-2.1.0/Module.html#method-i-autoload">autoload</a> de
+Ruby. De cette façon, les modules ne sont chargés qu&#8217;au moment où ils sont
+appelés. C&#8217;est uniquement lorsque l&#8217;on utilisera <code>ActiveSupport::Concern</code> dont
+le fichier sera chargé. Il s&#8217;agit d&#8217;un procédé permettant d&#8217;économiser la
+mémoire puisque l&#8217;on ne charge pas ce qui est inutile.</p>
+
+<p>On continuant la lecture du code, on peut s&#8217;apercevoir que certain des modules
+sont chargé dans un block <code>eager_load</code>. Les chargements automatiques sont mis
+dans un tableau. Les modules contenus dans ce tableau seront chargés quand la
+fonction <code>ActiveSupport.eager_load!</code> sera appelée.</p>
+
+<p>Certains des éléments sont chargés dans block <code>autoload_under</code>. Il s&#8217;agit,
+simplement, d&#8217;un block ajoutant un dossier au chemin chargé.</p>
+
+<p>Dans le bas du fichier, la fonction <code>eager_load!</code> est définie. Celle-ci permet
+de forcer le chargement de sous-modules. Cette fonction à été introduit dans
+<a href="https://github.com/rails/rails/commit/2801786e1a51b7cf7d7c3fd72b5fc9974f83f435">ce commit</a>.
+D&#8217;après ce que je comprends, ce code peut-être utile quand on fait du
+multithreading ou pour être &ldquo;CoW friendly&rdquo;. J&#8217;avoue ne pas savoir ce que veut
+dire &ldquo;CoW&rdquo;. Si quelqu&#8217;un peut m&#8217;éclairer, ça me plairait!</p>
+
+<p>La dernière partie consiste en deux &ldquo;hook&rdquo;.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">ActiveSupport</span><span class="o">.</span><span class="n">on_load</span><span class="p">(</span><span class="ss">:active_record</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="ss">Arel</span><span class="p">:</span><span class="ss">:Table</span><span class="o">.</span><span class="n">engine</span> <span class="o">=</span> <span class="nb">self</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">ActiveSupport</span><span class="o">.</span><span class="n">on_load</span><span class="p">(</span><span class="ss">:i18n</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="no">I18n</span><span class="o">.</span><span class="n">load_path</span> <span class="o">&lt;&lt;</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/active_record/locale/en.yml&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ces appels vont activer des événements stockés dans des tableaux puis stock à
+nouveau pour une utilisation ultérieure.</p>
+
+<h2>ActiveRecord::Base</h2>
+
+<p>Tous les développeurs utilisant Ruby on Rails ont probablement fait un modèle
+héritant de <code>ActiveRecord::Base</code>. Quand on regarde le fichier
+<a href="https://github.com/rails/rails/blob/master/activerecord/lib/active_record/base.rb">base.rb</a>,
+on s&#8217;aperçoit qu&#8217;il s&#8217;agit uniquement d&#8217;un fichier en incluant d&#8217;autres et
+faisant des <code>include</code> et des <code>extend</code> d&#8217;autres modules. Deux lignes sont
+intéressantes, <code>ActiveSupport.run_load_hooks(:active_record, Base)</code> et <code>include
+Core</code>.</p>
+
+<p>L&#8217;avant-dernière ligne exécute les événements stockés précédemment.
+<code>ActiveRecord</code> est donc indiqué comme étant le moteur par défaut de <code>Arel</code>.</p>
+
+<h2>Conclusion</h2>
+
+<p>Voici donc le coeur d&#8217;ActiveRecord. Je vais tenter de poursuivre ma lecture du
+code et j&#8217;exposerai mes découvertes dans de prochains articles.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Comment ça marche : Les associations dans ActiveRecord]]></title>
@@ -4015,7 +4222,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#x6f;&#x3a;&#x67;&#117;&#x69;&#114;&#101;&#99;&#46;&#x63;&#111;&#114;&#x62;&#101;&#108;&#x40;&#103;&#109;&#97;&#105;&#108;&#x2e;&#x63;&#111;&#x6d;">&#x67;&#117;&#105;&#114;&#101;&#99;&#x2e;&#x63;&#x6f;&#114;&#98;&#101;&#108;&#x40;&#103;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#58;&#x67;&#117;&#x69;&#114;&#x65;&#x63;&#46;&#99;&#x6f;&#114;&#98;&#101;&#x6c;&#x40;&#103;&#109;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#x6d;">&#103;&#117;&#x69;&#x72;&#101;&#x63;&#46;&#99;&#111;&#114;&#x62;&#x65;&#108;&#64;&#x67;&#109;&#x61;&#x69;&#108;&#x2e;&#x63;&#x6f;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
@@ -4242,80 +4449,6 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 <p>Il peut y avoir de meilleures solutions mais ça marche pour moi. Si vous pensez avoir de meilleures solutions, dites le moi!</p>
 
 <p>Il y a juste une chose que je n&#8217;aime pas avec les Presenters. Je n&#8217;aime pas instancier un objet dans le contrôleur et le passer à la vue. Cela ne respecte pas la <a href="http://robots.thoughtbot.com/post/50655960596/sandi-metz-rules-for-developers">règle de Sandi Metz</a>. Toutes les règles peuvent être brisées avec des bonnes raisons&hellip;</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Octopress : Un moteur de blog pour les développeurs]]></title>
-    <link href="http://GCorbel.github.io/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs/"/>
-    <updated>2013-10-11T22:23:00-04:00</updated>
-    <id>http://GCorbel.github.io/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs</id>
-    <content type="html"><![CDATA[<p>Comme beaucoup de développeurs, je souhaite partager ma connaissance sur certains sujets. Pour ce
-faire, j&#8217;ai voulu créer un blog. Cet article décrit la démarche que j&#8217;ai effectuée afin de créer
-le blog.</p>
-
-<!--more-->
-
-
-<p>Afin de choisir un moteur de blog, j&#8217;ai fait le tour des sites de développeurs. Plusieurs solutions
-sont couramment utilisées.</p>
-
-<p>Premièrement, beaucoup de développeurs créent, eux-mêmes, leur site. Ne voulant pas réinventer la
-roue, j&#8217;ai choisi d&#8217;utiliser un outil déjà existant. Créer un blog est assez répandu et il y a une kyrielle de bons outils créés pour répondre à ce besoin.</p>
-
-<p>Il existe également beaucoup de personnes utilisant Wordpress. Wordpress ne correspond pas à ma
-philosophie. Tout d&#8217;abord, c&#8217;est écrit en PHP et j&#8217;aime Ruby. Ensuite, je trouve que Wordpress est
-une &ldquo;usine à gaz&rdquo;. C&#8217;est un peu comme utiliser Joomla pour faire des sites internet. C&#8217;est
-probablement très bien pour les webmestres néophytes, mais je suis développeur et je souhaite
-avoir plus de contrôle sur mon site, kit à mettre les mains dans le cambouis.</p>
-
-<h2>Jekyll</h2>
-
-<p>En continuant mes recherches, j&#8217;ai trouvé Jekyll que je connaissais seulement de nom. Jekyll est un
-générateur de site statique. Celui-ci est extrêment puissant pour faire ce qu&#8217;il sait faire. Il
-permet de générer des pages HTML à partir de fichiers textes créés en Markdown ou Textile et Liquid.
-Avec Jekyll, il n&#8217;y a aucune base de données. Le résultat est uniquement du HTML et peut donc
-être hébergé n&#8217;importe où. J&#8217;aime le fait d&#8217;avoir un rendu similaire à celui de n&#8217;importe quel site
-sans avoir aucune logique du côté serveur.</p>
-
-<p>Petit avertissement : Jekyll est destiné aux développeurs. J&#8217;imagine très mal une personne novice en
-informatique utiliser cet outil. Si c&#8217;est ce que vous souhaitez dirigiez-vous sur Wordpress.</p>
-
-<p>Jekyll est un outil très simple. Peut-être un peu trop simple pour faire ce que je souhaitais. Pour
-mon blog, je souhaite avoir une partie &ldquo;sociale&rdquo; et un design agréable. J&#8217;ai tout d&#8217;abord trouvé
-<a href="http://jekyllbootstrap.com/">JekyllBootstrap</a>. Sincèrement, je le déconseille. Je trouve ça
-compliqué pour rien. La structure du code est assez compliquée et prend du temps à modifier
-quand on n’est pas habitué à Jekyll. Pour ma part, c&#8217;était plus simple de tout faire moi-même avec
-Jekyll.</p>
-
-<h2>Octopress</h2>
-
-<p>Rapidement, je suis tombé sur <a href="http://octopress.org/">Octopress</a>. Octopress est à
-la fois simple, puissant et facilement modifiable. Il offre des commandes pour générer des pages,
-générer des posts et publier les modifications. Sans connaitre l&#8217;outil et en connaissant un peu
-Jekyll, en 10 minutes j&#8217;ai pu créer un blog, le publier, ajouter un post et configurer twitter,
-GitHub, google plus, etc. En plus de cela, Octopress vient avec un design qui peut-être modifiable,
-mais qui me convient parfaitement. J&#8217;ai donc choisi de le laisser tel quel.</p>
-
-<p>Malheureusement, Octopress ne supporte pas l&#8217;internationalisation. J&#8217;ai suivi <a href="http://lkdjiin.github.io/blog/2013/07/13/je-veux-mon-blog-octopress-en-francais/">cet article</a> afin de franciser mon site.</p>
-
-<h2>GitHub-Pages</h2>
-
-<p>Pour ce qui est de l&#8217;hébergement, j&#8217;ai choisi <a href="http://pages.github.com/">GitHub-Pages</a>. Il y a
-énormément d&#8217;avantages à utiliser GitHub-Pages. Tout d&#8217;abord, c&#8217;est gratuit. Ensuite, cela permet
-de créer et de modifier les articles en utilisant les outils d&#8217;éditions en ligne de GitHub. Enfin,
-le plus gros avantage selon moi est que n&#8217;importe qui peut faire un fork du projet et proposer des
-améliorations ou corriger des fautes d&#8217;orthographe (merci à <a href="https://twitter.com/abelar_s">Sylvain Abélard</a>).</p>
-
-<p>En général, je trouve qu&#8217;avoir un site du type &ldquo;monsite.wordpress.com&rdquo; ne fait pas très professionnel
-et j&#8217;aurais tendance à acheter un nom de domaine. Dans ce cas, &ldquo;gcorbel.github.io/blog&rdquo; ça ne dérange
-pas du tout. Ça fait développeur qui ne connais pas trop mal GitHub. J&#8217;économise sur le nom de domaine!</p>
-
-<h2>Conclusion</h2>
-
-<p>Pour ma part, je suis très content et je conseille à tous les développeurs cherchant un moteur de blog de l&#8217;essayer.</p>
-
-<p>Je vais essayer d&#8217;ajouter des articles plus souvent. Restez connectés et <a href="https://twitter.com/GuirecCorbel">follow me on twitter</a>.</p>
 ]]></content>
   </entry>
   

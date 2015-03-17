@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Quand j'utilise des Helpers, des Partials, des Presenters et des Decorators - Guirec Corbel</title>
+  <title>Guirec Corbel</title>
   <meta name="author" content="Guirec Corbel">
 
   
-  <meta name="description" content="Il existe plusieurs différentes façons d&#8217;avoir une meilleure organisation des vues dans une application Ruby on Rails. Les Partials et les &hellip;">
+  <meta name="description" content="Comme beaucoup de développeurs, je souhaite partager ma connaissance sur certains sujets. Pour ce
+faire, j&#8217;ai voulu créer un blog. Cet article &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://GCorbel.github.io/blog/blog/2013/10/12/quand-jutilise-des-helpers-des-partials-des-presenters-et-des-decorators">
+  <link rel="canonical" href="http://GCorbel.github.io/blog/blog/page/3">
   <link href="/blog/favicon.png" rel="icon">
   <link href="/blog/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/blog/atom.xml" rel="alternate" title="Guirec Corbel" type="application/atom+xml">
@@ -80,12 +81,15 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div>
-<article class="hentry" role="article">
+      <div class="blog-index">
   
+  
+  
+    <article>
+      
   <header>
     
-      <h1 class="entry-title">Quand j'utilise des helpers, des partials, des presenters et des decorators</h1>
+      <h1 class="entry-title"><a href="/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs/">Octopress : un moteur de blog pour les développeurs</a></h1>
     
     
       <p class="meta">
@@ -101,110 +105,39 @@
   
 
 
-<time datetime="2013-10-12T07:38:00-04:00" pubdate data-updated="true">12 octobre 2013</time>
+<time datetime="2013-10-11T22:23:00-04:00" pubdate data-updated="true">11 octobre 2013</time>
         
-           | <a href="#disqus_thread"
-             data-disqus-identifier="http://GCorbel.github.io/blog">Comments</a>
+           | <a href="/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs/#disqus_thread"
+             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs/">Comments</a>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Il existe plusieurs différentes façons d&#8217;avoir une meilleure organisation des vues dans une application Ruby on Rails. Les Partials et les Heplers sont des méthodes standard. Il y a également les Presenters et les Decorators. Cela peut-être quelque peu difficile de savoir comment et quand les utiliser.</p>
+  <div class="entry-content"><p>Comme beaucoup de développeurs, je souhaite partager ma connaissance sur certains sujets. Pour ce
+faire, j&#8217;ai voulu créer un blog. Cet article décrit la démarche que j&#8217;ai effectuée afin de créer
+le blog.</p>
 
-<!--more-->
-
-
-<h1>Mon organisation</h1>
-
-<p>Toutes les techniques ont leur propre utilité.</p>
-
-<h2>Les Helpers</h2>
-
-<p>Les Helpers sont des méthodes génériques qui peuvent être utilisées pour différents types d&#8217;objet. Je crée des helpers du style <code>link_to_update</code>, <code>big_image</code>, <code>styled_form</code>, etc. Ces méthodes créent du code html avec, par exemple, un style css ou un texte standard.</p>
-
-<h2>Les Partials</h2>
-
-<p>Les Partials sont utilisés pour diviser une grosse vue dans de plus petites parties logiques. Je peux avoir un partial <code>side_menu</code>, <code>comment_list</code>, <code>header</code>, etc.</p>
-
-<h2>Les Presenters</h2>
-
-<p>Les Presenters sont créés pour des requêtes plus compliquées avec un modèle ou plus. J&#8217;ai des presenters comme <code>@page_presenter.page_in_category(ruby_category)</code> ou <code>@user_presenter.user_following(an_article)</code>.</p>
-
-<h2>Les Decorators</h2>
-
-<p>Les Decorators doivent interagir avec un modèle seulement et ne doivent pas avoir de paramètre (si possible). Je peux faire cette sorte de code : <code>user.full_name</code>, <code>page.big_title</code> ou <code>category.permalink</code>. J&#8217;utilise la Gem <a href="https://github.com/drapergem/draper">Draper</a>.</p>
-
-<p>Si je cherche plusieurs modèles, Je n&#8217;accède pas à la classe du modèle directement dans la vue. J&#8217;utilise la fonction de Draper <a href="https://github.com/drapergem/draper#decorated-finders">decorates_finders</a>.</p>
-
-<h2>Conclusion</h2>
-
-<p>Il peut y avoir de meilleures solutions mais ça marche pour moi. Si vous pensez avoir de meilleures solutions, dites le moi!</p>
-
-<p>Il y a juste une chose que je n&#8217;aime pas avec les Presenters. Je n&#8217;aime pas instancier un objet dans le contrôleur et le passer à la vue. Cela ne respecte pas la <a href="http://robots.thoughtbot.com/post/50655960596/sandi-metz-rules-for-developers">règle de Sandi Metz</a>. Toutes les règles peuvent être brisées avec des bonnes raisons&hellip;</p>
 </div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Ajouté par <span class="fn">Guirec Corbel</span></span>
-
-      
-
-
-
-
-
-
-
-
+  
+    <footer>
+      <a rel="full-article" href="/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs/">Lire plus &rarr;</a>
+    </footer>
   
 
 
-<time datetime="2013-10-12T07:38:00-04:00" pubdate data-updated="true">12 octobre 2013</time>
-      
-
-<span class="categories">
+    </article>
   
-    <a class='category' href='/blog/blog/categories/ruby/'>Ruby</a>, <a class='category' href='/blog/blog/categories/ruby-on-rails/'>Ruby On Rails</a>
-  
-</span>
-
-
-    </p>
+  <div class="pagination">
     
-      <div class="sharing">
-  
-  <a href="/blog//twitter.com/share" class="twitter-share-button" data-url="http://GCorbel.github.io/blog/blog/2013/10/12/quand-jutilise-des-helpers-des-partials-des-presenters-et-des-decorators/" data-via="GuirecCorbel" data-counturl="http://GCorbel.github.io/blog/blog/2013/10/12/quand-jutilise-des-helpers-des-partials-des-presenters-et-des-decorators/" >Tweet</a>
-  
-  
-  
-</div>
-
+    <a href="/blog/blog/archives">Blog Archives</a>
     
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/blog/2013/10/11/octopress-un-moteur-de-blog-pour-les-developpeurs/" title="Previous Post: Octopress : Un moteur de blog pour les développeurs">&laquo; Octopress : Un moteur de blog pour les développeurs</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/blog/2013/10/12/leap-motion-le-point-de-vue-dun-developpeur/" title="Next Post: Leap Motion : le point de vue d'un développeur">Leap Motion : le point de vue d'un développeur &raquo;</a>
-      
-    </p>
-  </footer>
-</article>
-
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a class="next" href="/blog/blog/page/2/">Newer &rarr;</a>
+    
+  </div>
 </div>
-  </section>
-
-</div>
-
 <aside class="sidebar">
   
     <section>
@@ -212,7 +145,7 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/">Comment ça marche : le coeur d'activerecord</a>
+        <a href="/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/">Comment ça marche : le coeur d&#8217;activerecord</a>
       </li>
     
       <li class="post">
@@ -224,7 +157,7 @@
       </li>
     
       <li class="post">
-        <a href="/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/">Comment activerecord reconnait la structure d'une table d'un modèle</a>
+        <a href="/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/">Comment activerecord reconnait la structure d&#8217;une table d&#8217;un modèle</a>
       </li>
     
       <li class="post">
@@ -237,7 +170,7 @@
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
+    <li class="loading">Status updating&#8230;</li>
   </ul>
   
   <a href="https://github.com/GCorbel">@GCorbel</a> on GitHub
@@ -270,7 +203,6 @@
   
 </aside>
 
-
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -285,10 +217,7 @@
       var disqus_shortname = 'guireccorbel';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://GCorbel.github.io/blog/blog/2013/10/12/quand-jutilise-des-helpers-des-partials-des-presenters-et-des-decorators/';
-        var disqus_url = 'http://GCorbel.github.io/blog/blog/2013/10/12/quand-jutilise-des-helpers-des-partials-des-presenters-et-des-decorators/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

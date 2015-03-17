@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Guirec Corbel</title>
+  <title>Comment ça marche : Le coeur d'ActiveRecord - Guirec Corbel</title>
   <meta name="author" content="Guirec Corbel">
 
   
@@ -19,7 +19,7 @@ Rails. Mon but étant de mieux comprendre son mécanisme et, peut-être, de &hel
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://GCorbel.github.io/blog">
+  <link rel="canonical" href="http://GCorbel.github.io/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord">
   <link href="/blog/favicon.png" rel="icon">
   <link href="/blog/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/blog/atom.xml" rel="alternate" title="Guirec Corbel" type="application/atom+xml">
@@ -81,15 +81,12 @@ Rails. Mon but étant de mieux comprendre son mécanisme et, peut-être, de &hel
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/">Comment ça marche : le coeur d&#8217;activerecord</a></h1>
+      <h1 class="entry-title">Comment ça marche : le coeur d'activerecord</h1>
     
     
       <p class="meta">
@@ -107,15 +104,15 @@ Rails. Mon but étant de mieux comprendre son mécanisme et, peut-être, de &hel
 
 <time datetime="2015-03-03T16:55:00-05:00" pubdate data-updated="true">3 mars 2015</time>
         
-           | <a href="/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/#disqus_thread"
-             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/">Comments</a>
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://GCorbel.github.io/blog">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>Il y a quelque temps, je me suis lancé dans la lecture du code source de
+<div class="entry-content"><p>Il y a quelque temps, je me suis lancé dans la lecture du code source de
 Rails. Mon but étant de mieux comprendre son mécanisme et, peut-être, de
 devenir un contributeur. J&#8217;ai choisi de commencer par ActiveRecord étant donné
 que je trouve que c&#8217;est le module le plus &ldquo;magique&rdquo; de Rails. J&#8217;ai donc voulu
@@ -315,70 +312,16 @@ Core</code>.</p>
 <p>Voici donc le coeur d&#8217;ActiveRecord. Je vais tenter de poursuivre ma lecture du
 code et j&#8217;exposerai mes découvertes dans de prochains articles.</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/blog/2015/02/14/comment-ca-marche-les-associations-dans-activerecord/">Comment ça marche : les associations dans activerecord</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Ajouté par <span class="fn">Guirec Corbel</span></span>
 
-<time datetime="2015-02-14T11:33:00-05:00" pubdate data-updated="true">14 février 2015</time>
-        
-           | <a href="/blog/blog/2015/02/14/comment-ca-marche-les-associations-dans-activerecord/#disqus_thread"
-             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2015/02/14/comment-ca-marche-les-associations-dans-activerecord/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Les associations sont une part importante d&#8217;ActiveRecord. Il s&#8217;agit d&#8217;éléments
-que l&#8217;on utilise dans les premières phases d&#8217;apprentissage de Rails. Bien que
-son utilisation soit simple, l&#8217;implémentation est assez compliquée. Je vous
-propose d&#8217;explorer le fonctionnement en observant le code exécuté à l&#8217;appel de
-l&#8217;association <code>belongs_to</code> afin de comprendre le mécanisme complexe.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/blog/2015/02/14/comment-ca-marche-les-associations-dans-activerecord/">Lire plus &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/blog/2015/02/07/conserver-les-changements-de-valeurs-grace-a-activemodel-dirty/">Conserver les changements de valeurs grâce à activemodel::dirty</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -390,372 +333,38 @@ l&#8217;association <code>belongs_to</code> afin de comprendre le mécanisme com
   
 
 
-<time datetime="2015-02-07T16:54:00-05:00" pubdate data-updated="true">7 février 2015</time>
-        
-           | <a href="/blog/blog/2015/02/07/conserver-les-changements-de-valeurs-grace-a-activemodel-dirty/#disqus_thread"
-             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2015/02/07/conserver-les-changements-de-valeurs-grace-a-activemodel-dirty/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Dans cet article, je vous propose d&#8217;observer le comportement
-d&#8217;ActiveModel::Dirty et d&#8217;en comprendre le fonctionnement en consultant le code
-source. ActiveModel::Dirty est l&#8217;un des modules méconnus de Rails. Celui-ci
-conserve l&#8217;historique des changements apportés aux attributs d&#8217;un objet et de
-revenir en arrière si besoin.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/blog/2015/02/07/conserver-les-changements-de-valeurs-grace-a-activemodel-dirty/">Lire plus &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
+<time datetime="2015-03-03T16:55:00-05:00" pubdate data-updated="true">3 mars 2015</time>
       
-  <header>
+
+
+    </p>
     
-      <h1 class="entry-title"><a href="/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/">Comment activerecord reconnait la structure d&#8217;une table d&#8217;un modèle</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
+      <div class="sharing">
   
-
-
-<time datetime="2015-01-25T20:06:00-05:00" pubdate data-updated="true">25 janvier 2015</time>
-        
-           | <a href="/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/#disqus_thread"
-             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>ActiveRecord est probablement un des Gem qui impressionne le plus quand on
-commence avec Rails. Comme par magie, ActiveRecord est capable de comprendre
-seul quelle table est utilisée pour un modèle. Quand on connait Rails, on
-comprend qu&#8217;il n&#8217;y a aucune magie. Dans cet article, je vais démystifier
-ActiveRecord grâce à Pry.</p>
-
+  <a href="/blog//twitter.com/share" class="twitter-share-button" data-url="http://GCorbel.github.io/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/" data-via="GuirecCorbel" data-counturl="http://GCorbel.github.io/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/" >Tweet</a>
+  
+  
+  
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/">Lire plus &rarr;</a>
-    </footer>
-  
 
-
-    </article>
-  
-  
-    <article>
+    
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/blog/2015/01/20/exploration-avec-pry/">Exploration avec pry</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-01-20T20:54:00-05:00" pubdate data-updated="true">20 janvier 2015</time>
-        
-           | <a href="/blog/blog/2015/01/20/exploration-avec-pry/#disqus_thread"
-             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2015/01/20/exploration-avec-pry/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Les IDE traditionnels possèdent généralement des outils avec une interface
-graphique pour déboguer. Pry, quant à lui, offre les mêmes possibilités en
-utilisant des lignes de commande. Pry est un REPL (Read-Eval-Print Loop) qui
-permet de naviguer dans le code afin d&#8217;expliquer un bogue ou de comprendre le
-fonctionnement interne d&#8217;une Gem. Nous allons voir comment faire dans cet article.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/blog/2015/01/20/exploration-avec-pry/">Lire plus &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
+        <a class="basic-alignment left" href="/blog/blog/2015/02/14/comment-ca-marche-les-associations-dans-activerecord/" title="Previous Post: Comment ça marche : Les associations dans ActiveRecord">&laquo; Comment ça marche : Les associations dans ActiveRecord</a>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/blog/2015/01/20/utiliser-activerecord-sans-rails/">Utiliser activerecord sans rails</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-01-20T04:19:00-05:00" pubdate data-updated="true">20 janvier 2015</time>
-        
-           | <a href="/blog/blog/2015/01/20/utiliser-activerecord-sans-rails/#disqus_thread"
-             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2015/01/20/utiliser-activerecord-sans-rails/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>ActiveRecord est l&#8217;une des premières classes que l&#8217;on apprend à utiliser avec
-Rails. Dans la vie d&#8217;un Rubyste, il est possible que l&#8217;on souhaite l&#8217;utiliser
-sans Rails pour l&#8217;exécuter dans un programme en ligne de commande
-ou dans une application utilisant Sinatra par exemple. Nous allons voir comment
-faire en quelques lignes.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/blog/2015/01/20/utiliser-activerecord-sans-rails/">Lire plus &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/blog/2015/01/18/inclure-un-objet-reel-dans-un-envrionnement-3d-et-le-voir-avec-oculus/">Inclure un objet réel dans un environnement 3d et le voir avec oculus</a></h1>
-    
-    
-      <p class="meta">
-        
+    </p>
+  </footer>
+</article>
 
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-01-18T19:34:00-05:00" pubdate data-updated="true">18 janvier 2015</time>
-        
-           | <a href="/blog/blog/2015/01/18/inclure-un-objet-reel-dans-un-envrionnement-3d-et-le-voir-avec-oculus/#disqus_thread"
-             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2015/01/18/inclure-un-objet-reel-dans-un-envrionnement-3d-et-le-voir-avec-oculus/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Grâce à Unity 3d, il est possible de créer une scène, d&#8217;y intégrer le module
-Oculus et d&#8217;importer n&#8217;importe quel modèle 3d en quelques minutes. Dans cet
-article, nous allons voir comment insérer un objet réel dans un tel
-environnement.</p>
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/blog/2015/01/18/inclure-un-objet-reel-dans-un-envrionnement-3d-et-le-voir-avec-oculus/">Lire plus &rarr;</a>
-    </footer>
-  
 
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/blog/2015/01/03/reconstruire-un-modele-3d-a-partir-dobjets-reels/">Reconstruire un modèle 3d à partir d&#8217;objets réels</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-01-03T07:59:00-05:00" pubdate data-updated="true">3 janvier 2015</time>
-        
-           | <a href="/blog/blog/2015/01/03/reconstruire-un-modele-3d-a-partir-dobjets-reels/#disqus_thread"
-             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2015/01/03/reconstruire-un-modele-3d-a-partir-dobjets-reels/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>La reconstitution d&#8217;objets 3d basée sur des images permet de créer des modèles
-3d d&#8217;objets réels. Ce processus qui peut paraître complexe est en fait rendu
-très simple grâce aux outils que nous allons voir dans cet article.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/blog/2015/01/03/reconstruire-un-modele-3d-a-partir-dobjets-reels/">Lire plus &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/blog/2014/08/25/open-slash-closed-principle/">Open/closed principle</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-08-25T04:52:00-04:00" pubdate data-updated="true">25 août 2014</time>
-        
-           | <a href="/blog/blog/2014/08/25/open-slash-closed-principle/#disqus_thread"
-             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2014/08/25/open-slash-closed-principle/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Le principe d&#8217;ouverture/fermeture, où OCP, permet de créer un code plus clair et
-plus facilement modifiable. Dans cet article, nous allons voir dans quels cas il
-peut être utilisé et quels en sont les bénéfices. OCP fait partie des principes
-SOLID, qu&#8217;il faut absolument connaître pour devenir un meilleur programmeur.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/blog/2014/08/25/open-slash-closed-principle/">Lire plus &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/blog/2014/07/27/single-responsability-principle/">Single responsability principle</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-07-27T19:32:00-04:00" pubdate data-updated="true">27 juillet 2014</time>
-        
-           | <a href="/blog/blog/2014/07/27/single-responsability-principle/#disqus_thread"
-             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2014/07/27/single-responsability-principle/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>S&#8217;il n&#8217;y avait qu&#8217;un principe de Programation Orienté Objet à retenir, ça
-serait celui-ci. Dans cet article, nous allons voir comment le Single
-Responsability Principle peut aider à avoir un code plus clair et plus simple à
-maintenir.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/blog/2014/07/27/single-responsability-principle/">Lire plus &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/blog/blog/page/2/">&larr; Older</a>
-    
-    <a href="/blog/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section>
@@ -763,7 +372,7 @@ maintenir.</p>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/">Comment ça marche : le coeur d&#8217;activerecord</a>
+        <a href="/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/">Comment ça marche : le coeur d'activerecord</a>
       </li>
     
       <li class="post">
@@ -775,7 +384,7 @@ maintenir.</p>
       </li>
     
       <li class="post">
-        <a href="/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/">Comment activerecord reconnait la structure d&#8217;une table d&#8217;un modèle</a>
+        <a href="/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/">Comment activerecord reconnait la structure d'une table d'un modèle</a>
       </li>
     
       <li class="post">
@@ -788,7 +397,7 @@ maintenir.</p>
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/GCorbel">@GCorbel</a> on GitHub
@@ -821,6 +430,7 @@ maintenir.</p>
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -835,7 +445,10 @@ maintenir.</p>
       var disqus_shortname = 'guireccorbel';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://GCorbel.github.io/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/';
+        var disqus_url = 'http://GCorbel.github.io/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
