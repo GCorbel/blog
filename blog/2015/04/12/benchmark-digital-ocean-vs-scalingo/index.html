@@ -1,0 +1,584 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Benchmark : Digital Ocean vs Scalingo - Guirec Corbel</title>
+  <meta name="author" content="Guirec Corbel">
+
+  
+  <meta name="description" content="Il y a peu, j&#8217;ai parlé avec Yann Klis sur le forum de Human Coders. Suite à
+cette discussion, j&#8217;ai souhaité effectuer un benchmark pour &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://GCorbel.github.io/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo">
+  <link href="/blog/favicon.png" rel="icon">
+  <link href="/blog/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/blog/atom.xml" rel="alternate" title="Guirec Corbel" type="application/atom+xml">
+  <script src="/blog/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/blog/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="/blog/stylesheets/rve-styles.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-42784059-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <a href="https://github.com/gcorbel/blog">
+    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png" alt="Suivez moi sur GitHub">
+  </a>
+  <h1><a href="/blog/">Guirec Corbel</a></h1>
+  
+    <h2>Mon blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/blog/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:GCorbel.github.io/blog" />
+    <input class="search" type="text" name="q" results="0" placeholder="Rechercher"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/blog/">Blog</a></li>
+  <li><a href="/blog/blog/archives">Archives</a></li>
+  <li><a href="/blog-en">English version</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Benchmark : digital ocean vs scalingo</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-04-12T08:48:00-04:00" pubdate data-updated="true">12 avril 2015</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://GCorbel.github.io/blog">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Il y a peu, j&#8217;ai parlé avec Yann Klis sur <a href="https://forum.humancoders.com/t/heroku-en-production/1384/4">le forum de Human Coders</a>. Suite à
+cette discussion, j&#8217;ai souhaité effectuer un benchmark pour comparer les
+performances de DigitalOcean et de Scalingo. Dans cet article, je vais exposer
+les résultats des tests ainsi que ma méthodologie.</p>
+
+<h2>L&#8217;application</h2>
+
+<p>Voici l&#8217;application en question : <a href="https://www.associatedartcollectors.com/fr.">https://www.associatedartcollectors.com/fr.</a>
+Il s&#8217;agit d&#8217;une application Rails légèrement optimisée, avec un système de mise
+en cache, des assets sur un CDN, etc. Il s&#8217;agit d&#8217;une vraie application
+(encore en développement). J&#8217;ai préféré l&#8217;utiliser plutôt que d&#8217;en faire une
+uniquement pour des tests afin de mieux représenter la réalité.</p>
+
+<h2>Les serveurs</h2>
+
+<p>Le serveur Digital Ocean est situé à New York et il coûte 10$ par mois pour
+1Go de RAM. Scalingo, quant à lui, est situé en France et coûte 14.40€ pour
+512Mb. Scalingo est donc légèrement plus cher pour moins de puissance.</p>
+
+<p>Scalingo étant beaucoup plus facile à gérer, je pense que le temps économisé
+au niveau de la gestion du serveur vaut largement le léger surplus de prix. En
+effet, dans son utilisation, Scalingo ressemble davantage à Heroku qu&#8217;a Digital
+Ocean. J&#8217;ai choisi de ne pas comparer Scalingo à Heroku, car, selon de précédents
+tests, Digital Ocean offre une meilleure performance. J&#8217;ai voulu comparer
+Scalingo au meilleur.</p>
+
+<h2>Les tests</h2>
+
+<p>La plus grosse part de marché de Scalingo est située en France. J&#8217;ai souhaité
+commencer mes tests proches de la France. Pour cela, j&#8217;ai choisi de créer un
+droplet Digital Ocean à Londres.</p>
+
+<p>Mon objectif a été de simuler un certain nombre de requêtes et ceux de manière
+concurrente. J&#8217;ai donc créé un code qui lance plusieurs processus
+simultanément. Chaque processus effectue un certain nombre de requêtes. Le
+temps effectué par chaque processus permet de comparer la performance. Plus les
+requêtes se sont complétées rapidement, plus le serveur est efficace.</p>
+
+<h2>Le code</h2>
+
+<p>Le code n&#8217;est probablement pas le meilleur que j&#8217;ai écrit de ma vie, mais est
+largement suffisant pour faire ce que je souhaitais.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;benchmark&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;net/http&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;openssl&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">NUMBER_OF_THREADS</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span class='line'><span class="no">NUMBER_OF_REQUESTS_PER_THREAD</span> <span class="o">=</span> <span class="mi">100</span>
+</span><span class='line'><span class="no">URL</span> <span class="o">=</span> <span class="s1">&#39;https://stagingcollectionneurs.scalingo.io/fr/provider_registrations/new&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">threads</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'><span class="no">NUMBER_OF_THREADS</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">threads</span> <span class="o">&lt;&lt;</span> <span class="no">Thread</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">Benchmark</span><span class="o">.</span><span class="n">bm</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">x</span><span class="o">.</span><span class="n">report</span> <span class="k">do</span>
+</span><span class='line'>        <span class="no">NUMBER_OF_REQUESTS_PER_THREAD</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>          <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="no">URL</span><span class="p">)</span>
+</span><span class='line'>          <span class="n">http</span> <span class="o">=</span> <span class="ss">Net</span><span class="p">:</span><span class="ss">:HTTP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+</span><span class='line'>          <span class="n">http</span><span class="o">.</span><span class="n">use_ssl</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>          <span class="n">http</span><span class="o">.</span><span class="n">verify_mode</span> <span class="o">=</span> <span class="ss">OpenSSL</span><span class="p">:</span><span class="ss">:SSL</span><span class="o">::</span><span class="no">VERIFY_NONE</span>
+</span><span class='line'>          <span class="n">http</span><span class="o">.</span><span class="n">start</span> <span class="k">do</span>
+</span><span class='line'>            <span class="n">http</span><span class="o">.</span><span class="n">request_get</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">res</span><span class="o">|</span>
+</span><span class='line'>              <span class="nb">p</span> <span class="n">res</span><span class="o">.</span><span class="n">code</span> <span class="o">+</span> <span class="s2">&quot; : &quot;</span> <span class="o">+</span> <span class="n">i</span><span class="o">.</span><span class="n">to_s</span>
+</span><span class='line'>            <span class="k">end</span>
+</span><span class='line'>          <span class="k">end</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ce code permet d&#8217;entrer un nombre de processus simultané et le nombre de requêtes
+fait pour chaque processus. De plus, il permet d&#8217;indiquer la page appelée par
+le code. J&#8217;ai choisi des pages différentes qui sont représentatives de
+l&#8217;application.</p>
+
+<p>Le code permet également d&#8217;afficher le statut de la requête envoyé, afin de
+s&#8217;assurer qu&#8217;elles sont toutes valides, ainsi que le numéro de la requête
+effectuée, juste pour voir la progression.</p>
+
+<p>J&#8217;ai eu un problème avec le protocole SSL sur Digital Ocean. Pour le test, j&#8217;ai
+simplement désactivé la vérification.</p>
+
+<h2>Test 1</h2>
+
+<p>Le premier test consiste uniquement à visiter une page. Pour l&#8217;affichage de
+cette page, 11 requêtes SQL sont exécutées.</p>
+
+<p><strong>Le résultat à observer est le dernier, entre parenthèses. Les autres chiffres
+représentent les temps d&#8217;exécutions du script sur le système</strong></p>
+
+<p>Digital Ocean :</p>
+
+<pre><code>Threads : 10
+Requests per thread : 100
+
+  3.900000   0.680000   4.580000 (204.877640)
+  3.900000   0.680000   4.580000 (205.035337)
+  3.910000   0.680000   4.590000 (205.386872)
+  3.910000   0.680000   4.590000 (205.548623)
+  3.910000   0.680000   4.590000 (205.710381)
+  3.910000   0.680000   4.590000 (205.951070)
+  3.910000   0.680000   4.590000 (206.114616)
+  3.900000   0.680000   4.580000 (206.449934)
+  3.920000   0.680000   4.600000 (206.624353)
+  3.920000   0.680000   4.600000 (206.786742)
+</code></pre>
+
+<p>Scalingo :</p>
+
+<pre><code>Threads : 10
+Requests per thread : 100
+
+  4.150000   0.610000   4.760000 (110.868637)
+  4.150000   0.610000   4.760000 (110.982509)
+  4.150000   0.610000   4.760000 (111.086731)
+  4.150000   0.610000   4.760000 (111.195775)
+  4.160000   0.610000   4.770000 (111.377322)
+  4.160000   0.610000   4.770000 (111.482194)
+  4.160000   0.610000   4.770000 (111.590034)
+  4.160000   0.610000   4.770000 (111.697870)
+  4.160000   0.610000   4.770000 (111.821420)
+  4.170000   0.610000   4.780000 (111.938271)
+</code></pre>
+
+<p>Ce premier test montre clairement que Scalingo offre un temps de réponse plus rapide.</p>
+
+<h2>Test 2</h2>
+
+<p>Dans ce deuxième test, j&#8217;ai voulu tester le comportement avec plus de requêtes concurrentes.</p>
+
+<p>Digital Ocean :</p>
+
+<pre><code>Threads : 100
+Requests per thread : 10
+
+  4.060000   0.610000   4.670000 (192.305951)
+  4.050000   0.600000   4.650000 (192.493129)
+  4.060000   0.610000   4.670000 (192.630360)
+  ...
+  4.210000   0.640000   4.850000 (211.465539)
+  4.210000   0.640000   4.850000 (211.620358)
+  4.220000   0.640000   4.860000 (211.787191)
+  4.220000   0.650000   4.870000 (212.134547)
+  4.220000   0.640000   4.860000 (212.285122)
+</code></pre>
+
+<p>Scalingo :</p>
+
+<pre><code>Threads : 100
+Requests per thread : 10
+
+  4.090000   0.620000   4.710000 ( 92.787676)
+  4.090000   0.620000   4.710000 ( 92.877818)
+  4.090000   0.620000   4.710000 ( 92.959175)
+  ...
+  4.240000   0.640000   4.880000 (102.423316)
+  4.260000   0.640000   4.900000 (102.525122)
+  4.260000   0.640000   4.900000 (102.622236)
+</code></pre>
+
+<p>Encore cette fois, Scalingo est nettement supérieur. Pendant que les tests
+s&#8217;effectuaient, je suis allé sur les deux sites avec mon navigateur. Même si cela
+ne se reflète par sur les résultats du benchmark, j&#8217;ai constaté une grande
+dégradation de performance pour les deux fournisseurs.</p>
+
+<h2>Test 3</h2>
+
+<p>Par la suite, j&#8217;ai souhaité tester une autre page un peu plus complexe.</p>
+
+<p>Digital Ocean :</p>
+
+<pre><code>Thread : 10
+Request : 100
+
+  4.080000   0.590000   4.670000 (277.214808)
+  4.070000   0.590000   4.660000 (277.399558)
+  4.080000   0.590000   4.670000 (277.598286)
+  4.080000   0.590000   4.670000 (277.996191)
+  4.090000   0.590000   4.680000 (278.207134)
+  4.080000   0.590000   4.670000 (278.479023)
+  4.090000   0.590000   4.680000 (278.705815)
+  4.090000   0.590000   4.680000 (279.098393)
+  4.090000   0.600000   4.690000 (279.326192)
+  4.090000   0.600000   4.690000 (279.617889)
+</code></pre>
+
+<p>Scalingo :</p>
+
+<pre><code>Thread : 10
+Request : 100
+
+  4.190000   0.560000   4.750000 (143.032002)
+  4.200000   0.560000   4.760000 (143.170704)
+  4.200000   0.560000   4.760000 (143.322095)
+  4.200000   0.560000   4.760000 (143.458987)
+  4.200000   0.560000   4.760000 (143.596800)
+  4.200000   0.560000   4.760000 (143.742877)
+  4.200000   0.560000   4.760000 (143.877174)
+  4.200000   0.560000   4.760000 (144.017422)
+  4.200000   0.560000   4.760000 (144.161915)
+  4.200000   0.570000   4.770000 (144.303397)
+</code></pre>
+
+<p>Sans surprise, le résultat est le même dans ce cas.</p>
+
+<h2>Test 4</h2>
+
+<p>Pour conclure, j&#8217;ai voulu tester une page encore plus complexe. Il s&#8217;agit du
+formulaire d&#8217;inscription d&#8217;un utilisateur. J&#8217;utilise des gems comme SimpleForm
+pour gérer le formulaire. Les listes des services, des pays et des régions
+sont disponibles ce qui correspond à autant de requête SQL et de donnée à
+traiter.</p>
+
+<p>Digital Ocean :</p>
+
+<pre><code>Thread : 10
+Request : 100
+
+  4.270000   0.610000   4.880000 (552.334913)
+  4.270000   0.610000   4.880000 (552.862069)
+  4.270000   0.610000   4.880000 (553.435137)
+  4.280000   0.610000   4.890000 (553.972282)
+  4.280000   0.610000   4.890000 (554.548237)
+  4.280000   0.610000   4.890000 (555.093758)
+  4.280000   0.610000   4.890000 (555.677602)
+  4.280000   0.610000   4.890000 (556.259342)
+  4.280000   0.610000   4.890000 (556.846054)
+  4.290000   0.610000   4.900000 (557.389199)
+</code></pre>
+
+<p>Scalingo :</p>
+
+<pre><code>Thread : 10
+Request : 100
+
+  4.550000   0.620000   5.170000 (669.174683)
+  4.550000   0.620000   5.170000 (669.800881)
+  4.550000   0.620000   5.170000 (670.571744)
+  4.550000   0.620000   5.170000 (671.256995)
+  4.550000   0.620000   5.170000 (671.949939)
+  4.560000   0.620000   5.180000 (672.582819)
+  4.560000   0.620000   5.180000 (673.282322)
+  4.560000   0.620000   5.180000 (673.983594)
+  4.560000   0.620000   5.180000 (674.634513)
+  4.560000   0.620000   5.180000 (675.310771)
+</code></pre>
+
+<p>Cette fois, Digital Ocean est plus rapide. Je pense que c&#8217;est là que la
+différence de puissance du serveur se fait sentir. Étant donné qu&#8217;il y a plus
+de code a exécuter, le traitement nécessite plus de ressource, et donc, Digital
+Ocean est avantagé. Ceci dit, cette page n&#8217;est pas l&#8217;une des plus utilisées et
+je pense que la performance est plus importante pour les pages permettant
+uniquement l&#8217;affichage.</p>
+
+<h2>Conclusion</h2>
+
+<p>Je pense que Scalingo gagne le duel. En plus d&#8217;offrir une performance plus
+qu&#8217;honorable, la gestion du serveur est grandement simplifiée. Je conseille
+vivement d&#8217;essayer cet outil si vous n&#8217;avez pas besoin d&#8217;avoir un accès complet
+à la machine. Comme moi, les développeurs ne sont toujours des administrateurs
+systèmes. Je trouve beaucoup plus simple de laisser la gestion du serveur à
+quelqu&#8217;un d&#8217;autre. En plus d&#8217;être probablement mieux configuré que ce que j&#8217;ai
+fait, c&#8217;est également plus sécuritaire, car, si une faille de sécurité est
+découverte, le problème sera géré par des professionnels dans le domaine.</p>
+
+<p>Pour cet article, mes tests ont été effectués depuis Londres afin de
+représenter la clientèle européenne. Pour ma part, je me situe au Québec. Dans
+une seconde étape, je vais tester depuis des serveurs en Amérique du Nord et à
+partir d&#8217;autres endroits dans le monde pour observer le comportement selon
+les lieux.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Ajouté par <span class="fn">Guirec Corbel</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-04-12T08:48:00-04:00" pubdate data-updated="true">12 avril 2015</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="/blog//twitter.com/share" class="twitter-share-button" data-url="http://GCorbel.github.io/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo/" data-via="GuirecCorbel" data-counturl="http://GCorbel.github.io/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/" title="Previous Post: Comment ça marche : Le coeur d'ActiveRecord">&laquo; Comment ça marche : Le coeur d'ActiveRecord</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Derniers articles</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo/">Benchmark : digital ocean vs scalingo</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/">Comment ça marche : le coeur d'activerecord</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2015/02/14/comment-ca-marche-les-associations-dans-activerecord/">Comment ça marche : les associations dans activerecord</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2015/02/07/conserver-les-changements-de-valeurs-grace-a-activemodel-dirty/">Conserver les changements de valeurs grâce à activemodel::dirty</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2015/01/25/comment-activerecord-reconnais-la-structure-dune-table-dun-modele/">Comment activerecord reconnait la structure d'une table d'un modèle</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/GCorbel">@GCorbel</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/blog/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'GCorbel',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/blog/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Guirec Corbel -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'guireccorbel';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://GCorbel.github.io/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo/';
+        var disqus_url = 'http://GCorbel.github.io/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
