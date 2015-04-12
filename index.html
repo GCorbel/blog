@@ -9,8 +9,8 @@
   <meta name="author" content="Guirec Corbel">
 
   
-  <meta name="description" content="Il y a peu, j&#8217;ai parlé avec Yann Klis sur le forum de Human Coders. Suite à
-cette discussion, j&#8217;ai souhaité effectuer un benchmark pour &hellip;">
+  <meta name="description" content="Il y a peu, j&#8217;ai parlé avec Yann Klis, de Scalingo, sur le forum de Human Coders. Suite à
+cette discussion, j&#8217;ai souhaité effectuer un &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -115,22 +115,22 @@ cette discussion, j&#8217;ai souhaité effectuer un benchmark pour &hellip;">
   </header>
 
 
-  <div class="entry-content"><p>Il y a peu, j&#8217;ai parlé avec Yann Klis sur <a href="https://forum.humancoders.com/t/heroku-en-production/1384/4">le forum de Human Coders</a>. Suite à
+  <div class="entry-content"><p>Il y a peu, j&#8217;ai parlé avec Yann Klis, de <a href="https://scalingo.com/">Scalingo</a>, sur <a href="https://forum.humancoders.com/t/heroku-en-production/1384/4">le forum de Human Coders</a>. Suite à
 cette discussion, j&#8217;ai souhaité effectuer un benchmark pour comparer les
-performances de DigitalOcean et de Scalingo. Dans cet article, je vais exposer
+performances de Digital Ocean et de Scalingo. Dans cet article, je vais exposer
 les résultats des tests ainsi que ma méthodologie.</p>
 
 <h2>L&#8217;application</h2>
 
-<p>Voici l&#8217;application en question : <a href="https://www.associatedartcollectors.com/fr.">https://www.associatedartcollectors.com/fr.</a>
-Il s&#8217;agit d&#8217;une application Rails légèrement optimisée, avec un système de mise
+<p>Voici l&#8217;application testée : <a href="https://www.associatedartcollectors.com/fr.">https://www.associatedartcollectors.com/fr.</a>
+Il s&#8217;agit d&#8217;une application Rails optimisée, avec un système de mise
 en cache, des assets sur un CDN, etc. Il s&#8217;agit d&#8217;une vraie application
 (encore en développement). J&#8217;ai préféré l&#8217;utiliser plutôt que d&#8217;en faire une
 uniquement pour des tests afin de mieux représenter la réalité.</p>
 
 <h2>Les serveurs</h2>
 
-<p>Le serveur Digital Ocean est situé à New York et il coûte 10$ par mois pour
+<p>Le serveur Digital Ocean est situé à New York et coûte 10$ par mois pour
 1Go de RAM. Scalingo, quant à lui, est situé en France et coûte 14.40€ pour
 512Mb. Scalingo est donc légèrement plus cher pour moins de puissance.</p>
 
@@ -219,8 +219,8 @@ largement suffisant pour faire ce que je souhaitais.</p>
 
 <p>Ce code permet d&#8217;entrer un nombre de processus simultané et le nombre de requêtes
 fait pour chaque processus. De plus, il permet d&#8217;indiquer la page appelée par
-le code. J&#8217;ai choisi des pages différentes qui sont représentatives de
-l&#8217;application.</p>
+le code. Pour les tests, j&#8217;ai choisi des pages différentes qui sont
+représentatives de l&#8217;application.</p>
 
 <p>Le code permet également d&#8217;afficher le statut de la requête envoyé, afin de
 s&#8217;assurer qu&#8217;elles sont toutes valides, ainsi que le numéro de la requête
@@ -234,24 +234,22 @@ simplement désactivé la vérification.</p>
 <p>Le premier test consiste uniquement à visiter une page. Pour l&#8217;affichage de
 cette page, 11 requêtes SQL sont exécutées.</p>
 
-<p><strong>Le résultat à observer est le dernier, entre parenthèses. Les autres chiffres
-représentent les temps d&#8217;exécutions du script sur le système</strong></p>
-
 <p>Digital Ocean :</p>
 
 <pre><code>Threads : 10
 Requests per thread : 100
 
-  3.900000   0.680000   4.580000 (204.877640)
-  3.900000   0.680000   4.580000 (205.035337)
-  3.910000   0.680000   4.590000 (205.386872)
-  3.910000   0.680000   4.590000 (205.548623)
-  3.910000   0.680000   4.590000 (205.710381)
-  3.910000   0.680000   4.590000 (205.951070)
-  3.910000   0.680000   4.590000 (206.114616)
-  3.900000   0.680000   4.580000 (206.449934)
-  3.920000   0.680000   4.600000 (206.624353)
-  3.920000   0.680000   4.600000 (206.786742)
+Temps de réponse :
+  204.877640
+  205.035337
+  205.386872
+  205.548623
+  205.710381
+  205.951070
+  206.114616
+  206.449934
+  206.624353
+  206.786742
 </code></pre>
 
 <p>Scalingo :</p>
@@ -259,38 +257,42 @@ Requests per thread : 100
 <pre><code>Threads : 10
 Requests per thread : 100
 
-  4.150000   0.610000   4.760000 (110.868637)
-  4.150000   0.610000   4.760000 (110.982509)
-  4.150000   0.610000   4.760000 (111.086731)
-  4.150000   0.610000   4.760000 (111.195775)
-  4.160000   0.610000   4.770000 (111.377322)
-  4.160000   0.610000   4.770000 (111.482194)
-  4.160000   0.610000   4.770000 (111.590034)
-  4.160000   0.610000   4.770000 (111.697870)
-  4.160000   0.610000   4.770000 (111.821420)
-  4.170000   0.610000   4.780000 (111.938271)
+Temps de réponse :
+  110.868637
+  110.982509
+  111.086731
+  111.195775
+  111.377322
+  111.482194
+  111.590034
+  111.697870
+  111.821420
+  111.938271
 </code></pre>
 
-<p>Ce premier test montre clairement que Scalingo offre un temps de réponse plus rapide.</p>
+<p>Ce premier test montre clairement que Scalingo offre un temps de réponse plus
+rapide. Scalingo est quasiment deux fois plus rapide.</p>
 
 <h2>Test 2</h2>
 
-<p>Dans ce deuxième test, j&#8217;ai voulu tester le comportement avec plus de requêtes concurrentes.</p>
+<p>Dans ce deuxième test, j&#8217;ai voulu tester le comportement avec plus de requêtes
+concurrentes.</p>
 
 <p>Digital Ocean :</p>
 
 <pre><code>Threads : 100
 Requests per thread : 10
 
-  4.060000   0.610000   4.670000 (192.305951)
-  4.050000   0.600000   4.650000 (192.493129)
-  4.060000   0.610000   4.670000 (192.630360)
+Temps de réponse :
+  192.305951
+  192.493129
+  192.630360
   ...
-  4.210000   0.640000   4.850000 (211.465539)
-  4.210000   0.640000   4.850000 (211.620358)
-  4.220000   0.640000   4.860000 (211.787191)
-  4.220000   0.650000   4.870000 (212.134547)
-  4.220000   0.640000   4.860000 (212.285122)
+  211.465539
+  211.620358
+  211.787191
+  212.134547
+  212.285122
 </code></pre>
 
 <p>Scalingo :</p>
@@ -298,13 +300,14 @@ Requests per thread : 10
 <pre><code>Threads : 100
 Requests per thread : 10
 
-  4.090000   0.620000   4.710000 ( 92.787676)
-  4.090000   0.620000   4.710000 ( 92.877818)
-  4.090000   0.620000   4.710000 ( 92.959175)
+Temps de réponse :
+   92.787676
+   92.877818
+   92.959175
   ...
-  4.240000   0.640000   4.880000 (102.423316)
-  4.260000   0.640000   4.900000 (102.525122)
-  4.260000   0.640000   4.900000 (102.622236)
+  102.423316
+  102.525122
+  102.622236
 </code></pre>
 
 <p>Encore cette fois, Scalingo est nettement supérieur. Pendant que les tests
@@ -321,16 +324,17 @@ dégradation de performance pour les deux fournisseurs.</p>
 <pre><code>Thread : 10
 Request : 100
 
-  4.080000   0.590000   4.670000 (277.214808)
-  4.070000   0.590000   4.660000 (277.399558)
-  4.080000   0.590000   4.670000 (277.598286)
-  4.080000   0.590000   4.670000 (277.996191)
-  4.090000   0.590000   4.680000 (278.207134)
-  4.080000   0.590000   4.670000 (278.479023)
-  4.090000   0.590000   4.680000 (278.705815)
-  4.090000   0.590000   4.680000 (279.098393)
-  4.090000   0.600000   4.690000 (279.326192)
-  4.090000   0.600000   4.690000 (279.617889)
+Temps de réponse :
+  277.214808
+  277.399558
+  277.598286
+  277.996191
+  278.207134
+  278.479023
+  278.705815
+  279.098393
+  279.326192
+  279.617889
 </code></pre>
 
 <p>Scalingo :</p>
@@ -338,23 +342,24 @@ Request : 100
 <pre><code>Thread : 10
 Request : 100
 
-  4.190000   0.560000   4.750000 (143.032002)
-  4.200000   0.560000   4.760000 (143.170704)
-  4.200000   0.560000   4.760000 (143.322095)
-  4.200000   0.560000   4.760000 (143.458987)
-  4.200000   0.560000   4.760000 (143.596800)
-  4.200000   0.560000   4.760000 (143.742877)
-  4.200000   0.560000   4.760000 (143.877174)
-  4.200000   0.560000   4.760000 (144.017422)
-  4.200000   0.560000   4.760000 (144.161915)
-  4.200000   0.570000   4.770000 (144.303397)
+Temps de réponse :
+  143.032002
+  143.170704
+  143.322095
+  143.458987
+  143.596800
+  143.742877
+  143.877174
+  144.017422
+  144.161915
+  144.303397
 </code></pre>
 
 <p>Sans surprise, le résultat est le même dans ce cas.</p>
 
 <h2>Test 4</h2>
 
-<p>Pour conclure, j&#8217;ai voulu tester une page encore plus complexe. Il s&#8217;agit du
+<p>Enfin, j&#8217;ai voulu tester une page encore plus complexe. Il s&#8217;agit du
 formulaire d&#8217;inscription d&#8217;un utilisateur. J&#8217;utilise des gems comme SimpleForm
 pour gérer le formulaire. Les listes des services, des pays et des régions
 sont disponibles ce qui correspond à autant de requête SQL et de donnée à
@@ -365,16 +370,17 @@ traiter.</p>
 <pre><code>Thread : 10
 Request : 100
 
-  4.270000   0.610000   4.880000 (552.334913)
-  4.270000   0.610000   4.880000 (552.862069)
-  4.270000   0.610000   4.880000 (553.435137)
-  4.280000   0.610000   4.890000 (553.972282)
-  4.280000   0.610000   4.890000 (554.548237)
-  4.280000   0.610000   4.890000 (555.093758)
-  4.280000   0.610000   4.890000 (555.677602)
-  4.280000   0.610000   4.890000 (556.259342)
-  4.280000   0.610000   4.890000 (556.846054)
-  4.290000   0.610000   4.900000 (557.389199)
+Temps de réponse :
+  552.334913
+  552.862069
+  553.435137
+  553.972282
+  554.548237
+  555.093758
+  555.677602
+  556.259342
+  556.846054
+  557.389199
 </code></pre>
 
 <p>Scalingo :</p>
@@ -382,16 +388,17 @@ Request : 100
 <pre><code>Thread : 10
 Request : 100
 
-  4.550000   0.620000   5.170000 (669.174683)
-  4.550000   0.620000   5.170000 (669.800881)
-  4.550000   0.620000   5.170000 (670.571744)
-  4.550000   0.620000   5.170000 (671.256995)
-  4.550000   0.620000   5.170000 (671.949939)
-  4.560000   0.620000   5.180000 (672.582819)
-  4.560000   0.620000   5.180000 (673.282322)
-  4.560000   0.620000   5.180000 (673.983594)
-  4.560000   0.620000   5.180000 (674.634513)
-  4.560000   0.620000   5.180000 (675.310771)
+Temps de réponse :
+  669.174683
+  669.800881
+  670.571744
+  671.256995
+  671.949939
+  672.582819
+  673.282322
+  673.983594
+  674.634513
+  675.310771
 </code></pre>
 
 <p>Cette fois, Digital Ocean est plus rapide. Je pense que c&#8217;est là que la
@@ -406,11 +413,12 @@ uniquement l&#8217;affichage.</p>
 <p>Je pense que Scalingo gagne le duel. En plus d&#8217;offrir une performance plus
 qu&#8217;honorable, la gestion du serveur est grandement simplifiée. Je conseille
 vivement d&#8217;essayer cet outil si vous n&#8217;avez pas besoin d&#8217;avoir un accès complet
-à la machine. Comme moi, les développeurs ne sont toujours des administrateurs
-systèmes. Je trouve beaucoup plus simple de laisser la gestion du serveur à
-quelqu&#8217;un d&#8217;autre. En plus d&#8217;être probablement mieux configuré que ce que j&#8217;ai
-fait, c&#8217;est également plus sécuritaire, car, si une faille de sécurité est
-découverte, le problème sera géré par des professionnels dans le domaine.</p>
+à la machine. Comme moi, les développeurs ne sont pas toujours des
+administrateurs systèmes. Je trouve beaucoup plus simple de laisser la gestion
+du serveur à quelqu&#8217;un d&#8217;autre. En plus d&#8217;être probablement mieux configuré que
+ce que j&#8217;ai fait, c&#8217;est également plus sécuritaire, car, si une faille de
+sécurité est découverte, le problème sera géré par des professionnels dans le
+domaine.</p>
 
 <p>Pour cet article, mes tests ont été effectués depuis Londres afin de
 représenter la clientèle européenne. Pour ma part, je me situe au Québec. Dans
