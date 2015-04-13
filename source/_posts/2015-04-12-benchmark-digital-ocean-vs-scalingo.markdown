@@ -28,9 +28,18 @@ Le serveur Digital Ocean est situé à New York et coûte 10$ par mois pour
 Scalingo étant beaucoup plus facile à gérer, je pense que le temps économisé
 au niveau de la gestion du serveur vaut largement le léger surplus de prix. En
 effet, dans son utilisation, Scalingo ressemble davantage à Heroku qu'a Digital
-Ocean. J'ai choisi de ne pas comparer Scalingo à Heroku, car, selon de précédents
-tests, Digital Ocean offre une meilleure performance. J'ai voulu comparer
-Scalingo au meilleur.
+Ocean. J'ai choisi de ne pas comparer Scalingo à Heroku, car, selon de
+précédents tests, Digital Ocean offre une meilleure performance. J'ai voulu
+comparer Scalingo au meilleur.
+
+## Note
+
+**Je ne suis pas administrateur système**. Il est probablement possible de faire
+mieux que ce que j'ai fait sur Digital Ocean. Ceci dit, je suis probablement
+dans la même situation qu'un bon nombre de développeurs. L'intérêt des systèmes
+similaires à Heroku ou Scalingo est également ne pas s'occuper du système. On
+créer l'application en 2 minutes, on pousse l'application et ça marche. C'est
+tout.
 
 ## Les tests
 
@@ -280,3 +289,7 @@ représenter la clientèle européenne. Pour ma part, je me situe au Québec. Da
 une seconde étape, je vais tester depuis des serveurs en Amérique du Nord et à
 partir d'autres endroits dans le monde pour observer le comportement selon
 les lieux.
+
+Dans un prochain article, je vais faire la comparaison entre Clover Cloud et
+Scalingo. Suveillez mes prochains articles pour connaitre les résultats de mon
+prochain benchmark.
