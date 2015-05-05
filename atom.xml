@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2015-04-13T18:50:33-04:00</updated>
+  <updated>2015-05-05T04:44:58-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -33,7 +33,7 @@ uniquement pour des tests afin de mieux représenter la réalité.</p>
 
 <h2>Les serveurs</h2>
 
-<p>Le serveur Digital Ocean est situé à New York et coûte 10$ par mois pour
+<p>Le serveur Digital Ocean est situé à Francfort et coûte 10$ par mois pour
 1Go de RAM. Scalingo, quant à lui, est situé en France et coûte 14.40€ pour
 512Mb. Scalingo est donc légèrement plus cher pour moins de puissance.</p>
 
@@ -152,16 +152,16 @@ cette page, 11 requêtes SQL sont exécutées.</p>
 Requests per thread : 100
 
 Temps de réponse :
-  204.877640
-  205.035337
-  205.386872
-  205.548623
-  205.710381
-  205.951070
-  206.114616
-  206.449934
-  206.624353
-  206.786742
+  163.755285
+  163.906003
+  164.070419
+  164.222361
+  164.379131
+  164.520751
+  164.717367
+  164.894695
+  165.059584
+  165.245484
 </code></pre>
 
 <p>Scalingo :</p>
@@ -196,15 +196,12 @@ concurrentes.</p>
 Requests per thread : 10
 
 Temps de réponse :
-  192.305951
-  192.493129
-  192.630360
-  ...
-  211.465539
-  211.620358
-  211.787191
-  212.134547
-  212.285122
+  150.062375
+  150.365437
+  150.532612
+  165.780870
+  165.941798
+  166.111019
 </code></pre>
 
 <p>Scalingo :</p>
@@ -229,7 +226,9 @@ dégradation de performance pour les deux fournisseurs.</p>
 
 <h2>Test 3</h2>
 
-<p>Par la suite, j&#8217;ai souhaité tester une autre page un peu plus complexe.</p>
+<p>Par la suite, j&#8217;ai souhaité tester une autre page un peu plus complexe. Sur
+cette page, plus de requêtes SQL sont effectuées et il y a plus de code à
+exécuter.</p>
 
 <p>Digital Ocean :</p>
 
@@ -237,16 +236,16 @@ dégradation de performance pour les deux fournisseurs.</p>
 Request : 100
 
 Temps de réponse :
-  277.214808
-  277.399558
-  277.598286
-  277.996191
-  278.207134
-  278.479023
-  278.705815
-  279.098393
-  279.326192
-  279.617889
+  204.311959
+  204.509295
+  204.683958
+  204.864534
+  205.055946
+  205.240614
+  205.440767
+  205.621924
+  205.807302
+  206.020173
 </code></pre>
 
 <p>Scalingo :</p>
@@ -283,16 +282,16 @@ traiter.</p>
 Request : 100
 
 Temps de réponse :
-  552.334913
-  552.862069
-  553.435137
-  553.972282
-  554.548237
-  555.093758
-  555.677602
-  556.259342
-  556.846054
-  557.389199
+  420.542306
+  420.998163
+  421.375207
+  421.724786
+  422.231918
+  422.618054
+  422.983907
+  423.442330
+  423.815438
+  424.163915
 </code></pre>
 
 <p>Scalingo :</p>
@@ -4553,7 +4552,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#x6f;&#x3a;&#103;&#x75;&#x69;&#x72;&#x65;&#99;&#x2e;&#x63;&#111;&#114;&#98;&#x65;&#108;&#64;&#x67;&#109;&#97;&#x69;&#x6c;&#46;&#x63;&#x6f;&#x6d;">&#x67;&#117;&#105;&#x72;&#x65;&#x63;&#46;&#99;&#x6f;&#x72;&#98;&#101;&#108;&#64;&#103;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#103;&#117;&#105;&#x72;&#101;&#x63;&#x2e;&#x63;&#x6f;&#x72;&#x62;&#x65;&#108;&#64;&#x67;&#109;&#97;&#105;&#x6c;&#x2e;&#x63;&#111;&#x6d;">&#103;&#x75;&#x69;&#114;&#101;&#99;&#x2e;&#x63;&#111;&#x72;&#x62;&#101;&#x6c;&#64;&#x67;&#109;&#x61;&#105;&#108;&#x2e;&#99;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
