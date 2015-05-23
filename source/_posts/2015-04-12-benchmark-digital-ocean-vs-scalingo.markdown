@@ -21,7 +21,7 @@ uniquement pour des tests afin de mieux représenter la réalité.
 
 ## Les serveurs
 
-Le serveur Digital Ocean est situé à New York et coûte 10$ par mois pour
+Le serveur Digital Ocean est situé à Francfort et coûte 10$ par mois pour
 1Go de RAM. Scalingo, quant à lui, est situé en France et coûte 14.40€ pour
 512Mb. Scalingo est donc légèrement plus cher pour moins de puissance.
 
@@ -112,16 +112,16 @@ Digital Ocean :
     Requests per thread : 100
 
     Temps de réponse :
-      204.877640
-      205.035337
-      205.386872
-      205.548623
-      205.710381
-      205.951070
-      206.114616
-      206.449934
-      206.624353
-      206.786742
+      163.755285
+      163.906003
+      164.070419
+      164.222361
+      164.379131
+      164.520751
+      164.717367
+      164.894695
+      165.059584
+      165.245484
 
 Scalingo :
 
@@ -154,15 +154,12 @@ Digital Ocean :
     Requests per thread : 10
 
     Temps de réponse :
-      192.305951
-      192.493129
-      192.630360
-      ...
-      211.465539
-      211.620358
-      211.787191
-      212.134547
-      212.285122
+      150.062375
+      150.365437
+      150.532612
+      165.780870
+      165.941798
+      166.111019
 
 Scalingo :
 
@@ -185,7 +182,9 @@ dégradation de performance pour les deux fournisseurs.
 
 ## Test 3
 
-Par la suite, j'ai souhaité tester une autre page un peu plus complexe.
+Par la suite, j'ai souhaité tester une autre page un peu plus complexe. Sur
+cette page, plus de requêtes SQL sont effectuées et il y a plus de code à
+exécuter.
 
 Digital Ocean :
 
@@ -193,16 +192,16 @@ Digital Ocean :
     Request : 100
 
     Temps de réponse :
-      277.214808
-      277.399558
-      277.598286
-      277.996191
-      278.207134
-      278.479023
-      278.705815
-      279.098393
-      279.326192
-      279.617889
+      204.311959
+      204.509295
+      204.683958
+      204.864534
+      205.055946
+      205.240614
+      205.440767
+      205.621924
+      205.807302
+      206.020173
 
 Scalingo :
 
@@ -237,16 +236,16 @@ Digital Ocean :
     Request : 100
 
     Temps de réponse :
-      552.334913
-      552.862069
-      553.435137
-      553.972282
-      554.548237
-      555.093758
-      555.677602
-      556.259342
-      556.846054
-      557.389199
+      420.542306
+      420.998163
+      421.375207
+      421.724786
+      422.231918
+      422.618054
+      422.983907
+      423.442330
+      423.815438
+      424.163915
 
 Scalingo :
 
@@ -290,6 +289,6 @@ une seconde étape, je vais tester depuis des serveurs en Amérique du Nord et �
 partir d'autres endroits dans le monde pour observer le comportement selon
 les lieux.
 
-Dans un prochain article, je vais faire la comparaison entre Clover Cloud et
-Scalingo. Suveillez mes prochains articles pour connaitre les résultats de mon
+Dans un prochain article, je vais faire la comparaison entre Clever Cloud et
+Scalingo. Surveillez mes prochains articles pour connaitre les résultats de mon
 prochain benchmark.
