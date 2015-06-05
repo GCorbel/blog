@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Benchmark : Digital Ocean vs Scalingo - Guirec Corbel</title>
+  <title>Benchmark : Clever Cloud vs Scalingo - Guirec Corbel</title>
   <meta name="author" content="Guirec Corbel">
 
   
-  <meta name="description" content="Il y a peu, j&#8217;ai parlé avec Yann Klis, de Scalingo, sur le forum de Human Coders. Suite à
-cette discussion, j&#8217;ai souhaité effectuer un &hellip;">
+  <meta name="description" content="Scalingo et Clever Cloud sont deux entreprises françaises proposant des
+services d&#8217;hébergement dans le cloud. Celles-ci proposent de retirer la &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@ cette discussion, j&#8217;ai souhaité effectuer un &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://GCorbel.github.io/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo">
+  <link rel="canonical" href="http://GCorbel.github.io/blog/blog/2015/06/01/benchmark-clever-cloud-vs-scalingo">
   <link href="/blog/favicon.png" rel="icon">
   <link href="/blog/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/blog/atom.xml" rel="alternate" title="Guirec Corbel" type="application/atom+xml">
@@ -86,7 +86,7 @@ cette discussion, j&#8217;ai souhaité effectuer un &hellip;">
   
   <header>
     
-      <h1 class="entry-title">Benchmark : digital ocean vs scalingo</h1>
+      <h1 class="entry-title">Benchmark : clever cloud vs scalingo</h1>
     
     
       <p class="meta">
@@ -102,7 +102,7 @@ cette discussion, j&#8217;ai souhaité effectuer un &hellip;">
   
 
 
-<time datetime="2015-04-12T08:48:00-04:00" pubdate data-updated="true">12 avril 2015</time>
+<time datetime="2015-06-01T02:41:00-04:00" pubdate data-updated="true">1<span>er</span> juin 2015</time>
         
            | <a href="#disqus_thread"
              data-disqus-identifier="http://GCorbel.github.io/blog">Comments</a>
@@ -112,52 +112,41 @@ cette discussion, j&#8217;ai souhaité effectuer un &hellip;">
   </header>
 
 
-<div class="entry-content"><p>Il y a peu, j&#8217;ai parlé avec Yann Klis, de <a href="https://scalingo.com/">Scalingo</a>, sur <a href="https://forum.humancoders.com/t/heroku-en-production/1384/4">le forum de Human Coders</a>. Suite à
-cette discussion, j&#8217;ai souhaité effectuer un benchmark pour comparer les
-performances de Digital Ocean et de Scalingo. Dans cet article, je vais exposer
-les résultats des tests ainsi que ma méthodologie.</p>
+<div class="entry-content"><p>Scalingo et Clever Cloud sont deux entreprises françaises proposant des
+services d&#8217;hébergement dans le cloud. Celles-ci proposent de retirer la gestion
+des serveurs aux développeurs et ceux avec un bon nombre de technologies comme
+Ruby, Go, Python ou PHP. Après avoir mis à l&#8217;épreuve Heroku, Digital Ocean et
+Scalingo, j&#8217;ai pu déterminer que Scalingo offrait la meilleure performance des
+trois. Qu&#8217;en est-il de Clever Cloud ?</p>
+
+<h2>Avant propos</h2>
+
+<p>Cet article se base sur <a href="http://gcorbel.github.io/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo/">l&#8217;article précédent</a>. L&#8217;application testée, le code
+ainsi que les pages testées sont les mêmes que celles utilisées pour faire la
+comparaison entre Digital Ocean et Scalingo.</p>
+
+<p><strong>Je ne suis toujours pas administrateur système</strong>. Si vous constatez des
+irrégularités dans mes tests, n&#8217;hésitez pas à m&#8217;en faire part et je les
+corrigerais. Cependant, je pense utiliser une méthode simple se basant sur des
+faits afin d&#8217;avoir une analyse pertinente.</p>
 
 <h2>L&#8217;application</h2>
 
-<p>Voici l&#8217;application testée : <a href="https://www.associatedartcollectors.com/fr.">https://www.associatedartcollectors.com/fr.</a>
-Il s&#8217;agit d&#8217;une application Rails optimisée, avec un système de mise
-en cache, des assets sur un CDN, etc. Il s&#8217;agit d&#8217;une vraie application
-(encore en développement). J&#8217;ai préféré l&#8217;utiliser plutôt que d&#8217;en faire une
-uniquement pour des tests afin de mieux représenter la réalité.</p>
+<p><a href="http://www.associatedartcollectors.com/">Les Collectionneurs Associés</a> est une application Rails qui n&#8217;a pas été conçue uniquement pour des tests. Cela nous
+donne une meilleure idée du comportement des serveurs dans la réalité.</p>
 
 <h2>Les serveurs</h2>
 
-<p>Le serveur Digital Ocean est situé à Francfort et coûte 10$ par mois pour
-1Go de RAM. Scalingo, quant à lui, est situé en France et coûte 14.40€ pour
-512Mb. Scalingo est donc légèrement plus cher pour moins de puissance.</p>
+<p>L&#8217;offre la plus petite de Clever Cloud coûte 14,40€ par mois. Pour ce prix,
+nous avons 1 CPU et 1Gb de RAM. Pour le même prix, chez Scalingo, nous avons
+une machine avec 1CPU et  512Mb de RAM. Cependant, avec Scalingo, il est
+possible de descendre plus bas avec 256Mb pour 7,20€. J&#8217;ai choisi de prendre
+l&#8217;offre à 14,40€ dans les deux entreprises. Les deux serveurs se trouvent en
+France.</p>
 
-<p>Scalingo étant beaucoup plus facile à gérer, je pense que le temps économisé
-au niveau de la gestion du serveur vaut largement le léger surplus de prix. En
-effet, dans son utilisation, Scalingo ressemble davantage à Heroku qu&#8217;a Digital
-Ocean. J&#8217;ai choisi de ne pas comparer Scalingo à Heroku, car, selon de
-précédents tests, Digital Ocean offre une meilleure performance. J&#8217;ai voulu
-comparer Scalingo au meilleur.</p>
-
-<h2>Note</h2>
-
-<p><strong>Je ne suis pas administrateur système</strong>. Il est probablement possible de faire
-mieux que ce que j&#8217;ai fait sur Digital Ocean. Ceci dit, je suis probablement
-dans la même situation qu&#8217;un bon nombre de développeurs. L&#8217;intérêt des systèmes
-similaires à Heroku ou Scalingo est également ne pas s&#8217;occuper du système. On
-créer l&#8217;application en 2 minutes, on pousse l&#8217;application et ça marche. C&#8217;est
-tout.</p>
-
-<h2>Les tests</h2>
-
-<p>La plus grosse part de marché de Scalingo est située en France. J&#8217;ai souhaité
-commencer mes tests proches de la France. Pour cela, j&#8217;ai choisi de créer un
-droplet Digital Ocean à Londres.</p>
-
-<p>Mon objectif a été de simuler un certain nombre de requêtes et ceux de manière
-concurrente. J&#8217;ai donc créé un code qui lance plusieurs processus
-simultanément. Chaque processus effectue un certain nombre de requêtes. Le
-temps effectué par chaque processus permet de comparer la performance. Plus les
-requêtes se sont complétées rapidement, plus le serveur est efficace.</p>
+<p>Le serveur à partir duquel je fais mes tests est un serveur fourni par
+Digital Ocean situé à Londres. Il est donc représentatif des clients de
+l&#8217;Europe de l&#8217;Ouest, incluant la France, évidemment.</p>
 
 <h2>Le code</h2>
 
@@ -223,217 +212,129 @@ largement suffisant pour faire ce que je souhaitais.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Ce code permet d&#8217;entrer un nombre de processus simultané et le nombre de requêtes
-fait pour chaque processus. De plus, il permet d&#8217;indiquer la page appelée par
-le code. Pour les tests, j&#8217;ai choisi des pages différentes qui sont
-représentatives de l&#8217;application.</p>
-
-<p>Le code permet également d&#8217;afficher le statut de la requête envoyé, afin de
-s&#8217;assurer qu&#8217;elles sont toutes valides, ainsi que le numéro de la requête
-effectuée, juste pour voir la progression.</p>
-
-<p>J&#8217;ai eu un problème avec le protocole SSL sur Digital Ocean. Pour le test, j&#8217;ai
-simplement désactivé la vérification.</p>
+<p>Ce code permet d&#8217;entrer une adresse et de simuler un certain nombre de
+visites concurrentes faisant un certain nombre de requêtes. À la fin de
+l&#8217;exécution du programme, le temps de réponse de chaque processus est affiché.
+Ce code ne prend pas en compte le chargement des images et des assets. Dans mon
+cas, ces éléments sont stockés sur un CDN et sont donc indépendants du serveur
+où l&#8217;application se trouve.</p>
 
 <h2>Test 1</h2>
 
-<p>Le premier test consiste uniquement à visiter une page. Pour l&#8217;affichage de
-cette page, 11 requêtes SQL sont exécutées.</p>
-
-<p>Digital Ocean :</p>
-
-<pre><code>Threads : 10
-Requests per thread : 100
-
-Temps de réponse :
-  163.755285
-  163.906003
-  164.070419
-  164.222361
-  164.379131
-  164.520751
-  164.717367
-  164.894695
-  165.059584
-  165.245484
-</code></pre>
+<p>Ce premier test affiche une page simple avec 11 requêtes. Voici les temps de
+réponse :</p>
 
 <p>Scalingo :</p>
 
-<pre><code>Threads : 10
-Requests per thread : 100
+<p>  126.364873
+  126.482741
+  126.609597
+  126.741594
+  126.857076
+  126.988266
+  127.107123
+  127.235066
+  127.356753
+  127.469629</p>
 
-Temps de réponse :
-  110.868637
-  110.982509
-  111.086731
-  111.195775
-  111.377322
-  111.482194
-  111.590034
-  111.697870
-  111.821420
-  111.938271
-</code></pre>
+<p>Clever Cloud :</p>
 
-<p>Ce premier test montre clairement que Scalingo offre un temps de réponse plus
-rapide. Scalingo est quasiment deux fois plus rapide.</p>
+<p>  127.890590
+  128.021063
+  128.147565
+  128.274117
+  128.400284
+  128.528602
+  128.655974
+  128.777820
+  128.897637
+  129.032317</p>
+
+<p>Pour ce test, on s&#8217;aperçoit que les résultats sont quasiment identiques. La
+différence de 2 secondes est, pour moi, négligeable.</p>
 
 <h2>Test 2</h2>
 
-<p>Dans ce deuxième test, j&#8217;ai voulu tester le comportement avec plus de requêtes
-concurrentes.</p>
+<p>Pour continuer, j&#8217;ai réexécuté le programme sur une page plus complexe. Voici
+le résultat :</p>
 
-<p>Digital Ocean :</p>
+<p>Scalingo :
+  762.209817
+  762.938170
+  763.748126
+  764.493016
+  765.395998
+  766.176983
+  767.026748
+  767.746600
+  768.578646
+  769.388282</p>
 
-<pre><code>Threads : 100
-Requests per thread : 10
+<p>Clever Cloud :</p>
 
-Temps de réponse :
-  150.062375
-  150.365437
-  150.532612
-  165.780870
-  165.941798
-  166.111019
-</code></pre>
+<p>  766.513019
+  767.324059
+  768.050523
+  768.837619
+  769.624915
+  770.354487
+  771.162319
+  771.894288
+  772.703604
+  773.544202</p>
 
-<p>Scalingo :</p>
-
-<pre><code>Threads : 100
-Requests per thread : 10
-
-Temps de réponse :
-   92.787676
-   92.877818
-   92.959175
-  ...
-  102.423316
-  102.525122
-  102.622236
-</code></pre>
-
-<p>Encore cette fois, Scalingo est nettement supérieur. Pendant que les tests
-s&#8217;effectuaient, je suis allé sur les deux sites avec mon navigateur. Même si cela
-ne se reflète par sur les résultats du benchmark, j&#8217;ai constaté une grande
-dégradation de performance pour les deux fournisseurs.</p>
+<p>Encore une fois, la différence des temps de réponse est négligeable. Pour le
+moment, les performances de l&#8217;application hébergée sur les serveurs des deux
+entreprises sont équivalentes.</p>
 
 <h2>Test 3</h2>
 
-<p>Par la suite, j&#8217;ai souhaité tester une autre page un peu plus complexe. Sur
-cette page, plus de requêtes SQL sont effectuées et il y a plus de code à
-exécuter.</p>
-
-<p>Digital Ocean :</p>
-
-<pre><code>Thread : 10
-Request : 100
-
-Temps de réponse :
-  204.311959
-  204.509295
-  204.683958
-  204.864534
-  205.055946
-  205.240614
-  205.440767
-  205.621924
-  205.807302
-  206.020173
-</code></pre>
+<p>J&#8217;ai voulu poursuivre avec la page d&#8217;inscription, plus complexe.</p>
 
 <p>Scalingo :</p>
 
-<pre><code>Thread : 10
-Request : 100
+<p>  415.211191
+  415.640399
+  416.049001
+  416.437286
+  416.847855
+  417.337447
+  417.744488
+  418.145630
+  418.528678
+  418.999209</p>
 
-Temps de réponse :
-  143.032002
-  143.170704
-  143.322095
-  143.458987
-  143.596800
-  143.742877
-  143.877174
-  144.017422
-  144.161915
-  144.303397
-</code></pre>
+<p>Clever Cloud :</p>
 
-<p>Sans surprise, le résultat est le même dans ce cas.</p>
+<p>  356.496478
+  356.825021
+  357.213072
+  357.562785
+  357.917548
+  358.310875
+  358.650679
+  358.991046
+  359.396792
+  359.738898</p>
 
-<h2>Test 4</h2>
-
-<p>Enfin, j&#8217;ai voulu tester une page encore plus complexe. Il s&#8217;agit du
-formulaire d&#8217;inscription d&#8217;un utilisateur. J&#8217;utilise des gems comme SimpleForm
-pour gérer le formulaire. Les listes des services, des pays et des régions
-sont disponibles ce qui correspond à autant de requête SQL et de donnée à
-traiter.</p>
-
-<p>Digital Ocean :</p>
-
-<pre><code>Thread : 10
-Request : 100
-
-Temps de réponse :
-  420.542306
-  420.998163
-  421.375207
-  421.724786
-  422.231918
-  422.618054
-  422.983907
-  423.442330
-  423.815438
-  424.163915
-</code></pre>
-
-<p>Scalingo :</p>
-
-<pre><code>Thread : 10
-Request : 100
-
-Temps de réponse :
-  669.174683
-  669.800881
-  670.571744
-  671.256995
-  671.949939
-  672.582819
-  673.282322
-  673.983594
-  674.634513
-  675.310771
-</code></pre>
-
-<p>Cette fois, Digital Ocean est plus rapide. Je pense que c&#8217;est là que la
-différence de puissance du serveur se fait sentir. Étant donné qu&#8217;il y a plus
-de code a exécuter, le traitement nécessite plus de ressource, et donc, Digital
-Ocean est avantagé. Ceci dit, cette page n&#8217;est pas l&#8217;une des plus utilisées et
-je pense que la performance est plus importante pour les pages permettant
-uniquement l&#8217;affichage.</p>
+<p>Clever Cloud est légèrement plus rapide et, pour moi, ces résultats permettent
+de rattraper les légers retards enregistrés précédemment.</p>
 
 <h2>Conclusion</h2>
 
-<p>Je pense que Scalingo gagne le duel. En plus d&#8217;offrir une performance plus
-qu&#8217;honorable, la gestion du serveur est grandement simplifiée. Je conseille
-vivement d&#8217;essayer cet outil si vous n&#8217;avez pas besoin d&#8217;avoir un accès complet
-à la machine. Comme moi, les développeurs ne sont pas toujours des
-administrateurs systèmes. Je trouve beaucoup plus simple de laisser la gestion
-du serveur à quelqu&#8217;un d&#8217;autre. En plus d&#8217;être probablement mieux configuré que
-ce que j&#8217;ai fait, c&#8217;est également plus sécuritaire, car, si une faille de
-sécurité est découverte, le problème sera géré par des professionnels dans le
-domaine.</p>
+<p>Voici une conclusion très ennuyante pour un article comparatif : les
+performances des deux offres sont équivalentes. Ces résultats ne me permettent
+pas de trancher entre l&#8217;un et l&#8217;autre.</p>
 
-<p>Pour cet article, mes tests ont été effectués depuis Londres afin de
-représenter la clientèle européenne. Pour ma part, je me situe au Québec. Dans
-une seconde étape, je vais tester depuis des serveurs en Amérique du Nord et à
-partir d&#8217;autres endroits dans le monde pour observer le comportement selon
-les lieux.</p>
+<p>Les deux entreprises offrent un
+très bon support, leurs interfaces d&#8217;administration sont très bien faites et
+l&#8217;utilisation est deux systèmes est très simple. Pour choisir, il n&#8217;y a pas
+d&#8217;autre solution que de tester vous-même et de faire votre propre opinion, kit
+à vous baser sur des notions plus subjectives.</p>
 
-<p>Dans un prochain article, je vais faire la comparaison entre Clever Cloud et
-Scalingo. Surveillez mes prochains articles pour connaitre les résultats de mon
-prochain benchmark.</p>
+<p>Malgré tout, à la fois Scalingo et Clever Cloud sont plus performants qu&#8217;Heroku
+et Digital Ocean. Je leur donne une position qui serait décevante aux JO, la
+médaille d&#8217;or exequo.</p>
 </div>
 
 
@@ -456,7 +357,7 @@ prochain benchmark.</p>
   
 
 
-<time datetime="2015-04-12T08:48:00-04:00" pubdate data-updated="true">12 avril 2015</time>
+<time datetime="2015-06-01T02:41:00-04:00" pubdate data-updated="true">1<span>er</span> juin 2015</time>
       
 
 
@@ -464,7 +365,7 @@ prochain benchmark.</p>
     
       <div class="sharing">
   
-  <a href="/blog//twitter.com/share" class="twitter-share-button" data-url="http://GCorbel.github.io/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo/" data-via="GuirecCorbel" data-counturl="http://GCorbel.github.io/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo/" >Tweet</a>
+  <a href="/blog//twitter.com/share" class="twitter-share-button" data-url="http://GCorbel.github.io/blog/blog/2015/06/01/benchmark-clever-cloud-vs-scalingo/" data-via="GuirecCorbel" data-counturl="http://GCorbel.github.io/blog/blog/2015/06/01/benchmark-clever-cloud-vs-scalingo/" >Tweet</a>
   
   
   
@@ -473,10 +374,8 @@ prochain benchmark.</p>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/blog/2015/03/03/comment-ca-marche-le-coeur-dactiverecord/" title="Previous Post: Comment ça marche : Le coeur d'ActiveRecord">&laquo; Comment ça marche : Le coeur d'ActiveRecord</a>
+        <a class="basic-alignment left" href="/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo/" title="Previous Post: Benchmark : Digital Ocean vs Scalingo">&laquo; Benchmark : Digital Ocean vs Scalingo</a>
       
-      
-        <a class="basic-alignment right" href="/blog/blog/2015/06/01/benchmark-clever-cloud-vs-scalingo/" title="Next Post: Benchmark : Clever Cloud vs Scalingo">Benchmark : Clever Cloud vs Scalingo &raquo;</a>
       
     </p>
   </footer>
@@ -571,8 +470,8 @@ prochain benchmark.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://GCorbel.github.io/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo/';
-        var disqus_url = 'http://GCorbel.github.io/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo/';
+        var disqus_identifier = 'http://GCorbel.github.io/blog/blog/2015/06/01/benchmark-clever-cloud-vs-scalingo/';
+        var disqus_url = 'http://GCorbel.github.io/blog/blog/2015/06/01/benchmark-clever-cloud-vs-scalingo/';
         var disqus_script = 'embed.js';
       
     (function () {

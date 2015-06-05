@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2015-05-23T11:33:47-04:00</updated>
+  <updated>2015-06-05T06:34:21-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -12,6 +12,237 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Benchmark : Clever Cloud vs Scalingo]]></title>
+    <link href="http://GCorbel.github.io/blog/blog/2015/06/01/benchmark-clever-cloud-vs-scalingo/"/>
+    <updated>2015-06-01T02:41:00-04:00</updated>
+    <id>http://GCorbel.github.io/blog/blog/2015/06/01/benchmark-clever-cloud-vs-scalingo</id>
+    <content type="html"><![CDATA[<p>Scalingo et Clever Cloud sont deux entreprises françaises proposant des
+services d&#8217;hébergement dans le cloud. Celles-ci proposent de retirer la gestion
+des serveurs aux développeurs et ceux avec un bon nombre de technologies comme
+Ruby, Go, Python ou PHP. Après avoir mis à l&#8217;épreuve Heroku, Digital Ocean et
+Scalingo, j&#8217;ai pu déterminer que Scalingo offrait la meilleure performance des
+trois. Qu&#8217;en est-il de Clever Cloud ?</p>
+
+<h2>Avant propos</h2>
+
+<p>Cet article se base sur <a href="http://gcorbel.github.io/blog/blog/2015/04/12/benchmark-digital-ocean-vs-scalingo/">l&#8217;article précédent</a>. L&#8217;application testée, le code
+ainsi que les pages testées sont les mêmes que celles utilisées pour faire la
+comparaison entre Digital Ocean et Scalingo.</p>
+
+<p><strong>Je ne suis toujours pas administrateur système</strong>. Si vous constatez des
+irrégularités dans mes tests, n&#8217;hésitez pas à m&#8217;en faire part et je les
+corrigerais. Cependant, je pense utiliser une méthode simple se basant sur des
+faits afin d&#8217;avoir une analyse pertinente.</p>
+
+<h2>L&#8217;application</h2>
+
+<p><a href="http://www.associatedartcollectors.com/">Les Collectionneurs Associés</a> est une application Rails qui n&#8217;a pas été conçue uniquement pour des tests. Cela nous
+donne une meilleure idée du comportement des serveurs dans la réalité.</p>
+
+<h2>Les serveurs</h2>
+
+<p>L&#8217;offre la plus petite de Clever Cloud coûte 14,40€ par mois. Pour ce prix,
+nous avons 1 CPU et 1Gb de RAM. Pour le même prix, chez Scalingo, nous avons
+une machine avec 1CPU et  512Mb de RAM. Cependant, avec Scalingo, il est
+possible de descendre plus bas avec 256Mb pour 7,20€. J&#8217;ai choisi de prendre
+l&#8217;offre à 14,40€ dans les deux entreprises. Les deux serveurs se trouvent en
+France.</p>
+
+<p>Le serveur à partir duquel je fais mes tests est un serveur fourni par
+Digital Ocean situé à Londres. Il est donc représentatif des clients de
+l&#8217;Europe de l&#8217;Ouest, incluant la France, évidemment.</p>
+
+<h2>Le code</h2>
+
+<p>Le code n&#8217;est probablement pas le meilleur que j&#8217;ai écrit de ma vie, mais est
+largement suffisant pour faire ce que je souhaitais.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;benchmark&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;net/http&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;openssl&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">NUMBER_OF_THREADS</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span class='line'><span class="no">NUMBER_OF_REQUESTS_PER_THREAD</span> <span class="o">=</span> <span class="mi">100</span>
+</span><span class='line'><span class="no">URL</span> <span class="o">=</span> <span class="s1">&#39;https://stagingcollectionneurs.scalingo.io/fr/provider_registrations/new&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">threads</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'><span class="no">NUMBER_OF_THREADS</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">threads</span> <span class="o">&lt;&lt;</span> <span class="no">Thread</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">Benchmark</span><span class="o">.</span><span class="n">bm</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">x</span><span class="o">.</span><span class="n">report</span> <span class="k">do</span>
+</span><span class='line'>        <span class="no">NUMBER_OF_REQUESTS_PER_THREAD</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>          <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="no">URL</span><span class="p">)</span>
+</span><span class='line'>          <span class="n">http</span> <span class="o">=</span> <span class="ss">Net</span><span class="p">:</span><span class="ss">:HTTP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+</span><span class='line'>          <span class="n">http</span><span class="o">.</span><span class="n">use_ssl</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>          <span class="n">http</span><span class="o">.</span><span class="n">verify_mode</span> <span class="o">=</span> <span class="ss">OpenSSL</span><span class="p">:</span><span class="ss">:SSL</span><span class="o">::</span><span class="no">VERIFY_NONE</span>
+</span><span class='line'>          <span class="n">http</span><span class="o">.</span><span class="n">start</span> <span class="k">do</span>
+</span><span class='line'>            <span class="n">http</span><span class="o">.</span><span class="n">request_get</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">res</span><span class="o">|</span>
+</span><span class='line'>              <span class="nb">p</span> <span class="n">res</span><span class="o">.</span><span class="n">code</span> <span class="o">+</span> <span class="s2">&quot; : &quot;</span> <span class="o">+</span> <span class="n">i</span><span class="o">.</span><span class="n">to_s</span>
+</span><span class='line'>            <span class="k">end</span>
+</span><span class='line'>          <span class="k">end</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ce code permet d&#8217;entrer une adresse et de simuler un certain nombre de
+visites concurrentes faisant un certain nombre de requêtes. À la fin de
+l&#8217;exécution du programme, le temps de réponse de chaque processus est affiché.
+Ce code ne prend pas en compte le chargement des images et des assets. Dans mon
+cas, ces éléments sont stockés sur un CDN et sont donc indépendants du serveur
+où l&#8217;application se trouve.</p>
+
+<h2>Test 1</h2>
+
+<p>Ce premier test affiche une page simple avec 11 requêtes. Voici les temps de
+réponse :</p>
+
+<p>Scalingo :</p>
+
+<p>  126.364873
+  126.482741
+  126.609597
+  126.741594
+  126.857076
+  126.988266
+  127.107123
+  127.235066
+  127.356753
+  127.469629</p>
+
+<p>Clever Cloud :</p>
+
+<p>  127.890590
+  128.021063
+  128.147565
+  128.274117
+  128.400284
+  128.528602
+  128.655974
+  128.777820
+  128.897637
+  129.032317</p>
+
+<p>Pour ce test, on s&#8217;aperçoit que les résultats sont quasiment identiques. La
+différence de 2 secondes est, pour moi, négligeable.</p>
+
+<h2>Test 2</h2>
+
+<p>Pour continuer, j&#8217;ai réexécuté le programme sur une page plus complexe. Voici
+le résultat :</p>
+
+<p>Scalingo :
+  762.209817
+  762.938170
+  763.748126
+  764.493016
+  765.395998
+  766.176983
+  767.026748
+  767.746600
+  768.578646
+  769.388282</p>
+
+<p>Clever Cloud :</p>
+
+<p>  766.513019
+  767.324059
+  768.050523
+  768.837619
+  769.624915
+  770.354487
+  771.162319
+  771.894288
+  772.703604
+  773.544202</p>
+
+<p>Encore une fois, la différence des temps de réponse est négligeable. Pour le
+moment, les performances de l&#8217;application hébergée sur les serveurs des deux
+entreprises sont équivalentes.</p>
+
+<h2>Test 3</h2>
+
+<p>J&#8217;ai voulu poursuivre avec la page d&#8217;inscription, plus complexe.</p>
+
+<p>Scalingo :</p>
+
+<p>  415.211191
+  415.640399
+  416.049001
+  416.437286
+  416.847855
+  417.337447
+  417.744488
+  418.145630
+  418.528678
+  418.999209</p>
+
+<p>Clever Cloud :</p>
+
+<p>  356.496478
+  356.825021
+  357.213072
+  357.562785
+  357.917548
+  358.310875
+  358.650679
+  358.991046
+  359.396792
+  359.738898</p>
+
+<p>Clever Cloud est légèrement plus rapide et, pour moi, ces résultats permettent
+de rattraper les légers retards enregistrés précédemment.</p>
+
+<h2>Conclusion</h2>
+
+<p>Voici une conclusion très ennuyante pour un article comparatif : les
+performances des deux offres sont équivalentes. Ces résultats ne me permettent
+pas de trancher entre l&#8217;un et l&#8217;autre.</p>
+
+<p>Les deux entreprises offrent un
+très bon support, leurs interfaces d&#8217;administration sont très bien faites et
+l&#8217;utilisation est deux systèmes est très simple. Pour choisir, il n&#8217;y a pas
+d&#8217;autre solution que de tester vous-même et de faire votre propre opinion, kit
+à vous baser sur des notions plus subjectives.</p>
+
+<p>Malgré tout, à la fois Scalingo et Clever Cloud sont plus performants qu&#8217;Heroku
+et Digital Ocean. Je leur donne une position qui serait décevante aux JO, la
+médaille d&#8217;or exequo.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Benchmark : Digital Ocean vs Scalingo]]></title>
@@ -4552,193 +4783,9 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#111;&#x3a;&#103;&#x75;&#x69;&#114;&#101;&#99;&#x2e;&#x63;&#111;&#x72;&#98;&#101;&#108;&#64;&#103;&#x6d;&#97;&#105;&#x6c;&#46;&#99;&#111;&#109;">&#x67;&#117;&#105;&#x72;&#x65;&#x63;&#x2e;&#99;&#x6f;&#x72;&#98;&#x65;&#x6c;&#64;&#103;&#109;&#97;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#105;&#108;&#x74;&#111;&#58;&#x67;&#x75;&#105;&#x72;&#101;&#99;&#x2e;&#x63;&#x6f;&#x72;&#98;&#101;&#x6c;&#64;&#x67;&#109;&#97;&#x69;&#108;&#46;&#x63;&#111;&#x6d;">&#x67;&#117;&#105;&#114;&#101;&#x63;&#46;&#99;&#111;&#x72;&#98;&#x65;&#108;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Leap Motion : le point de vue d'un développeur]]></title>
-    <link href="http://GCorbel.github.io/blog/blog/2013/10/12/leap-motion-le-point-de-vue-dun-developpeur/"/>
-    <updated>2013-10-12T07:41:00-04:00</updated>
-    <id>http://GCorbel.github.io/blog/blog/2013/10/12/leap-motion-le-point-de-vue-dun-developpeur</id>
-    <content type="html"><![CDATA[<p>La semaine dernière, la société <a href="http://www.optik360.com/">Optik 360</a>, spécialisée en photo 360 degrés, m&#8217;a demandé de tester Leap Motion en faisant une application permettant de visionner des images panoramiques. L&#8217;image devait se déplacer en fonction des mouvements fait par l&#8217;utilisateur.</p>
-
-<p>Pour ceux qui ne connaissent pas encore Leap Motion, il s&#8217;agit d&#8217;un petit capteur de mouvements d&#8217;environ 8 centimètres. Pour plus d&#8217;informations, rendez-vous sur <a href="https://www.leapmotion.com/">leur site officiel</a>.</p>
-
-<!--more-->
-
-
-<h2>Phase 1 : Installation</h2>
-
-<p>Sous Windows, l&#8217;installation s&#8217;est faite en moins de 5 minutes. Je me suis rendu sur la page indiquée pour télécharger l&#8217;application, je l&#8217;ai installée et mes mouvements ont été détectés par le contrôleur Leap Motion.</p>
-
-<p>Je m&#8217;attendais à ce que mon CPU soit surchargé. Ce n&#8217;est vraiment pas le cas. Quand je bouge devant le contrôleur, Leap Motion prend 7% du CPU. Windows Media Player prend 8%. J&#8217;ai pourtant choisi le maximum de précision, au détriment de la rapidité, dans le panneau de configuration. Donc, il n&#8217;y a aucun problème au niveau de la rapidité.</p>
-
-<p>Après avoir bougé les mains dans tous les sens en testant les applications fournies (mon chien me prend pour un fou), j&#8217;ai voulu l&#8217;installer sur Ubuntu 12.04. Il est possible de télécharger une version du SDK compatible Linux sur leur site. L&#8217;installation se fait également très rapidement. Le contrôleur et le panneau de configuration se sont lancés correctement. Le seul problème que j&#8217;ai rencontré : ça ne fonctionne pas. Le contrôleur ne reconnait pas mes mouvements alors qu&#8217;il n&#8217;y a aucun problème sur Windows. J&#8217;ai envoyé <a href="https://developer.leapmotion.com/forums/forums/10/topics/1811">un message sur leur forum</a>. Pour le moment, je n&#8217;ai eu aucune réponse. On va voir pour la suite.</p>
-
-<h2>Phase 2 : Premier développement</h2>
-
-<p>Par la suite, je suis retourné sur Windows pour commencer à développer. Leap Motion possède des SDK officiels dans plusieurs langages. Malheureusement, mon langage préféré, Ruby, n&#8217;est pas supporté officiellement. Je trouve ça génial d&#8217;avoir choisi d&#8217;être compatible avec plusieurs langages. Ça laisse énormément de possibilités aux développeurs.</p>
-
-<p>Pour mon projet, j&#8217;ai choisi de développer en JavaScript. LeapMotion permet de faire une application coté client. L&#8217;application écoute un certain port pour recevoir des données depuis le contrôleur. Le choix du JavaScript s&#8217;est fait uniquement sur le fait qu&#8217;il n&#8217;est pas nécessaire de faire une installation sur un PC. Un simple navigateur (moderne), permet d&#8217;avoir une application qui fonctionne avec Leap. Génial!</p>
-
-<p>La bibliothèque offerte par Leap est impressionnante. C&#8217;est super simple de faire une application. Il suffit de quelques lignes de code. Voici un exemple :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Leap</span><span class="p">.</span><span class="nx">loop</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">frame</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">frame</span><span class="p">.</span><span class="nx">fingers</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Ce petit bout de code permet de voir le nombre de doigts détectés par le contrôleur. N&#8217;importe quel développeur est capable de faire ça.</p>
-
-<h2>Phase 3 : Recherche d&#8217;une bibliothèque JavaScript</h2>
-
-<p>Après quelques tests, je me suis mis à la recherche d&#8217;un code existant permettant d&#8217;afficher une image panoramique. Je suis tombé sur <a href="http://mrdoob.github.io/three.js/examples/webgl_panorama_equirectangular.html">ce projet</a>. L&#8217;avantage de ce code est qu&#8217;il utilise <a href="http://threejs.org/">Three.js</a>. Three.js est une bibliothèque permettant de faire des animations 3D en JavaScript. Il existe beaucoup d&#8217;<a href="http://mrdoob.github.io/three.js/">exemples fournis pas les développeurs de Three.js</a>. Avec du travail, on peut développer une version compatible avec Leap de tous ces exemples.</p>
-
-<p>J&#8217;ai donc téléchargé le code en local et j&#8217;ai commencé à le modifier pour le mettre un peu plus &ldquo;à ma sauce&rdquo;. Je l&#8217;ai changé pour qu&#8217;il soit un peu plus orienté objet et j&#8217;ai utilisé coffeescript.</p>
-
-<h2>Phase 4 : Intégration de Leap à la bibliothèque</h2>
-
-<p>J&#8217;ai étudié le comportement de la souris et j&#8217;ai voulu le reproduire. Tout d&#8217;abord, j&#8217;ai extrait le code relatif à la souris dans un objet à part. Pour tester le déplacement avec Leap Motion, mon premier réflexe a été de faire ce genre de code :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">class</span> <span class="nx">LeapPano</span><span class="p">.</span><span class="nx">LeapMotion</span>
-</span><span class='line'>  <span class="nv">constructor: </span><span class="nf">(view) -&gt;</span>
-</span><span class='line'>    <span class="vi">@view = </span><span class="nx">view</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nv">init: </span><span class="o">=&gt;</span>
-</span><span class='line'>    <span class="nx">Leap</span><span class="p">.</span><span class="nx">loop</span><span class="p">(</span><span class="nf">(frame) =&gt;</span>
-</span><span class='line'>      <span class="nx">@view</span><span class="p">.</span><span class="nx">setLon</span><span class="p">(</span><span class="nx">@view</span><span class="p">.</span><span class="nx">getLon</span><span class="p">()</span> <span class="o">+</span> <span class="p">.</span><span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Ce code permet, à chaque itération, de déplacer horizontalement la caméra. Le problème que je trouve avec ce que est que je ne gère pas la rapidité des itérations. Je n&#8217;ai pas trouvé de façon de faire dans la documentation de Leap. J&#8217;ai donc choisi de modifier le code comme ceci :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">class</span> <span class="nx">LeapPano</span><span class="p">.</span><span class="nx">LeapMotion</span>
-</span><span class='line'>  <span class="nv">constructor: </span><span class="nf">(view) -&gt;</span>
-</span><span class='line'>    <span class="vi">@view = </span><span class="nx">view</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nv">setFrame: </span><span class="nf">(frame) -&gt;</span>
-</span><span class='line'>    <span class="vi">@frame = </span><span class="nx">frame</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nv">init: </span><span class="nf">-&gt;</span>
-</span><span class='line'>    <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">@checkMotion</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nv">checkMotion: </span><span class="o">=&gt;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="nx">@frame</span><span class="o">?</span>
-</span><span class='line'>      <span class="nx">@view</span><span class="p">.</span><span class="nx">setLon</span><span class="p">(</span><span class="nx">@view</span><span class="p">.</span><span class="nx">getLon</span><span class="p">()</span> <span class="o">+</span> <span class="p">.</span><span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">@checkMotion</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>L&#8217;appel de la fonction <code>Leap.loop</code> est extraite de cet objet et le résultat est passé via un setter à chaque itération. À l&#8217;initialisation, la fonction setTimeout, permettant d’exécuter la fonction de reconnaissance des mouvements toutes les dix millisecondes, est lancée. Ce code permet également de ne pas avoir plusieurs appels à la fonction <code>Leap.loop</code>. La boucle est lancée dans la page principale et les données détectées sont transmises aux différents objets en ayant besoin. Je crois que c&#8217;est une meilleure architecture.</p>
-
-<p>Maintenant que ça marche comme je veux, je peux m&#8217;occuper de la reconnaissance des mouvements. J&#8217;ai modifié la fonction <code>checkMotion</code> comme ceci :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nv">checkMotion: </span><span class="o">=&gt;</span>
-</span><span class='line'>  <span class="k">if</span> <span class="nx">@frame</span><span class="o">?</span>
-</span><span class='line'>    <span class="nv">finger = </span><span class="nx">@frame</span><span class="p">.</span><span class="nx">fingers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span class='line'>    <span class="k">if</span> <span class="nx">finger</span><span class="o">?</span>
-</span><span class='line'>      <span class="nv">x = </span><span class="nx">finger</span><span class="p">.</span><span class="nx">tipPosition</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span class='line'>      <span class="nv">y = </span><span class="nx">finger</span><span class="p">.</span><span class="nx">tipPosition</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</span><span class='line'>      <span class="nx">@view</span><span class="p">.</span><span class="nx">setLon</span><span class="p">(</span><span class="nx">@view</span><span class="p">.</span><span class="nx">getLon</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="nx">x</span><span class="o">/</span><span class="mi">320</span><span class="p">))</span>
-</span><span class='line'>      <span class="nx">@view</span><span class="p">.</span><span class="nx">setLat</span><span class="p">(</span><span class="nx">@view</span><span class="p">.</span><span class="nx">getLat</span><span class="p">()</span> <span class="o">+</span> <span class="p">((</span><span class="nx">y</span><span class="o">-</span><span class="mi">160</span><span class="p">)</span><span class="o">/</span><span class="mi">320</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">@checkMotion</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>@frame.fingers[0]</code> permet de récupérer le premier doigt détecté. <code>finger.tipPosition</code> retourne un tableau contenant la position en X, en Y et en Z. Enfin, je change la position de la caméra dans la scène 3D. Le calcul d&#8217;un ratio permet de faire en sorte d’accélérer ou de ralentir le mouvement selon la position du doigt. Plus le doigt est éloigné du centre, plus le déplacement est rapide.</p>
-
-<p>La dernière fonction que j&#8217;ai voulu ajouté a été de changer l&#8217;image lorsque l&#8217;on décrit un cercle. J&#8217;ai donc ajouté ceci :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="k">if</span><span class="p">(</span><span class="nx">@frame</span><span class="p">.</span><span class="nx">gestures</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>  <span class="nv">gesture = </span><span class="nx">@frame</span><span class="p">.</span><span class="nx">gestures</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span class='line'>  <span class="k">if</span> <span class="nx">gesture</span><span class="p">.</span><span class="nx">type</span> <span class="o">==</span> <span class="s">&quot;circle&quot;</span>
-</span><span class='line'>    <span class="nx">@view</span><span class="p">.</span><span class="nx">switchFile</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Encore une fois, c&#8217;est très simple. <code>@frame.gestures</code> retourne une liste des mouvements détectés. Par la suite, il faut vérifier si le type de mouvement est un cercle. Si c&#8217;est le cas, alors on change d&#8217;image.</p>
-
-<p>Pour permettre la reconnaissance des mouvements, il est nécessaire d&#8217;appeller la fonction <code>Leap.loop</code> :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nx">Leap</span><span class="p">.</span><span class="nx">loop</span><span class="p">({</span><span class="nv">enableGestures: </span><span class="kc">true</span><span class="p">},</span> <span class="nx">function</span><span class="p">(</span><span class="nx">frame</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">pano</span><span class="p">.</span><span class="nx">setFrame</span><span class="p">(</span><span class="nx">frame</span><span class="p">)</span>
-</span><span class='line'><span class="p">})</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Et voila! Tout fonctionne. En tant que bon contributeur Open-Source j&#8217;ai affiché le code ici : <a href="https://github.com/GCorbel/LeapPano">https://github.com/GCorbel/LeapPano</a>. J&#8217;ai également créé un page grâce a <a href="http://pages.github.com/">GitHub-Pages</a> visible ici : <a href="http://gcorbel.github.io/LeapPano/">http://gcorbel.github.io/LeapPano/</a>.</p>
-
-<h2>Ce que j&#8217;aime dans Leap Motion</h2>
-
-<p>Premièrement, j&#8217;ai beaucoup aimé la facilité d&#8217;installation. On branche, on installe et ça marche. Le développement est extrêmement facile. L&#8217;API fournie est la plus simple possible. Le fait qu&#8217;elle soit disponible en plusieurs langages est génial. Je suis vraiment impressionné des possibilités fournies et de la simplicité.</p>
-
-<h2>Là où j&#8217;ai des doutes</h2>
-
-<p>Petit bémol pour la documentation. Je trouve que la documentation officielle est assez peu détaillée. Il y a peu de code affiché. Pour voir du code réel, il est nécessaire de rechercher les exemples disponibles sur GitHub.</p>
-
-<p>Au niveau de la reconnaissance des mouvements, il existe trois mouvements &ldquo;de base&rdquo; : Circle, Swipe et Tap. Ajouter d&#8217;autres mouvements est beaucoup plus complexe. On ne peut pas imaginer faire un jeu comme <a href="http://fr.wikipedia.org/wiki/Black_and_White_%28jeu_vid%C3%A9o%29">Black &amp; White</a> pour le moment.</p>
-
-<p>Le gros point faible est la précision. Le nombre de doigts détectés n&#8217;est pas toujours réel et la position est approximative. Quand on y pense, c&#8217;est normal. Si l&#8217;on pointe une image vers l&#8217;écran, notre doigt tremble. Viser une icône peut être très long. Leap Motion ne n&#8217;est pas prêt à remplacer la souris.</p>
-
-<p>De plus, je trouve que la détection de pointeurs est très hasardeuse. Un crayon passe de détecté à non détecté sans raison. La détection des doigts est beaucoup plus stable.</p>
-
-<p>Ceci dit, Leap Motion est à sa version 0.8. Il s&#8217;agit d&#8217;un système tout nouveau. On peut imaginer que le système va s&#8217;améliorer au fil du temps.</p>
-
-<h2>Conclusion</h2>
-
-<p>J&#8217;adore Leap Motion. Il suffit de compter le nombre de fois ou j&#8217;ai marqué &ldquo;Génial&rdquo; dans cet article pour le comprendre.</p>
-
-<p>Le futur comme imaginé dans les années 80/90 est à notre portée. On n&#8217;est pas encore capable de faire des tableaux comme dans Minority Report mais on s&#8217;y approche. Des technologies comme Leap, Google Voice, Google glaces, la domotique, etc. font rêver. Le futur est accessible et n&#8217;importe quel développeur est capable de faire des choses impressionnantes.</p>
 ]]></content>
   </entry>
   
