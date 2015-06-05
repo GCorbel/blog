@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2015-06-05T06:34:21-04:00</updated>
+  <updated>2015-06-05T06:37:34-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -132,7 +132,7 @@ réponse :</p>
 
 <p>Scalingo :</p>
 
-<p>  126.364873
+<pre><code>  126.364873
   126.482741
   126.609597
   126.741594
@@ -141,11 +141,12 @@ réponse :</p>
   127.107123
   127.235066
   127.356753
-  127.469629</p>
+  127.469629
+</code></pre>
 
 <p>Clever Cloud :</p>
 
-<p>  127.890590
+<pre><code>  127.890590
   128.021063
   128.147565
   128.274117
@@ -154,7 +155,8 @@ réponse :</p>
   128.655974
   128.777820
   128.897637
-  129.032317</p>
+  129.032317
+</code></pre>
 
 <p>Pour ce test, on s&#8217;aperçoit que les résultats sont quasiment identiques. La
 différence de 2 secondes est, pour moi, négligeable.</p>
@@ -164,8 +166,9 @@ différence de 2 secondes est, pour moi, négligeable.</p>
 <p>Pour continuer, j&#8217;ai réexécuté le programme sur une page plus complexe. Voici
 le résultat :</p>
 
-<p>Scalingo :
-  762.209817
+<p>Scalingo :</p>
+
+<pre><code>  762.209817
   762.938170
   763.748126
   764.493016
@@ -174,11 +177,12 @@ le résultat :</p>
   767.026748
   767.746600
   768.578646
-  769.388282</p>
+  769.388282
+</code></pre>
 
 <p>Clever Cloud :</p>
 
-<p>  766.513019
+<pre><code>  766.513019
   767.324059
   768.050523
   768.837619
@@ -187,7 +191,8 @@ le résultat :</p>
   771.162319
   771.894288
   772.703604
-  773.544202</p>
+  773.544202
+</code></pre>
 
 <p>Encore une fois, la différence des temps de réponse est négligeable. Pour le
 moment, les performances de l&#8217;application hébergée sur les serveurs des deux
@@ -199,7 +204,7 @@ entreprises sont équivalentes.</p>
 
 <p>Scalingo :</p>
 
-<p>  415.211191
+<pre><code>  415.211191
   415.640399
   416.049001
   416.437286
@@ -208,11 +213,12 @@ entreprises sont équivalentes.</p>
   417.744488
   418.145630
   418.528678
-  418.999209</p>
+  418.999209
+</code></pre>
 
 <p>Clever Cloud :</p>
 
-<p>  356.496478
+<pre><code>  356.496478
   356.825021
   357.213072
   357.562785
@@ -221,7 +227,8 @@ entreprises sont équivalentes.</p>
   358.650679
   358.991046
   359.396792
-  359.738898</p>
+  359.738898
+</code></pre>
 
 <p>Clever Cloud est légèrement plus rapide et, pour moi, ces résultats permettent
 de rattraper les légers retards enregistrés précédemment.</p>
@@ -4783,7 +4790,7 @@ Assurez-vous d&#8217;avoir correctement installé le plug-in nécessaire pour pa
 
 <h2>Comment participer?</h2>
 
-<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#105;&#108;&#x74;&#111;&#58;&#x67;&#x75;&#105;&#x72;&#101;&#99;&#x2e;&#x63;&#x6f;&#x72;&#98;&#101;&#x6c;&#64;&#x67;&#109;&#97;&#x69;&#108;&#46;&#x63;&#111;&#x6d;">&#x67;&#117;&#105;&#114;&#101;&#x63;&#46;&#99;&#111;&#x72;&#98;&#x65;&#108;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
+<p>Si vous êtes disponible à l&#8217;heure et à la date indiquée, vous pouvez demander à participer en m&#8217;envoyant un courriel à <a href="&#109;&#97;&#105;&#x6c;&#116;&#x6f;&#58;&#x67;&#x75;&#x69;&#x72;&#101;&#x63;&#46;&#x63;&#x6f;&#x72;&#x62;&#x65;&#x6c;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#111;&#109;">&#103;&#117;&#105;&#114;&#x65;&#99;&#x2e;&#x63;&#x6f;&#114;&#98;&#101;&#x6c;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#111;&#109;</a> ou en privé <a href="https://twitter.com/GuirecCorbel">mon compte Twitter</a>.</p>
 
 <p>À dimanche!</p>
 ]]></content>
