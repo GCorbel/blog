@@ -9,8 +9,8 @@
   <meta name="author" content="Guirec Corbel">
 
   
-  <meta name="description" content="Scalingo et Clever Cloud sont deux entreprises françaises proposant des
-services d&#8217;hébergement dans le cloud. Celles-ci proposent de retirer la &hellip;">
+  <meta name="description" content="Crystal est un nouveau venu dans le monde des langages de programmation. La
+syntaxe est similaire à celle de Ruby. Dans cet article, je vous propose &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -83,6 +83,516 @@ services d&#8217;hébergement dans le cloud. Celles-ci proposent de retirer la &
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/blog/2015/09/07/benchmark-go-vs-crystal-vs-ruby/">Benchmark : go vs crystal vs ruby</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-09-07T07:15:00-04:00" pubdate data-updated="true">7 septembre 2015</time>
+        
+           | <a href="/blog/blog/2015/09/07/benchmark-go-vs-crystal-vs-ruby/#disqus_thread"
+             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2015/09/07/benchmark-go-vs-crystal-vs-ruby/">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Crystal est un nouveau venu dans le monde des langages de programmation. La
+syntaxe est similaire à celle de Ruby. Dans cet article, je vous propose de
+faire une comparaison entre le langage populaire et rapide Go, ce jeune langage, et Ruby, son inspiration.</p>
+
+<h2>Resultats</h2>
+
+<p>Sans plus attendre, voici les résultats en image :</p>
+
+<p><img src="http://img15.hostingpics.net/pics/77500720150907014935.jpg" alt="Benchmark Go vs Crystal vs Ruby" /></p>
+
+<p>Comme Ruby a des performances bien en dessous de Go et Crystal, voici le même graphique en le retirant :</p>
+
+<p><img src="http://img15.hostingpics.net/pics/79151720150907015106.jpg" alt="Benchmark Go vs Crystal" /></p>
+
+<p>Plus de détails sur les tests par la suite.</p>
+
+<h2>Fibonacci</h2>
+
+<p>Comme premier programme, j&#8217;ai choisi de faire un benchmark avec un programme
+comptant selon la suite de
+<a href="https://fr.wikipedia.org/wiki/Suite_de_Fibonacci">Fibonacci</a>. N&#8217;étant pas un
+développeur Go, j&#8217;ai trouvé le code
+<a href="http://stackoverflow.com/questions/25491370/fibonacci-closure-in-go">ici</a> et
+l&#8217;ai modifié pour faire ce que je souhaite, c&#8217;est-à-dire m&#8217;afficher uniquement
+le résultat selon la valeur passée en paramètre.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="s">&quot;math/big&quot;</span>
+</span><span class='line'><span class="kn">import</span> <span class="s">&quot;fmt&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">first</span><span class="p">,</span> <span class="nx">second</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">first</span><span class="p">.</span><span class="nx">Add</span><span class="p">(</span><span class="nx">first</span><span class="p">,</span> <span class="nx">second</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">first</span><span class="p">,</span> <span class="nx">second</span> <span class="p">=</span> <span class="nx">second</span><span class="p">,</span> <span class="nx">first</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">second</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">Fibonacci</span><span class="p">(</span><span class="mi">40</span><span class="p">))</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Voici une implémentation similaire en Ruby :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+</span><span class='line'>  <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">first</span> <span class="o">=</span> <span class="n">first</span> <span class="o">+</span> <span class="n">second</span>
+</span><span class='line'>    <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">second</span><span class="p">,</span> <span class="n">first</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">second</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="nb">puts</span> <span class="n">fib</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Et la voici avec Crystal :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+</span><span class='line'>  <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">first</span> <span class="o">=</span> <span class="n">first</span> <span class="o">+</span> <span class="n">second</span>
+</span><span class='line'>    <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">second</span><span class="p">,</span> <span class="n">first</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">second</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="nb">puts</span> <span class="n">fib</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ne cherchez pas de différence entre Ruby et Crystal, il n&#8217;y en a pas. Dans ce
+cas, Ruby et Crystal sont totalement similaires.</p>
+
+<p>Voici les résultats :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>go build fib.go <span class="o">&amp;&amp;</span> <span class="nb">time</span> ./fib
+</span><span class='line'>
+</span><span class='line'>real    0m0.001s
+</span><span class='line'>user    0m0.000s
+</span><span class='line'>sys     0m0.001s
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">time </span>ruby fib.rb
+</span><span class='line'>
+</span><span class='line'>real    0m0.035s
+</span><span class='line'>user    0m0.029s
+</span><span class='line'>sys     0m0.006s
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>crystal build --release fib.cr <span class="o">&amp;&amp;</span> <span class="nb">time</span> ./fib
+</span><span class='line'>
+</span><span class='line'>real    0m0.003s
+</span><span class='line'>user    0m0.001s
+</span><span class='line'>sys     0m0.002s
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On peut voir que Go gagne suivi de Crystal et de Ruby. Cependant, dans ce test,
+les temps d&#8217;exécution sont tellement rapides que beaucoup d&#8217;autres facteurs
+peuvent entrer en jeu dans le temps d&#8217;exécution.</p>
+
+<h2>Fibonacci BigInt</h2>
+
+<p>Pour poursuivre les tests, j&#8217;ai voulu augmenter la valeur à calculer. Malheureusement, pour Go et
+Crystal, la taille des entiers n&#8217;est pas suffisante. Il a donc été nécessaire
+de modifier le code pour utiliser des BigInt.</p>
+
+<p>Voici le code Go modifié :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='go'><span class='line'><span class="kn">package</span> <span class="nx">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="s">&quot;math/big&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">fibonacci</span><span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="o">*</span><span class="nx">big</span><span class="p">.</span><span class="nx">Int</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">first</span><span class="p">,</span> <span class="nx">second</span> <span class="o">:=</span> <span class="nx">big</span><span class="p">.</span><span class="nx">NewInt</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="nx">big</span><span class="p">.</span><span class="nx">NewInt</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">first</span><span class="p">.</span><span class="nx">Add</span><span class="p">(</span><span class="nx">first</span><span class="p">,</span> <span class="nx">second</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">first</span><span class="p">,</span> <span class="nx">second</span> <span class="p">=</span> <span class="nx">second</span><span class="p">,</span> <span class="nx">first</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">second</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">Fibonacci</span><span class="p">(</span><span class="mi">100000</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Et la même chose avec Crystal :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;big_int&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.</span><span class="n">to_big_i</span><span class="p">,</span> <span class="mi">1</span><span class="o">.</span><span class="n">to_big_i</span>
+</span><span class='line'>  <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">first</span> <span class="o">=</span> <span class="n">first</span> <span class="o">+</span> <span class="n">second</span>
+</span><span class='line'>    <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">second</span><span class="p">,</span> <span class="n">first</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">second</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="n">fib</span><span class="p">(</span><span class="mi">1000000</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Et voici les résutats :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>go build fib.go <span class="o">&amp;&amp;</span> <span class="nb">time</span> ./fib
+</span><span class='line'>
+</span><span class='line'>real    0m3.831s
+</span><span class='line'>user    0m3.826s
+</span><span class='line'>sys     0m0.009s
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">time </span>ruby fib.rb
+</span><span class='line'>
+</span><span class='line'>real    0m11.188s
+</span><span class='line'>user    0m9.873s
+</span><span class='line'>sys     0m1.290s
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>crystal build --release fib.cr <span class="o">&amp;&amp;</span> <span class="nb">time</span> ./fib
+</span><span class='line'>
+</span><span class='line'>real    0m19.414s
+</span><span class='line'>user    0m29.527s
+</span><span class='line'>sys     0m4.969s
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Le résultat est un peu décevant. L&#8217;utilisation du BigInt en Crystal est lente.
+La raison de cette lenteur viens du faire que Crystal utilise
+<a href="https://gmplib.org/">GMP</a> qui est manifestement plus lent que l&#8217;implémentation
+de Go. Vous pouvez voir une discussion sur la lenteur de Crystal
+<a href="https://groups.google.com/forum/?fromgroups#!topic/crystal-lang/cY8bImdHWV4">ici</a>.</p>
+
+<h2>Autres Benchmarks</h2>
+
+<p>Je n&#8217;ai pas voulu me laisser abattre au premier test et j&#8217;ai décidé d&#8217;en faite
+d&#8217;autres. J&#8217;ai trouvé <a href="https://github.com/kostya/benchmarks">ce projet</a>. Malheureusement, les codes proposés ne
+fonctionnent pas toujours avec les dernières versions des langages. Je me suis
+contenté de faire une comparaison avec les scripts fonctionnant sans modifications.</p>
+
+<h3>Brainfuck</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>go build brainfuck.go <span class="o">&amp;&amp;</span> <span class="nb">time</span> ./brainfuck bench.b
+</span><span class='line'>ZYXWVUTSRQPONMLKJIHGFEDCBA
+</span><span class='line'>
+</span><span class='line'>real    0m6.510s
+</span><span class='line'>user    0m6.514s
+</span><span class='line'>sys     0m0.011s
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">time </span>ruby brainfuck.rb bench.b
+</span><span class='line'>ZYXWVUTSRQPONMLKJIHGFEDCBA
+</span><span class='line'>
+</span><span class='line'>real    3m5.364s
+</span><span class='line'>user    3m4.724s
+</span><span class='line'>sys     0m0.586s
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>crystal build --release brainfuck.cr  <span class="o">&amp;&amp;</span> <span class="nb">time</span> ./brainfuck bench.b
+</span><span class='line'>ZYXWVUTSRQPONMLKJIHGFEDCBA
+</span><span class='line'>
+</span><span class='line'>real    0m5.930s
+</span><span class='line'>user    0m5.924s
+</span><span class='line'>sys     0m0.005s
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Havlak</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>go build havlak.go <span class="o">&amp;&amp;</span> <span class="nb">time</span> ./havlak
+</span><span class='line'>Welcome to LoopTesterApp, Go edition
+</span><span class='line'>Constructing Simple CFG...
+</span><span class='line'>15000 dummy loops
+</span><span class='line'>Constructing CFG...
+</span><span class='line'>Performing Loop Recognition
+</span><span class='line'>1 Iteration
+</span><span class='line'>Another 50 iterations...
+</span><span class='line'>..................................................
+</span><span class='line'>Found 76001 loops <span class="o">(</span>including artificial root node<span class="o">)</span> <span class="o">(</span>3800050<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>real    0m32.058s
+</span><span class='line'>user    0m53.207s
+</span><span class='line'>sys     0m1.433s
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>crystal build --release havlak.cr  <span class="o">&amp;&amp;</span> <span class="nb">time</span> ./havlak
+</span><span class='line'>Welcome to LoopTesterApp, Crystal edition
+</span><span class='line'>Constructing Simple CFG...
+</span><span class='line'>15000 dummy loops
+</span><span class='line'>Constructing CFG...
+</span><span class='line'>Performing Loop Recognition
+</span><span class='line'>1 Iteration
+</span><span class='line'>Another 50 iterations...
+</span><span class='line'>..................................................
+</span><span class='line'>Found 76002 loops <span class="o">(</span>including artificial root node<span class="o">)</span> <span class="o">(</span>3800100<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>real    0m14.083s
+</span><span class='line'>user    0m20.487s
+</span><span class='line'>sys     0m0.186s
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On peut voir que Crystal est deux fois plus rapide que Go. J&#8217;émets une petite
+réserve sur le code fait avec Crystal. Celui-ci a été fait à partir de celui
+fait en Python et ne respect pas le &ldquo;Crystal way&rdquo;.</p>
+
+<h3>Matmul</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>go build matmul.go <span class="o">&amp;&amp;</span> <span class="nb">time</span> ./matmul 1500
+</span><span class='line'>-143.500167
+</span><span class='line'>
+</span><span class='line'>real    0m3.189s
+</span><span class='line'>user    0m3.156s
+</span><span class='line'>sys     0m0.049s
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">time </span>ruby matmul.rb 1500
+</span><span class='line'>-143.5001666666568
+</span><span class='line'>
+</span><span class='line'>real    4m51.220s
+</span><span class='line'>user    4m50.842s
+</span><span class='line'>sys     0m0.300s
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>crystal build --release matmul.cr  <span class="o">&amp;&amp;</span> <span class="nb">time</span> ./matmul 1500
+</span><span class='line'>-143.5
+</span><span class='line'>
+</span><span class='line'>real    0m3.868s
+</span><span class='line'>user    0m3.879s
+</span><span class='line'>sys     0m0.024s
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Encore une fois, Ruby est en retrait. Les performances entre Go et Crystal sont
+comparables bien que Go est légèrement plus rapide.</p>
+
+<h2>Conclusion</h2>
+
+<p>Pour conclure, je dirais que Crystal, bien que très jeune, offre des
+performances intéressantes. Le futur nous dira s&#8217;il s&#8217;agit d&#8217;un projet éphémère
+ou s&#8217;il fera ses preuves.</p>
+
+<p>J&#8217;espère pouvoir faire d&#8217;autres tests sur Crystal très bientôt. Je pense essayer
+de faire une API. Suivez-moi sur Twitter pour rester au courant.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1236,52 +1746,6 @@ environnement.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/blog/2015/01/03/reconstruire-un-modele-3d-a-partir-dobjets-reels/">Reconstruire un modèle 3d à partir d&#8217;objets réels</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-01-03T07:59:00-05:00" pubdate data-updated="true">3 janvier 2015</time>
-        
-           | <a href="/blog/blog/2015/01/03/reconstruire-un-modele-3d-a-partir-dobjets-reels/#disqus_thread"
-             data-disqus-identifier="http://GCorbel.github.io/blog/blog/2015/01/03/reconstruire-un-modele-3d-a-partir-dobjets-reels/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>La reconstitution d&#8217;objets 3d basée sur des images permet de créer des modèles
-3d d&#8217;objets réels. Ce processus qui peut paraître complexe est en fait rendu
-très simple grâce aux outils que nous allons voir dans cet article.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/blog/2015/01/03/reconstruire-un-modele-3d-a-partir-dobjets-reels/">Lire plus &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/blog/page/2/">&larr; Older</a>
@@ -1297,6 +1761,10 @@ très simple grâce aux outils que nous allons voir dans cet article.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/blog/2015/09/07/benchmark-go-vs-crystal-vs-ruby/">Benchmark : go vs crystal vs ruby</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/blog/2015/06/01/benchmark-clever-cloud-vs-scalingo/">Benchmark : clever cloud vs scalingo</a>
       </li>
     
@@ -1310,10 +1778,6 @@ très simple grâce aux outils que nous allons voir dans cet article.</p>
     
       <li class="post">
         <a href="/blog/blog/2015/02/14/comment-ca-marche-les-associations-dans-activerecord/">Comment ça marche : les associations dans activerecord</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/blog/2015/02/07/conserver-les-changements-de-valeurs-grace-a-activemodel-dirty/">Conserver les changements de valeurs grâce à activemodel::dirty</a>
       </li>
     
   </ul>
