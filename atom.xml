@@ -4,7 +4,7 @@
   <title><![CDATA[Guirec Corbel]]></title>
   <link href="http://GCorbel.github.io/blog/atom.xml" rel="self"/>
   <link href="http://GCorbel.github.io/blog/"/>
-  <updated>2015-09-07T15:34:45-04:00</updated>
+  <updated>2015-09-11T07:27:25-04:00</updated>
   <id>http://GCorbel.github.io/blog/</id>
   <author>
     <name><![CDATA[Guirec Corbel]]></name>
@@ -18,9 +18,11 @@
     <link href="http://GCorbel.github.io/blog/blog/2015/09/07/benchmark-go-vs-crystal-vs-ruby/"/>
     <updated>2015-09-07T07:15:00-04:00</updated>
     <id>http://GCorbel.github.io/blog/blog/2015/09/07/benchmark-go-vs-crystal-vs-ruby</id>
-    <content type="html"><![CDATA[<p>Crystal est un nouveau venu dans le monde des langages de programmation. La
-syntaxe est similaire à celle de Ruby. Dans cet article, je vous propose de
-faire une comparaison entre le langage populaire et rapide Go, ce jeune langage, et Ruby, son inspiration.</p>
+    <content type="html"><![CDATA[<p>Crystal est un nouveau venu dans le monde des langages de programmation.
+Le but de ce langage est d&#8217;avoir une synthaxe similaire à Ruby tout en ayant
+les performances du C. Dans cet article, je vous propose de faire une
+comparaison entre le langage populaire et rapide, Go, ce jeune langage,
+Crystal, et son inspiration, Ruby.</p>
 
 <h2>Resultats</h2>
 
@@ -302,7 +304,7 @@ de Go. Vous pouvez voir une discussion sur la lenteur de Crystal
 
 <h2>Autres Benchmarks</h2>
 
-<p>Je n&#8217;ai pas voulu me laisser abattre au premier test et j&#8217;ai décidé d&#8217;en faite
+<p>Je n&#8217;ai pas voulu me laisser abattre au premier test et j&#8217;ai décidé d&#8217;en faire
 d&#8217;autres. J&#8217;ai trouvé <a href="https://github.com/kostya/benchmarks">ce projet</a>. Malheureusement, les codes proposés ne
 fonctionnent pas toujours avec les dernières versions des langages. Je me suis
 contenté de faire une comparaison avec les scripts fonctionnant sans modifications.</p>
@@ -426,7 +428,7 @@ contenté de faire une comparaison avec les scripts fonctionnant sans modificati
 
 <p>On peut voir que Crystal est deux fois plus rapide que Go. J&#8217;émets une petite
 réserve sur le code fait avec Crystal. Celui-ci a été fait à partir de celui
-fait en Python et ne respect pas le &ldquo;Crystal way&rdquo;.</p>
+fait en Python et ne respect pas la &ldquo;Crystal way&rdquo;.</p>
 
 <h3>Matmul</h3>
 
